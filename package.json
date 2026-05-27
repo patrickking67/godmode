@@ -1,0 +1,20 @@
+{
+  "name": "forge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Learn, plan, build, and optimize code with Claude Code and Codex — with persistent memory and a live webviewer.",
+  "author": "Patrick King",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": {
+    "forge": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "dev": "tsx watch src/cli/dev.ts",
+    "build": "tsc -p tsconfig.json && vite build && node scripts/build-plugin.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "doctor": "tsx src/cli/doctor.ts"
+  }
+}

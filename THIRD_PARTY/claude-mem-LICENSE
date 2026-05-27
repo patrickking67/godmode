@@ -1,0 +1,9 @@
+# claude-mem
+
+Source:    https://github.com/thedotmack/claude-mem
+License:   Apache License 2.0
+Copyright: Alex Newman
+
+Portions of Forge derive from claude-mem under the terms of the Apache 2.0 license.
+The full license text is available at https://www.apache.org/licenses/LICENSE-2.0
+and at THIRD_PARTY/superpowers-LICENSE (same Apache-2.0 text).

@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+
+# local-only state — never commit
+.forge/
+~/.forge/
+
+# editor
+.vscode/
+.idea/
+
+# env
+.env
+.env.local
