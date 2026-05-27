@@ -10,9 +10,11 @@ version: 0.1.0
 
 ## Summary
 
-Forge is a single private plugin that consolidates Patrick's day-to-day Claude Code and Codex patterns into one cohesive surface — codebase priming, plan brainstorming, subagent-driven development, persistent memory, token economics, and a live webviewer. It ships as a **dual-engine plugin** (`.claude-plugin/` + `.codex-plugin/`) built from one source, runs a local **Hono server** that holds a hybrid SQLite memory + telemetry store, and exposes a **React/Vite/Tailwind/shadcn** SPA at `http://127.0.0.1:51847` with four pages: Dashboard, Memory, Plans, Cost.
+Forge is an open-source plugin that takes the best ideas from across the Claude Code and Codex plugin ecosystem — brainstorming, plan-driven development, subagent orchestration, persistent memory, disciplined verification, and token economics — and **fuses them into one coherent, opinionated super-plugin**. It ships as a **dual-engine plugin** (`.claude-plugin/` + `.codex-plugin/`) built from one source, runs a local **Hono server** that holds a hybrid SQLite memory + telemetry store, exposes a **React/Vite/Tailwind/shadcn** SPA at `http://127.0.0.1:51847` (Dashboard, Memory, Plans, Cost), and bundles five curated MCP servers pre-wired in both engines.
 
-Forge is a curated consolidation of patterns and selected source from two Apache-2.0 projects — [Superpowers](https://github.com/obra/superpowers) and [claude-mem](https://github.com/thedotmack/claude-mem) — adapted and extended with original work, especially the token economics pillar and the webviewer. Forge has **zero runtime dependency** on either upstream.
+Forge is a curated consolidation of patterns and selected source from two upstream projects — [Superpowers](https://github.com/obra/superpowers) (MIT) and [claude-mem](https://github.com/thedotmack/claude-mem) (Apache-2.0) — adapted and extended with original work, especially the token economics pillar, the bundled MCP layer, and the webviewer. Forge has **zero runtime dependency** on either upstream.
+
+License: **Apache-2.0**. Distribution: public GitHub repo at v0.1; Claude Code and Codex marketplaces from v0.7.
 
 ## Goals
 
@@ -21,15 +23,17 @@ Forge is a curated consolidation of patterns and selected source from two Apache
 3. **Persistent memory that's actually useful.** Hybrid global + per-project SQLite store, FTS5-searched, with session-start memory injection and the ability to browse/edit memory from a UI.
 4. **Token economics as a first-class pillar.** Real-time meter, prompt optimizer, model router, cache-aware prompting, per-scope budgets, cost dashboard, dispatch gate.
 5. **A real local app, not a CLI shim.** Hono server + React SPA running on localhost with bearer auth. Four pages with live WebSocket updates.
-6. **Elite operability.** `forge doctor` tells you every install dimension at a glance. CI runs unit + integration + schema + hooks + ws + e2e + smoke.
+6. **Bundled MCP servers.** Five curated MCPs (Context7, Microsoft Learn, Cloudflare Docs, Keeper Docs, Playwright) pre-wired in both engines on install. Opt-out, not opt-in.
+7. **Elite operability.** `forge doctor` tells you every install dimension at a glance. CI runs unit + integration + schema + hooks + ws + e2e + smoke.
+8. **Public, contributable.** Apache-2.0, public GitHub repo, marketplace-listed by v0.7. Clear `CONTRIBUTING.md` so additions to skills / commands / MCPs are routine, not heroic.
 
 ## Non-goals
 
 - Multi-user or networked deployment. Forge binds 127.0.0.1 only.
-- Public marketplace distribution at v1. Repo is private; install is `git clone` + `forge install`.
 - Gemini CLI / Cursor support at v1 (engine list locked to Claude Code + Codex; revisit later).
 - Cloud-hosted memory or sync. Memory is local SQLite.
 - Replacing Anthropic's billing — Forge's cost numbers are derived from API-reported token usage, not actual invoices.
+- Hosting credentials for users. MCP servers that need auth (e.g. private API keys) require user-provided env vars; Forge never embeds keys.
 
 ## Architecture overview
 
@@ -514,6 +518,9 @@ forge install --autostart → launchd plist (macOS) / systemd user unit (Linux)
 | `forge budget set <scope> <cents>` | Set a cap |
 | `forge plans list` / `show <id>` | Plans CLI |
 | `forge doctor` | Diagnose every install dimension |
+| `forge mcp list` | List configured MCP servers (bundled + user-added) |
+| `forge mcp add <name> <url>` | Add a user MCP server (preserved across upgrades) |
+| `forge mcp remove <name>` | Remove a user MCP server |
 | `forge ingest-vendored` | One-time: import good stuff from cached upstream |
 
 ### 5.5 Testing strategy
@@ -531,7 +538,40 @@ forge install --autostart → launchd plist (macOS) / systemd user unit (Linux)
 
 CI: GH Actions runs unit + integration + schema + hooks + ws every push; E2E + smoke on PR-to-main only.
 
-### 5.6 `forge ingest-vendored`
+### 5.6 Bundled MCP servers
+
+Forge ships with a curated set of MCP servers pre-wired in both engine manifests. Users get immediate value without separately configuring each. All servers are opt-out via `forge install --without <name>` or by editing the generated config.
+
+| MCP | Transport | What it provides |
+| --- | --- | --- |
+| **Context7** | http | Up-to-date docs for libraries, frameworks, SDKs, CLIs |
+| **Microsoft Learn** | http | Search/fetch official Microsoft + Azure documentation and code samples |
+| **Cloudflare Docs** | http | Search Cloudflare documentation |
+| **Keeper Docs** | http | Search Keeper Security documentation |
+| **Playwright** | stdio | Browser automation, screenshots, end-to-end checks |
+
+Emission targets:
+
+- **Claude Code** → `dist/.claude-plugin/.mcp.json` (referenced from `plugin.json` via `mcpServers`)
+- **Codex** → `[mcp_servers.<name>]` blocks merged into `~/.codex/config.toml` by `forge install`
+
+User additions via `forge mcp add` are written to a separate user-config file that is merged at runtime so upgrades never overwrite them. MCP servers that need auth (e.g. private endpoints, API keys) read those credentials from environment variables — Forge ships no embedded keys, and `forge doctor` warns when a required env var is unset.
+
+Example emitted `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "context7":        { "type": "http",  "url": "https://mcp.context7.com/mcp" },
+    "microsoft-learn": { "type": "http",  "url": "https://learn.microsoft.com/api/mcp" },
+    "cloudflare-docs": { "type": "http",  "url": "https://docs.mcp.cloudflare.com/sse" },
+    "keeper-docs":     { "type": "http",  "url": "https://docs.keeper.io/mcp" },
+    "playwright":      { "type": "stdio", "command": "npx", "args": ["-y", "@playwright/mcp@latest"] }
+  }
+}
+```
+
+### 5.7 `forge ingest-vendored`
 
 One-time importer that reads from cached upstream plugins on the local machine:
 - `~/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/`
@@ -547,6 +587,77 @@ License notices preserved in `THIRD_PARTY/`.
 
 ---
 
+## Section 6 — Distribution & contribution
+
+### 6.1 Release model
+
+Forge is open source under **Apache-2.0**. Distribution paths:
+
+- **Direct git clone (v0.1+)** — `git clone https://github.com/<owner>/forge && cd forge && pnpm install && pnpm build && forge install`. Best for users tracking `main` or contributing.
+- **Claude Code marketplace (v0.7+)** — `/plugin install forge` from inside Claude Code. One-line install with automatic updates.
+- **Codex marketplace (v0.7+)** — same install ergonomics on the Codex side, once Codex's plugin marketplace surface is stable.
+- **npm tarball (v1.0+)** — `pnpm dlx forge install` once binary distribution stabilizes.
+
+### 6.2 Versioning
+
+**SemVer.** `v0.x` = pre-1.0 (rapid iteration; breaking changes allowed within `v0.x` and noted in `CHANGELOG.md`). `v1.0` ships when the dual-engine surface is stable and the public API (CLI flags, plugin commands, REST endpoints, WebSocket events, SQL schema) is committed.
+
+### 6.3 Roadmap
+
+| Version | Milestone |
+| --- | --- |
+| **v0.1** | Design spec + scaffold *(this commit)* |
+| v0.2 | Core memory + token meter + Claude Code plugin shipping |
+| v0.3 | Webviewer Dashboard + Memory pages |
+| v0.4 | Codex plugin parity |
+| v0.5 | Plans + Cost pages; full CLI |
+| v0.6 | Bundled MCPs polished; `forge doctor` complete |
+| v0.7 | Beta on Claude Code + Codex marketplaces |
+| **v1.0** | Stable API; full test coverage; public launch |
+
+Roadmap is informational, not contractual — adjusts as the project learns.
+
+### 6.4 Contribution
+
+`CONTRIBUTING.md` at repo root covers:
+
+- **Code style** — Prettier + ESLint configs in repo; PRs auto-format on save.
+- **Commit format** — Conventional Commits encouraged; not enforced for solo contributors.
+- **PR flow** — issue first for new features (5+ files or new pillar); draft PR welcome any time; one approving review required for merge.
+- **Tests required** — Vitest unit + integration tests for any new code in `src/core/` or `src/server/`. UI changes get RTL component tests.
+- **License sign-off** — by submitting a PR, contributors agree their contribution is licensed under Apache-2.0 (no separate CLA at v0.x).
+- **No AI attribution in commits** — contributors are humans; no `Co-Authored-By: Claude` etc.
+
+`CODEOWNERS` routes PRs by area:
+
+- `src/server/`, `src/core/` → core maintainers
+- `src/web/` → frontend maintainers
+- `src/plugin/_sources/` → skills + commands maintainers
+- `docs/` → anyone
+
+### 6.5 Marketplace metadata
+
+For marketplace listings, both `plugin.json` files carry:
+
+- A 1-line `shortDescription` (≤80 chars)
+- A 3-5 sentence `longDescription`
+- `brandColor` `#FB923C` (amber/orange — fire/forge accent matching the SPA)
+- `defaultPrompt` examples (3 high-value commands)
+- `capabilities` declared: `Interactive`, `Write`, `MCP`
+
+Manifests are validated against the engines' published JSON schemas at build time (ajv) and on PR (CI).
+
+### 6.6 Public security posture
+
+`SECURITY.md` declares:
+
+- **Supported versions** — current minor + previous minor (e.g. v0.6 + v0.5 patched, older versions EOL)
+- **Reporting** — `security@<domain>` private email; public GitHub Security Advisory after fix is available
+- **Scope** — local-server auth bypass, hook-injection RCE, MCP-credential leak, sandbox escape, memory exfil between projects
+- **Out of scope** — physical-access compromise, social engineering, user-misconfigured MCP servers
+
+---
+
 ## Open questions
 
 1. **Tokenizer source.** Anthropic's API reports token counts per response. For *pre-call* estimation (used by `/budget` and the dispatch gate), use `@anthropic-ai/tokenizer`? Or a cheaper heuristic (word-count × 1.3)?
@@ -558,11 +669,10 @@ License notices preserved in `THIRD_PARTY/`.
 ## Out-of-scope for v1
 
 - Gemini CLI and Cursor support
-- Public marketplace distribution
 - Cloud memory sync
 - Multi-user / team sharing
 - Custom embedding / vector search (FTS5 only at v1)
-- Native installer (npm tarball, Homebrew formula)
+- Homebrew formula (npm tarball lands at v1.0 per roadmap; Homebrew later)
 
 ## Glossary
 

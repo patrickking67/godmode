@@ -1,0 +1,16 @@
+Forge
+Copyright 2026 Patrick King and Forge contributors.
+
+This product includes software developed at, or derived from, the following projects:
+
+  * Superpowers (https://github.com/obra/superpowers)
+    Copyright (c) 2025 Jesse Vincent
+    Licensed under the MIT License.
+
+  * claude-mem (https://github.com/thedotmack/claude-mem)
+    Copyright (c) Alex Newman
+    Licensed under the Apache License, Version 2.0.
+
+Selected skills, hooks, schema patterns, and orchestration ideas have been
+adapted from the above projects under the terms of their respective licenses.
+Full upstream license texts are preserved under THIRD_PARTY/.

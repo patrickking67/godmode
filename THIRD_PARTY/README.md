@@ -1,10 +1,12 @@
 # Third-party attribution
 
-Forge incorporates ideas, structure, and selected code derived from the following Apache 2.0 projects. Their license texts are preserved here in compliance with the Apache 2.0 license, which requires retention of the license notice when the source is moved or redistributed.
+Forge incorporates selected ideas, structure, and source from the following open-source projects. Their license texts are preserved here as required by their respective licenses and reproduced in the project `NOTICE` file at the repository root.
 
-| Project | Upstream | License |
-| --- | --- | --- |
-| Superpowers | https://github.com/obra/superpowers | Apache-2.0 (see `superpowers-LICENSE`) |
-| claude-mem | https://github.com/thedotmack/claude-mem | Apache-2.0 (see `claude-mem-LICENSE`) |
+| Project | Upstream | License | License text |
+| --- | --- | --- | --- |
+| Superpowers | [obra/superpowers](https://github.com/obra/superpowers) | MIT | [`superpowers-LICENSE`](./superpowers-LICENSE) |
+| claude-mem | [thedotmack/claude-mem](https://github.com/thedotmack/claude-mem) | Apache-2.0 | [`claude-mem-LICENSE`](./claude-mem-LICENSE) |
 
-Forge is a private personal tool not currently distributed. If that ever changes, ensure the upstream copyright notices in any vendored source files are preserved and that a `NOTICE` file accompanies any redistribution.
+The Apache 2.0 license requires that the upstream `NOTICE` file (if present) be propagated; the relevant notices appear in the `NOTICE` file at the repository root.
+
+Where individual vendored source files include their own copyright headers, those headers are preserved unchanged.

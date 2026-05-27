@@ -1,14 +1,43 @@
 {
   "name": "forge",
   "version": "0.1.0",
-  "private": true,
-  "description": "Learn, plan, build, and optimize code with Claude Code and Codex — with persistent memory and a live webviewer.",
-  "author": "Patrick King",
+  "description": "Learn, plan, build, and optimize — one super-plugin for Claude Code and Codex, with persistent memory, token economics, bundled MCPs, and a live local webviewer.",
   "license": "Apache-2.0",
+  "author": "Patrick King",
+  "homepage": "https://github.com/patrickking67/forge#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patrickking67/forge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/patrickking67/forge/issues"
+  },
+  "keywords": [
+    "claude-code",
+    "codex",
+    "plugin",
+    "memory",
+    "subagents",
+    "mcp",
+    "tokens",
+    "dashboard",
+    "superpowers",
+    "claude-mem"
+  ],
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "bin": {
     "forge": "./dist/cli/index.js"
   },
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE",
+    "README.md",
+    "THIRD_PARTY"
+  ],
   "scripts": {
     "dev": "tsx watch src/cli/dev.ts",
     "build": "tsc -p tsconfig.json && vite build && node scripts/build-plugin.ts",
