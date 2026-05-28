@@ -1,18 +1,18 @@
 ---
-title: Forge — Design Spec
+title: Godmode — Design Spec
 status: draft
 date: 2026-05-27
 owner: Patrick King
 version: 0.1.0
 ---
 
-# Forge — Design Spec
+# Godmode — Design Spec
 
 ## Summary
 
-Forge is an open-source plugin that takes the best ideas from across the Claude Code and Codex plugin ecosystem — brainstorming, plan-driven development, subagent orchestration, persistent memory, disciplined verification, and token economics — and **fuses them into one coherent, opinionated super-plugin**. It ships as a **dual-engine plugin** (`.claude-plugin/` + `.codex-plugin/`) built from one source, runs a local **Hono server** that holds a hybrid SQLite memory + telemetry store, exposes a **React/Vite/Tailwind/shadcn** SPA at `http://127.0.0.1:51847` (Dashboard, Memory, Plans, Cost), and bundles five curated MCP servers pre-wired in both engines.
+Godmode is an open-source plugin that takes the best ideas from across the Claude Code and Codex plugin ecosystem — brainstorming, plan-driven development, subagent orchestration, persistent memory, disciplined verification, and token economics — and **fuses them into one coherent, opinionated super-plugin**. It ships as a **dual-engine plugin** (`.claude-plugin/` + `.codex-plugin/`) built from one source, runs a local **Hono server** that holds a hybrid SQLite memory + telemetry store, exposes a **React/Vite/Tailwind/shadcn** SPA at `http://127.0.0.1:51847` (Dashboard, Memory, Plans, Cost), and bundles five curated MCP servers pre-wired in both engines.
 
-Forge is a curated consolidation of patterns and selected source from two upstream projects — [Superpowers](https://github.com/obra/superpowers) (MIT) and [claude-mem](https://github.com/thedotmack/claude-mem) (Apache-2.0) — adapted and extended with original work, especially the token economics pillar, the bundled MCP layer, and the webviewer. Forge has **zero runtime dependency** on either upstream.
+Godmode is a curated consolidation of patterns and selected source from two upstream projects — [Superpowers](https://github.com/obra/superpowers) (MIT) and [claude-mem](https://github.com/thedotmack/claude-mem) (Apache-2.0) — adapted and extended with original work, especially the token economics pillar, the bundled MCP layer, and the webviewer. Godmode has **zero runtime dependency** on either upstream.
 
 License: **Apache-2.0**. Distribution: public GitHub repo at v0.1; Claude Code and Codex marketplaces from v0.7.
 
@@ -24,22 +24,22 @@ License: **Apache-2.0**. Distribution: public GitHub repo at v0.1; Claude Code a
 4. **Token economics as a first-class pillar.** Real-time meter, prompt optimizer, model router, cache-aware prompting, per-scope budgets, cost dashboard, dispatch gate.
 5. **A real local app, not a CLI shim.** Hono server + React SPA running on localhost with bearer auth. Four pages with live WebSocket updates.
 6. **Bundled MCP servers.** Five curated MCPs (Context7, Microsoft Learn, Cloudflare Docs, Keeper Docs, Playwright) pre-wired in both engines on install. Opt-out, not opt-in.
-7. **Elite operability.** `forge doctor` tells you every install dimension at a glance. CI runs unit + integration + schema + hooks + ws + e2e + smoke.
+7. **Elite operability.** `godmode doctor` tells you every install dimension at a glance. CI runs unit + integration + schema + hooks + ws + e2e + smoke.
 8. **Public, contributable.** Apache-2.0, public GitHub repo, marketplace-listed by v0.7. Clear `CONTRIBUTING.md` so additions to skills / commands / MCPs are routine, not heroic.
 
 ## Non-goals
 
-- Multi-user or networked deployment. Forge binds 127.0.0.1 only.
+- Multi-user or networked deployment. Godmode binds 127.0.0.1 only.
 - Gemini CLI / Cursor support at v1 (engine list locked to Claude Code + Codex; revisit later).
 - Cloud-hosted memory or sync. Memory is local SQLite.
-- Replacing Anthropic's billing — Forge's cost numbers are derived from API-reported token usage, not actual invoices.
-- Hosting credentials for users. MCP servers that need auth (e.g. private API keys) require user-provided env vars; Forge never embeds keys.
+- Replacing Anthropic's billing — Godmode's cost numbers are derived from API-reported token usage, not actual invoices.
+- Hosting credentials for users. MCP servers that need auth (e.g. private API keys) require user-provided env vars; Godmode never embeds keys.
 
 ## Architecture overview
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                              Forge (single Node package)                    │
+│                              Godmode (single Node package)                    │
 │                                                                             │
 │  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────┐  │
 │  │  src/plugin  │    │  src/server  │    │   src/core   │    │ src/web  │  │
@@ -52,12 +52,12 @@ License: **Apache-2.0**. Distribution: public GitHub repo at v0.1; Claude Code a
 │         │                   │                   │                  │       │
 │         │                   ▼                   ▼                  │       │
 │         │            ┌──────────────────────────────────┐          │       │
-│         │            │  ~/.forge/memory.db  (global)    │          │       │
-│         │            │  .forge/memory.db    (per repo)  │          │       │
+│         │            │  ~/.godmode/memory.db  (global)    │          │       │
+│         │            │  .godmode/memory.db    (per repo)  │          │       │
 │         │            └──────────────────────────────────┘          │       │
 │         │                                                          │       │
 │         │            ┌──────────────────────────────────┐          │       │
-│         └───────────▶│   ~/.forge/queue/*.ndjson        │          │       │
+│         └───────────▶│   ~/.godmode/queue/*.ndjson        │          │       │
 │       hook events    │   (drained by server on start)   │          │       │
 │                      └──────────────────────────────────┘          │       │
 │                                                                    │       │
@@ -76,8 +76,8 @@ License: **Apache-2.0**. Distribution: public GitHub repo at v0.1; Claude Code a
 
 Three runtime surfaces, one codebase:
 
-1. **Plugin** — installed into `~/.claude/plugins/forge/` and `~/.codex/plugins/forge/` via symlink. Provides slash commands, skills, agents, and hooks.
-2. **Server** — `forge start` runs a daemonized Hono process on `127.0.0.1:51847`. Ingests hook events, manages SQLite, broadcasts WebSocket events.
+1. **Plugin** — installed into `~/.claude/plugins/godmode/` and `~/.codex/plugins/godmode/` via symlink. Provides slash commands, skills, agents, and hooks.
+2. **Server** — `godmode start` runs a daemonized Hono process on `127.0.0.1:51847`. Ingests hook events, manages SQLite, broadcasts WebSocket events.
 3. **Web** — Vite-built static SPA served by the same server. Talks to the REST + WebSocket API.
 
 ---
@@ -87,14 +87,14 @@ Three runtime surfaces, one codebase:
 ### Repository layout
 
 ```text
-forge/                                  ← ~/Development/forge
+godmode/                                  ← ~/Development/godmode
 ├── LICENSE                             ← Apache-2.0
 ├── THIRD_PARTY/
 │   ├── README.md                       ← attribution table
 │   ├── superpowers-LICENSE             ← Apache-2.0 text from upstream
 │   └── claude-mem-LICENSE              ← Apache-2.0 reference
 ├── README.md
-├── package.json                        ← bin: { forge: "dist/cli/index.js" }
+├── package.json                        ← bin: { godmode: "dist/cli/index.js" }
 ├── tsconfig.json
 ├── vite.config.ts
 ├── docs/
@@ -103,7 +103,7 @@ forge/                                  ← ~/Development/forge
 │   ├── commands.md                     ← per-command reference (both engines)
 │   └── memory-schema.md
 ├── src/
-│   ├── cli/                            ← `forge` binary
+│   ├── cli/                            ← `godmode` binary
 │   ├── plugin/
 │   │   ├── _sources/                   ← unified command/prompt sources
 │   │   ├── claude/                     ← built artifacts: .claude-plugin/...
@@ -123,26 +123,26 @@ forge/                                  ← ~/Development/forge
 
 Single-source authored in `src/plugin/_sources/<name>.md` with engine-specific frontmatter; `scripts/build-plugin.ts` emits Claude commands and Codex prompts from each.
 
-| Command | What it does | Provenance |
-| --- | --- | --- |
-| `/learn` | Prime the codebase into memory — reads repo, generates observations, persists | claude-mem `/learn-codebase` |
-| `/guide` | Brainstorm a feature interactively, save spec | superpowers `brainstorming` |
-| `/explain` | Explain a file/function/system; pulls memory for context | original |
-| `/agents` | List configured subagents; spawn ad-hoc | original |
-| `/implement` | Execute a saved plan via subagent-driven dev; parallel where independent | superpowers `subagent-driven-development` |
-| `/develop` | Lightweight build — code an idea without full plan/spec flow | original |
-| `/engineer` | Heavy build — plan → review → tests → impl → verify → commit | superpowers (composed) |
-| `/debug` | Systematic debugging — root cause first | superpowers `systematic-debugging` |
-| `/optimize` | Hand code to the optimizer — perf / readability / token-efficiency | original |
-| `/budget` | Set or check token/cost budget for session/project/day | original |
-| `/tokens` | Cost breakdown for current session, project, or window | original |
-| `/route` | Show / override the router's model pick for a task | original |
-| `/dashboard` | Open the webviewer | original |
-| `/memory` | Search or edit memory observations (redirects to webviewer) | claude-mem |
-| `/plans` | List saved plans/specs; rerun, diff | superpowers `writing-plans` |
-| `/review` | Pre-commit / pre-PR review via code-reviewer subagent | superpowers `requesting-code-review` |
-| `/verify` | Run project's verify suite + capture output as evidence | superpowers `verification-before-completion` |
-| `/commit` | Stage + commit per attribution rules | original (your commit-commands) |
+| Command      | What it does                                                                  | Provenance                                   |
+| ------------ | ----------------------------------------------------------------------------- | -------------------------------------------- |
+| `/learn`     | Prime the codebase into memory — reads repo, generates observations, persists | claude-mem `/learn-codebase`                 |
+| `/guide`     | Brainstorm a feature interactively, save spec                                 | superpowers `brainstorming`                  |
+| `/explain`   | Explain a file/function/system; pulls memory for context                      | original                                     |
+| `/agents`    | List configured subagents; spawn ad-hoc                                       | original                                     |
+| `/implement` | Execute a saved plan via subagent-driven dev; parallel where independent      | superpowers `subagent-driven-development`    |
+| `/develop`   | Lightweight build — code an idea without full plan/spec flow                  | original                                     |
+| `/engineer`  | Heavy build — plan → review → tests → impl → verify → commit                  | superpowers (composed)                       |
+| `/debug`     | Systematic debugging — root cause first                                       | superpowers `systematic-debugging`           |
+| `/optimize`  | Hand code to the optimizer — perf / readability / token-efficiency            | original                                     |
+| `/budget`    | Set or check token/cost budget for session/project/day                        | original                                     |
+| `/tokens`    | Cost breakdown for current session, project, or window                        | original                                     |
+| `/route`     | Show / override the router's model pick for a task                            | original                                     |
+| `/dashboard` | Open the webviewer                                                            | original                                     |
+| `/memory`    | Search or edit memory observations (redirects to webviewer)                   | claude-mem                                   |
+| `/plans`     | List saved plans/specs; rerun, diff                                           | superpowers `writing-plans`                  |
+| `/review`    | Pre-commit / pre-PR review via code-reviewer subagent                         | superpowers `requesting-code-review`         |
+| `/verify`    | Run project's verify suite + capture output as evidence                       | superpowers `verification-before-completion` |
+| `/commit`    | Stage + commit per attribution rules                                          | original (your commit-commands)              |
 
 ---
 
@@ -178,15 +178,16 @@ plugin/claude/hooks/
 └── stop.json                 ← finalize session, compress observations
 ```
 
-Each hook is a thin JSON pointing at `forge ingest --event <name>`. If the server isn't running, hooks write events to `~/.forge/queue/*.ndjson`; the server drains the queue on next start. Zero loss.
+Each hook is a thin JSON pointing at `godmode ingest --event <name>`. If the server isn't running, hooks write events to `~/.godmode/queue/*.ndjson`; the server drains the queue on next start. Zero loss.
 
 Codex hooks are emitted from the same source via `scripts/build-plugin.ts` with the Codex-specific JSON schema.
 
 ### Memory schema
 
 Two SQLite databases with identical schema:
-- `~/.forge/memory.db` — global, cross-project patterns
-- `.forge/memory.db` — per-repo, local observations
+
+- `~/.godmode/memory.db` — global, cross-project patterns
+- `.godmode/memory.db` — per-repo, local observations
 
 Both writable; queries can target one or both.
 
@@ -281,10 +282,13 @@ Triggers keep `observations_fts` in sync on insert/update/delete. Search ranks b
 ## Section 3 — Token & credit economics
 
 ### 3.1 Token meter
+
 Captures token counts from `post-tool-use` hook (Claude/Codex both report usage per response). Persists to `tool_calls`; rolls up into `sessions`. Real numbers where available; `tiktoken`-style estimator only as fallback.
 
 ### 3.2 Prompt optimizer (`/optimize prompt`, skill `prompt-optimization`)
+
 Rewrites verbose prompts into compact, cache-friendly form:
+
 - Hoist stable content (instructions, schemas, examples) into the system prompt
 - Strip redundant context ("as I mentioned earlier", restated file contents)
 - Compress lists into tables; cut hedge phrases
@@ -293,27 +297,28 @@ Rewrites verbose prompts into compact, cache-friendly form:
 
 ### 3.3 Model router (`/route`, skill `model-routing`)
 
-| Task signal | Default model | Reasoning |
-| --- | --- | --- |
-| File listing, single-file read, simple grep | Haiku 4.5 | Cheap, instant |
-| Single-file edit, format, lint fix | Haiku 4.5 | Competent here |
-| Multi-file edit, refactor, plan exec | Sonnet 4.6 | Best $/quality |
-| Architecture, hard debugging, novel feature | Opus 4.7 | Worth it |
-| Anything in `/learn`, `/explain` | Sonnet 4.6 | Default reasoning |
-| Subagent fan-out (parallel) | Haiku 4.5 workers + Sonnet 4.6 orchestrator | Cheap workers, smart conductor |
+| Task signal                                 | Default model                               | Reasoning                      |
+| ------------------------------------------- | ------------------------------------------- | ------------------------------ |
+| File listing, single-file read, simple grep | Haiku 4.5                                   | Cheap, instant                 |
+| Single-file edit, format, lint fix          | Haiku 4.5                                   | Competent here                 |
+| Multi-file edit, refactor, plan exec        | Sonnet 4.6                                  | Best $/quality                 |
+| Architecture, hard debugging, novel feature | Opus 4.7                                    | Worth it                       |
+| Anything in `/learn`, `/explain`            | Sonnet 4.6                                  | Default reasoning              |
+| Subagent fan-out (parallel)                 | Haiku 4.5 workers + Sonnet 4.6 orchestrator | Cheap workers, smart conductor |
 
 Overrides:
+
 - Inline: `/implement --model opus`
 - Policy: `/route policy <task_pattern> <model>`
 - Auto-downgrade (Opus→Sonnet→Haiku) when approaching session budget cap
 
 ### 3.4 Cache-friendly prompting (skill `cache-friendly-prompting`)
 
-Forge structures prompts to maximize Anthropic prompt-cache hits (target >90% on warm sessions):
+Godmode structures prompts to maximize Anthropic prompt-cache hits (target >90% on warm sessions):
 
 - System prompt: stable across all calls in a session
 - Tool definitions: stable, hashed and pinned per session
-- Variable content (user prompt, current file state) appended *after* the cache boundary
+- Variable content (user prompt, current file state) appended _after_ the cache boundary
 - Up to 4 `cache_control: { type: "ephemeral" }` markers placed at: system end, tools end, memory-injection end, last-stable-user-message end
 
 `/optimize prompt` lints any prompt against these rules and warns about cache-misses before the call goes out.
@@ -323,7 +328,7 @@ Forge structures prompts to maximize Anthropic prompt-cache hits (target >90% on
 Per-scope cost caps in cents (stored in `budgets` table). Gates:
 
 - **80%** of cap: webviewer cost panel turns yellow; `/tokens` shows a warning
-- **100%** of cap: `pre-tool-use` hook returns soft-block — system reminder *"budget exhausted; ask user to extend or close out."* Hard block on subagent dispatch.
+- **100%** of cap: `pre-tool-use` hook returns soft-block — system reminder _"budget exhausted; ask user to extend or close out."_ Hard block on subagent dispatch.
 - **Override**: `/budget extend 500c` adds $5 to current session cap
 
 ### 3.6 Cost dashboard (webviewer Cost page)
@@ -337,6 +342,7 @@ Per-scope cost caps in cents (stored in `budgets` table). Gates:
 ### 3.7 Cost-aware suggestions (subagent dispatch gate)
 
 Before `/implement` fans out N parallel subagents, the orchestrator estimates expected cost (avg-subagent-cost × N + orchestrator overhead) and:
+
 - > 25% of remaining session budget → warns and confirms
 - > 100% → refuses; suggests sequential or fewer agents
 - Otherwise proceeds silently
@@ -349,13 +355,14 @@ Before `/implement` fans out N parallel subagents, the orchestrator estimates ex
 
 - **Hono** on Node 22 with `@hono/node-server`; WebSocket via `ws` at `/ws`
 - Binds **`127.0.0.1` only**
-- Default port `51847`, configurable via `~/.forge/config.toml`
-- Daemonized: `forge start` writes PID to `~/.forge/forge.pid`, logs to `~/.forge/server.log`
+- Default port `51847`, configurable via `~/.godmode/config.toml`
+- Daemonized: `godmode start` writes PID to `~/.godmode/godmode.pid`, logs to `~/.godmode/server.log`
 - Graceful shutdown on SIGTERM: drain hook queue → close DB → close ws
 
 ### 4.2 API surface
 
 REST:
+
 ```text
 GET    /api/health                       → { ok, version, uptime, db_size }
 GET    /api/sessions                     → list (filter: engine, project, since)
@@ -379,6 +386,7 @@ POST   /api/hooks                        → hook ingestion (internal, bearer re
 ```
 
 WebSocket (`/ws`):
+
 ```text
 session.started      { session_id, engine, project }
 session.ended        { session_id, duration_ms, cost_cents }
@@ -407,7 +415,7 @@ src/web/
     └── Cost.tsx
 ```
 
-Dark by default. shadcn zinc palette + Forge accent `#FB923C` (amber/orange).
+Dark by default. shadcn zinc palette + Godmode accent `#FB923C` (amber/orange).
 
 ### 4.4 Pages
 
@@ -422,19 +430,19 @@ Dark by default. shadcn zinc palette + Forge accent `#FB923C` (amber/orange).
 ### 4.5 Security
 
 - 127.0.0.1 only
-- Single shared bearer in `~/.forge/auth.token` (32 random bytes, file mode 0600) required on every API call
+- Single shared bearer in `~/.godmode/auth.token` (32 random bytes, file mode 0600) required on every API call
 - Frontend reads token from same-origin `/api/_token` (only serves to same-origin GET)
-- Hook ingestion uses the same bearer — plugin install sets `FORGE_TOKEN` env
+- Hook ingestion uses the same bearer — plugin install sets `GODMODE_TOKEN` env
 - No CORS open
 
 ### 4.6 Process model
 
 ```text
-forge start              → daemonize, PID file, log file
-forge status             → check pid + hit /api/health
-forge stop               → SIGTERM
-forge dashboard          → ensure running, open browser
-forge install --autostart → launchd plist (macOS) / systemd user unit (Linux)
+godmode start              → daemonize, PID file, log file
+godmode status             → check pid + hit /api/health
+godmode stop               → SIGTERM
+godmode dashboard          → ensure running, open browser
+godmode install --autostart → launchd plist (macOS) / systemd user unit (Linux)
 ```
 
 ---
@@ -444,41 +452,43 @@ forge install --autostart → launchd plist (macOS) / systemd user unit (Linux)
 ### 5.1 Claude Code manifest
 
 `.claude-plugin/plugin.json`:
+
 ```json
 {
-  "name": "forge",
+  "name": "godmode",
   "version": "0.1.0",
   "description": "Learn, plan, build, and optimize — with persistent memory and a live webviewer.",
   "author": { "name": "Patrick King" },
   "license": "Apache-2.0",
-  "skills":   "./skills/",
+  "skills": "./skills/",
   "commands": "./commands/",
-  "agents":   "./agents/",
-  "hooks":    "./hooks/hooks.json"
+  "agents": "./agents/",
+  "hooks": "./hooks/hooks.json"
 }
 ```
 
 ### 5.2 Codex manifest
 
 `.codex-plugin/plugin.json` mirrors the claude-mem template with a richer interface block:
+
 ```json
 {
-  "name": "forge",
+  "name": "godmode",
   "version": "0.1.0",
   "license": "Apache-2.0",
-  "skills":     "./skills/",
-  "prompts":    "./prompts/",
+  "skills": "./skills/",
+  "prompts": "./prompts/",
   "mcpServers": "./.mcp.json",
-  "hooks":      "./hooks/codex-hooks.json",
+  "hooks": "./hooks/codex-hooks.json",
   "interface": {
-    "displayName": "Forge",
+    "displayName": "Godmode",
     "shortDescription": "Learn, plan, build, optimize — with memory and a webviewer.",
-    "longDescription": "Forge consolidates codebase priming, planning, subagent-driven development, and token economics across Claude Code and Codex.",
+    "longDescription": "Godmode consolidates codebase priming, planning, subagent-driven development, and token economics across Claude Code and Codex.",
     "developerName": "Patrick King",
     "category": "Productivity",
     "capabilities": ["Interactive", "Write"],
     "defaultPrompt": [
-      "/learn — prime this codebase into Forge memory",
+      "/learn — prime this codebase into Godmode memory",
       "/guide <feature> — brainstorm a spec, then save it",
       "/engineer <feature> — the full loop: plan, review, build, verify, commit"
     ],
@@ -490,94 +500,97 @@ forge install --autostart → launchd plist (macOS) / systemd user unit (Linux)
 ### 5.3 Single-source build
 
 `scripts/build-plugin.ts`:
+
 - Reads `src/plugin/_sources/` (commands, prompts, hooks, skills with engine-specific frontmatter)
 - Generates `dist/.claude-plugin/` and `dist/.codex-plugin/`
 - Validates both manifests against the engines' published JSON schemas (ajv)
 - Generates `hooks.json` for Claude and `codex-hooks.json` for Codex from one declarative source
 
 `scripts/install-plugin.ts`:
-- Symlinks `dist/.claude-plugin/` → `~/.claude/plugins/forge/`
-- Symlinks `dist/.codex-plugin/` → `~/.codex/plugins/forge/`
-- Appends `[mcp_servers.forge]` block to `~/.codex/config.toml` if missing
-- Generates `~/.forge/auth.token` (32 random bytes, 0600) if missing
+
+- Symlinks `dist/.claude-plugin/` → `~/.claude/plugins/godmode/`
+- Symlinks `dist/.codex-plugin/` → `~/.codex/plugins/godmode/`
+- Appends `[mcp_servers.godmode]` block to `~/.codex/config.toml` if missing
+- Generates `~/.godmode/auth.token` (32 random bytes, 0600) if missing
 
 ### 5.4 CLI surface
 
-| Command | What |
-| --- | --- |
-| `forge start` / `stop` / `status` | Daemon lifecycle |
-| `forge dashboard` | Ensure running; open browser |
-| `forge install` | Wire plugins into Claude + Codex |
-| `forge install --autostart` | Add launchd / systemd unit |
-| `forge install --local` | Wire into current repo's `.claude/` + `.codex/` |
-| `forge uninstall` | Remove symlinks + autostart |
-| `forge ingest --event <n>` | Internal — hooks call this |
-| `forge memory search <q>` | CLI search |
-| `forge memory add` | Pipe markdown to stdin to add an observation |
-| `forge tokens` | Quick token/cost summary |
-| `forge budget set <scope> <cents>` | Set a cap |
-| `forge plans list` / `show <id>` | Plans CLI |
-| `forge doctor` | Diagnose every install dimension |
-| `forge mcp list` | List configured MCP servers (bundled + user-added) |
-| `forge mcp add <name> <url>` | Add a user MCP server (preserved across upgrades) |
-| `forge mcp remove <name>` | Remove a user MCP server |
-| `forge ingest-vendored` | One-time: import good stuff from cached upstream |
+| Command                              | What                                               |
+| ------------------------------------ | -------------------------------------------------- |
+| `godmode start` / `stop` / `status`  | Daemon lifecycle                                   |
+| `godmode dashboard`                  | Ensure running; open browser                       |
+| `godmode install`                    | Wire plugins into Claude + Codex                   |
+| `godmode install --autostart`        | Add launchd / systemd unit                         |
+| `godmode install --local`            | Wire into current repo's `.claude/` + `.codex/`    |
+| `godmode uninstall`                  | Remove symlinks + autostart                        |
+| `godmode ingest --event <n>`         | Internal — hooks call this                         |
+| `godmode memory search <q>`          | CLI search                                         |
+| `godmode memory add`                 | Pipe markdown to stdin to add an observation       |
+| `godmode tokens`                     | Quick token/cost summary                           |
+| `godmode budget set <scope> <cents>` | Set a cap                                          |
+| `godmode plans list` / `show <id>`   | Plans CLI                                          |
+| `godmode doctor`                     | Diagnose every install dimension                   |
+| `godmode mcp list`                   | List configured MCP servers (bundled + user-added) |
+| `godmode mcp add <name> <url>`       | Add a user MCP server (preserved across upgrades)  |
+| `godmode mcp remove <name>`          | Remove a user MCP server                           |
+| `godmode ingest-vendored`            | One-time: import good stuff from cached upstream   |
 
 ### 5.5 Testing strategy
 
-| Layer | Tool | Coverage |
-| --- | --- | --- |
-| Unit | Vitest | `core/*` — memory, token-meter, router, optimizer, budget |
-| Integration | Vitest + supertest | server routes against in-memory SQLite |
-| Schema | ajv | both manifests validated against engine schemas |
-| Hooks | Vitest + fixture events | replay payloads, assert DB state |
-| WebSocket | Vitest + ws client | subscribe → dispatch → assert |
-| Frontend | Vitest + React Testing Library | per-page component tests |
-| E2E | Playwright | spin server in test mode, walk all 4 pages |
-| Smoke | Bash | `forge doctor` on clean install in CI sandbox |
+| Layer       | Tool                           | Coverage                                                  |
+| ----------- | ------------------------------ | --------------------------------------------------------- |
+| Unit        | Vitest                         | `core/*` — memory, token-meter, router, optimizer, budget |
+| Integration | Vitest + supertest             | server routes against in-memory SQLite                    |
+| Schema      | ajv                            | both manifests validated against engine schemas           |
+| Hooks       | Vitest + fixture events        | replay payloads, assert DB state                          |
+| WebSocket   | Vitest + ws client             | subscribe → dispatch → assert                             |
+| Frontend    | Vitest + React Testing Library | per-page component tests                                  |
+| E2E         | Playwright                     | spin server in test mode, walk all 4 pages                |
+| Smoke       | Bash                           | `godmode doctor` on clean install in CI sandbox           |
 
 CI: GH Actions runs unit + integration + schema + hooks + ws every push; E2E + smoke on PR-to-main only.
 
 ### 5.6 Bundled MCP servers
 
-Forge ships with a curated set of MCP servers pre-wired in both engine manifests. Users get immediate value without separately configuring each. All servers are opt-out via `forge install --without <name>` or by editing the generated config.
+Godmode ships with a curated set of MCP servers pre-wired in both engine manifests. Users get immediate value without separately configuring each. All servers are opt-out via `godmode install --without <name>` or by editing the generated config.
 
-| MCP | Transport | What it provides |
-| --- | --- | --- |
-| **Context7** | http | Up-to-date docs for libraries, frameworks, SDKs, CLIs |
-| **Microsoft Learn** | http | Search/fetch official Microsoft + Azure documentation and code samples |
-| **Cloudflare Docs** | http | Search Cloudflare documentation |
-| **Keeper Docs** | http | Search Keeper Security documentation |
-| **Playwright** | stdio | Browser automation, screenshots, end-to-end checks |
+| MCP                 | Transport | What it provides                                                       |
+| ------------------- | --------- | ---------------------------------------------------------------------- |
+| **Context7**        | http      | Up-to-date docs for libraries, frameworks, SDKs, CLIs                  |
+| **Microsoft Learn** | http      | Search/fetch official Microsoft + Azure documentation and code samples |
+| **Cloudflare Docs** | http      | Search Cloudflare documentation                                        |
+| **Keeper Docs**     | http      | Search Keeper Security documentation                                   |
+| **Playwright**      | stdio     | Browser automation, screenshots, end-to-end checks                     |
 
 Emission targets:
 
 - **Claude Code** → `dist/.claude-plugin/.mcp.json` (referenced from `plugin.json` via `mcpServers`)
-- **Codex** → `[mcp_servers.<name>]` blocks merged into `~/.codex/config.toml` by `forge install`
+- **Codex** → `[mcp_servers.<name>]` blocks merged into `~/.codex/config.toml` by `godmode install`
 
-User additions via `forge mcp add` are written to a separate user-config file that is merged at runtime so upgrades never overwrite them. MCP servers that need auth (e.g. private endpoints, API keys) read those credentials from environment variables — Forge ships no embedded keys, and `forge doctor` warns when a required env var is unset.
+User additions via `godmode mcp add` are written to a separate user-config file that is merged at runtime so upgrades never overwrite them. MCP servers that need auth (e.g. private endpoints, API keys) read those credentials from environment variables — Godmode ships no embedded keys, and `godmode doctor` warns when a required env var is unset.
 
 Example emitted `.mcp.json`:
 
 ```json
 {
   "mcpServers": {
-    "context7":        { "type": "http",  "url": "https://mcp.context7.com/mcp" },
-    "microsoft-learn": { "type": "http",  "url": "https://learn.microsoft.com/api/mcp" },
-    "cloudflare-docs": { "type": "http",  "url": "https://docs.mcp.cloudflare.com/sse" },
-    "keeper-docs":     { "type": "http",  "url": "https://docs.keeper.io/mcp" },
-    "playwright":      { "type": "stdio", "command": "npx", "args": ["-y", "@playwright/mcp@latest"] }
+    "context7": { "type": "http", "url": "https://mcp.context7.com/mcp" },
+    "microsoft-learn": { "type": "http", "url": "https://learn.microsoft.com/api/mcp" },
+    "cloudflare-docs": { "type": "http", "url": "https://docs.mcp.cloudflare.com/sse" },
+    "keeper-docs": { "type": "http", "url": "https://docs.keeper.io/mcp" },
+    "playwright": { "type": "stdio", "command": "npx", "args": ["-y", "@playwright/mcp@latest"] }
   }
 }
 ```
 
-### 5.7 `forge ingest-vendored`
+### 5.7 `godmode ingest-vendored`
 
 One-time importer that reads from cached upstream plugins on the local machine:
+
 - `~/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/`
 - `~/.claude/plugins/cache/thedotmack/claude-mem/13.2.0/`
 
-Imports (adapted to Forge's directory + naming):
+Imports (adapted to Godmode's directory + naming):
 
 From Superpowers — `brainstorming`, `writing-plans`, `subagent-driven-development`, `dispatching-parallel-agents`, `test-driven-development`, `systematic-debugging`, `requesting-code-review`, `verification-before-completion`, `using-git-worktrees`, `executing-plans`, `finishing-a-development-branch`.
 
@@ -591,12 +604,12 @@ License notices preserved in `THIRD_PARTY/`.
 
 ### 6.1 Release model
 
-Forge is open source under **Apache-2.0**. Distribution paths:
+Godmode is open source under **Apache-2.0**. Distribution paths:
 
-- **Direct git clone (v0.1+)** — `git clone https://github.com/<owner>/forge && cd forge && pnpm install && pnpm build && forge install`. Best for users tracking `main` or contributing.
-- **Claude Code marketplace (v0.7+)** — `/plugin install forge` from inside Claude Code. One-line install with automatic updates.
+- **Direct git clone (v0.1+)** — `git clone https://github.com/<owner>/godmode && cd godmode && pnpm install && pnpm build && godmode install`. Best for users tracking `main` or contributing.
+- **Claude Code marketplace (v0.7+)** — `/plugin install godmode` from inside Claude Code. One-line install with automatic updates.
 - **Codex marketplace (v0.7+)** — same install ergonomics on the Codex side, once Codex's plugin marketplace surface is stable.
-- **npm tarball (v1.0+)** — `pnpm dlx forge install` once binary distribution stabilizes.
+- **npm tarball (v1.0+)** — `pnpm dlx godmode install` once binary distribution stabilizes.
 
 ### 6.2 Versioning
 
@@ -604,16 +617,16 @@ Forge is open source under **Apache-2.0**. Distribution paths:
 
 ### 6.3 Roadmap
 
-| Version | Milestone |
-| --- | --- |
-| **v0.1** | Design spec + scaffold *(this commit)* |
-| v0.2 | Core memory + token meter + Claude Code plugin shipping |
-| v0.3 | Webviewer Dashboard + Memory pages |
-| v0.4 | Codex plugin parity |
-| v0.5 | Plans + Cost pages; full CLI |
-| v0.6 | Bundled MCPs polished; `forge doctor` complete |
-| v0.7 | Beta on Claude Code + Codex marketplaces |
-| **v1.0** | Stable API; full test coverage; public launch |
+| Version  | Milestone                                               |
+| -------- | ------------------------------------------------------- |
+| **v0.1** | Design spec + scaffold _(this commit)_                  |
+| v0.2     | Core memory + token meter + Claude Code plugin shipping |
+| v0.3     | Webviewer Dashboard + Memory pages                      |
+| v0.4     | Codex plugin parity                                     |
+| v0.5     | Plans + Cost pages; full CLI                            |
+| v0.6     | Bundled MCPs polished; `godmode doctor` complete        |
+| v0.7     | Beta on Claude Code + Codex marketplaces                |
+| **v1.0** | Stable API; full test coverage; public launch           |
 
 Roadmap is informational, not contractual — adjusts as the project learns.
 
@@ -641,7 +654,7 @@ For marketplace listings, both `plugin.json` files carry:
 
 - A 1-line `shortDescription` (≤80 chars)
 - A 3-5 sentence `longDescription`
-- `brandColor` `#FB923C` (amber/orange — fire/forge accent matching the SPA)
+- `brandColor` `#FB923C` (amber/orange — fire/godmode accent matching the SPA)
 - `defaultPrompt` examples (3 high-value commands)
 - `capabilities` declared: `Interactive`, `Write`, `MCP`
 
@@ -660,11 +673,11 @@ Manifests are validated against the engines' published JSON schemas at build tim
 
 ## Open questions
 
-1. **Tokenizer source.** Anthropic's API reports token counts per response. For *pre-call* estimation (used by `/budget` and the dispatch gate), use `@anthropic-ai/tokenizer`? Or a cheaper heuristic (word-count × 1.3)?
-2. **Compression triggers.** claude-mem compresses on PreCompact + Stop. Forge should match. Confirm both hook events are reliably emitted by both engines in current versions.
-3. **MCP server bundle.** Does Forge ship its *own* MCP server (so external tools can query memory) at v1, or defer? Lean: defer to v0.2.
+1. **Tokenizer source.** Anthropic's API reports token counts per response. For _pre-call_ estimation (used by `/budget` and the dispatch gate), use `@anthropic-ai/tokenizer`? Or a cheaper heuristic (word-count × 1.3)?
+2. **Compression triggers.** claude-mem compresses on PreCompact + Stop. Godmode should match. Confirm both hook events are reliably emitted by both engines in current versions.
+3. **MCP server bundle.** Does Godmode ship its _own_ MCP server (so external tools can query memory) at v1, or defer? Lean: defer to v0.2.
 4. **Auto-start UX.** macOS launchd requires a path quirks dance. Worth shipping `--autostart` at v1, or wait for v0.2?
-5. **Spec versioning.** When `/implement` re-runs an old plan and the codebase has moved, what does Forge do? Probably warn + diff against last-known-state. Detail in implementation plan.
+5. **Spec versioning.** When `/implement` re-runs an old plan and the codebase has moved, what does Godmode do? Probably warn + diff against last-known-state. Detail in implementation plan.
 
 ## Out-of-scope for v1
 

@@ -1,0 +1,24 @@
+# Godmode bundled MCP servers for Codex.
+# Append these tables to ~/.codex/config.toml (or run the documented install step).
+
+# Up-to-date library & framework documentation, version-aware.
+[mcp_servers.context7]
+command = "npx"
+args = ["-y","@upstash/context7-mcp"]
+
+# Official Microsoft & Azure documentation search and fetch.
+[mcp_servers.microsoft-learn]
+url = "https://learn.microsoft.com/api/mcp"
+
+# Cloudflare developer platform documentation.
+[mcp_servers.cloudflare-docs]
+url = "https://docs.mcp.cloudflare.com/mcp"
+
+# Keeper Security documentation.
+[mcp_servers.keeper-docs]
+url = "https://docs.keeper.io/~gitbook/mcp"
+
+# Drive a real browser for testing and verification.
+[mcp_servers.playwright]
+command = "npx"
+args = ["-y","@playwright/mcp@latest"]

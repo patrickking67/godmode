@@ -1,12 +1,12 @@
-# Contributing to Forge
+# Contributing to Godmode
 
-Thank you for considering a contribution. Forge welcomes issues, PRs, new skills, MCP additions, and design feedback.
+Thank you for considering a contribution. Godmode welcomes issues, PRs, new skills, MCP additions, and design feedback.
 
 ## Quick start
 
 ```sh
-git clone https://github.com/patrickking67/forge.git
-cd forge
+git clone https://github.com/patrickking67/godmode.git
+cd godmode
 pnpm install
 pnpm build
 pnpm test

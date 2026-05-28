@@ -1,0 +1,23 @@
+{
+  "name": "godmode",
+  "version": "1.0.0",
+  "description": "Learn, plan, build, and optimize — one super-plugin for Claude Code and Codex, with hero workflows and bundled documentation MCPs.",
+  "author": {
+    "name": "Patrick King",
+    "url": "https://github.com/patrickking67"
+  },
+  "homepage": "https://github.com/patrickking67/godmode#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patrickking67/godmode.git"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "claude-code",
+    "codex",
+    "plugin",
+    "workflows",
+    "mcp",
+    "subagents"
+  ]
+}

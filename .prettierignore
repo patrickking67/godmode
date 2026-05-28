@@ -1,0 +1,13 @@
+# Dependencies and build output
+node_modules
+dist
+coverage
+
+# Generated plugin tree — formatting is owned by scripts/build-plugin.ts
+plugin/
+
+# Generated lockfile
+pnpm-lock.yaml
+
+# Vendored upstream attribution and license texts — keep verbatim
+THIRD_PARTY/

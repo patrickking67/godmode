@@ -4,8 +4,8 @@ dist/
 *.log
 
 # local-only state — never commit
-.forge/
-~/.forge/
+.godmode/
+~/.godmode/
 
 # editor
 .vscode/

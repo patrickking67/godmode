@@ -1,0 +1,46 @@
+{
+  "name": "godmode",
+  "version": "1.0.0",
+  "description": "Learn, plan, build, and optimize — one super-plugin for Claude Code and Codex, with hero workflows and bundled documentation MCPs.",
+  "author": {
+    "name": "Patrick King",
+    "url": "https://github.com/patrickking67"
+  },
+  "homepage": "https://github.com/patrickking67/godmode#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patrickking67/godmode.git"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "claude-code",
+    "codex",
+    "plugin",
+    "workflows",
+    "mcp",
+    "subagents"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Godmode",
+    "shortDescription": "Hero workflows + bundled docs MCPs for agentic coding.",
+    "longDescription": "Godmode bundles battle-tested coding workflows (learn, explain, debug, implement, review, verify, commit) and five documentation MCP servers (Context7, Microsoft Learn, Cloudflare Docs, Keeper Docs, Playwright) into a single install that works in both Claude Code and Codex.",
+    "developerName": "Patrick King",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash",
+      "WebFetch"
+    ],
+    "defaultPrompt": [
+      "/learn this codebase and tell me how it fits together",
+      "/review my uncommitted changes",
+      "/debug the failing test in this file"
+    ],
+    "brandColor": "#7C3AED",
+    "websiteURL": "https://github.com/patrickking67/godmode"
+  }
+}
