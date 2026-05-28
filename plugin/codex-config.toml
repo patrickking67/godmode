@@ -10,6 +10,10 @@ args = ["-y","@upstash/context7-mcp"]
 [mcp_servers.microsoft-learn]
 url = "https://learn.microsoft.com/api/mcp"
 
+# Official AWS documentation, code samples, and regional availability.
+[mcp_servers.aws-knowledge]
+url = "https://knowledge-mcp.global.api.aws"
+
 # Cloudflare developer platform documentation.
 [mcp_servers.cloudflare-docs]
 url = "https://docs.mcp.cloudflare.com/mcp"
@@ -18,7 +22,25 @@ url = "https://docs.mcp.cloudflare.com/mcp"
 [mcp_servers.keeper-docs]
 url = "https://docs.keeper.io/~gitbook/mcp"
 
+# Ask questions about any public GitHub repo's architecture and docs.
+[mcp_servers.deepwiki]
+url = "https://mcp.deepwiki.com/mcp"
+
+# Regex code search across a million public GitHub repositories.
+[mcp_servers.grep]
+url = "https://mcp.grep.app"
+
 # Drive a real browser for testing and verification.
 [mcp_servers.playwright]
 command = "npx"
 args = ["-y","@playwright/mcp@latest"]
+
+# Inspect the DOM, network, console, and performance traces in Chrome.
+[mcp_servers.chrome-devtools]
+command = "npx"
+args = ["-y","chrome-devtools-mcp@latest"]
+
+# Manage Azure resources, deployments, and services (uses local az login).
+[mcp_servers.azure]
+command = "npx"
+args = ["-y","@azure/mcp@latest","server","start"]

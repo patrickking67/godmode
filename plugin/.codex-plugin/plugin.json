@@ -7,10 +7,7 @@
     "url": "https://github.com/patrickking67"
   },
   "homepage": "https://github.com/patrickking67/godmode#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/patrickking67/godmode.git"
-  },
+  "repository": "https://github.com/patrickking67/godmode",
   "license": "Apache-2.0",
   "keywords": [
     "claude-code",
@@ -20,12 +17,12 @@
     "mcp",
     "subagents"
   ],
-  "skills": "./skills/",
   "mcpServers": "./.mcp.json",
+  "skills": "./skills/",
   "interface": {
     "displayName": "Godmode",
     "shortDescription": "Hero workflows + bundled docs MCPs for agentic coding.",
-    "longDescription": "Godmode bundles battle-tested coding workflows (learn, explain, debug, implement, review, verify, commit) and five documentation MCP servers (Context7, Microsoft Learn, Cloudflare Docs, Keeper Docs, Playwright) into a single install that works in both Claude Code and Codex.",
+    "longDescription": "Godmode bundles battle-tested coding workflows (learn, explain, debug, implement, review, verify, commit) and ten no-auth MCP servers — docs (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs), code intelligence (DeepWiki, grep.app), browser automation (Playwright, Chrome DevTools), and cloud (Azure) — into a single install that works in both Claude Code and Codex.",
     "developerName": "Patrick King",
     "category": "Developer Tools",
     "capabilities": [

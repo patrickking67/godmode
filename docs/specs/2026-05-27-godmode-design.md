@@ -10,9 +10,9 @@ version: 0.1.0
 
 ## Summary
 
-Godmode is an open-source plugin that takes the best ideas from across the Claude Code and Codex plugin ecosystem — brainstorming, plan-driven development, subagent orchestration, persistent memory, disciplined verification, and token economics — and **fuses them into one coherent, opinionated super-plugin**. It ships as a **dual-engine plugin** (`.claude-plugin/` + `.codex-plugin/`) built from one source, runs a local **Hono server** that holds a hybrid SQLite memory + telemetry store, exposes a **React/Vite/Tailwind/shadcn** SPA at `http://127.0.0.1:51847` (Dashboard, Memory, Plans, Cost), and bundles five curated MCP servers pre-wired in both engines.
+Godmode is an open-source plugin that takes the best ideas from across the Claude Code and Codex plugin ecosystem — brainstorming, plan-driven development, subagent orchestration, persistent memory, disciplined verification, and token economics — and **fuses them into one coherent, opinionated super-plugin**. It ships as a **dual-engine plugin** (`.claude-plugin/` + `.codex-plugin/`) built from one source, runs a local **Hono server** that holds a hybrid SQLite memory + telemetry store, exposes a **React/Vite/Tailwind/shadcn** SPA at `http://127.0.0.1:51847` (Dashboard, Memory, Plans, Cost), and bundles ten curated no-auth MCP servers pre-wired in both engines.
 
-Godmode is a curated consolidation of patterns and selected source from two upstream projects — [Superpowers](https://github.com/obra/superpowers) (MIT) and [claude-mem](https://github.com/thedotmack/claude-mem) (Apache-2.0) — adapted and extended with original work, especially the token economics pillar, the bundled MCP layer, and the webviewer. Godmode has **zero runtime dependency** on either upstream.
+Godmode is original work: every command, skill, manifest, and MCP wiring is authored in `src/plugin/_sources/` and emitted for both engines. It has **zero runtime dependency** on any other plugin.
 
 License: **Apache-2.0**. Distribution: public GitHub repo at v0.1; Claude Code and Codex marketplaces from v0.7.
 
@@ -89,16 +89,13 @@ Three runtime surfaces, one codebase:
 ```text
 godmode/                                  ← ~/Development/godmode
 ├── LICENSE                             ← Apache-2.0
-├── THIRD_PARTY/
-│   ├── README.md                       ← attribution table
-│   ├── superpowers-LICENSE             ← Apache-2.0 text from upstream
-│   └── claude-mem-LICENSE              ← Apache-2.0 reference
+├── NOTICE
 ├── README.md
 ├── package.json                        ← bin: { godmode: "dist/cli/index.js" }
 ├── tsconfig.json
 ├── vite.config.ts
 ├── docs/
-│   ├── superpowers/specs/              ← brainstorm → spec home
+│   ├── specs/                          ← brainstorm → spec home
 │   ├── architecture.md
 │   ├── commands.md                     ← per-command reference (both engines)
 │   └── memory-schema.md
@@ -114,7 +111,6 @@ godmode/                                  ← ~/Development/godmode
 ├── scripts/
 │   ├── build-plugin.ts                 ← assembles dist/.claude-plugin + dist/.codex-plugin
 │   ├── install-plugin.ts               ← symlinks into ~/.claude + ~/.codex
-│   ├── ingest-vendored.ts              ← one-time pull from cached upstream
 │   └── seed-memory.ts                  ← optional seed observations
 └── tests/                              ← Vitest unit + integration + e2e
 ```
@@ -123,26 +119,26 @@ godmode/                                  ← ~/Development/godmode
 
 Single-source authored in `src/plugin/_sources/<name>.md` with engine-specific frontmatter; `scripts/build-plugin.ts` emits Claude commands and Codex prompts from each.
 
-| Command      | What it does                                                                  | Provenance                                   |
-| ------------ | ----------------------------------------------------------------------------- | -------------------------------------------- |
-| `/learn`     | Prime the codebase into memory — reads repo, generates observations, persists | claude-mem `/learn-codebase`                 |
-| `/guide`     | Brainstorm a feature interactively, save spec                                 | superpowers `brainstorming`                  |
-| `/explain`   | Explain a file/function/system; pulls memory for context                      | original                                     |
-| `/agents`    | List configured subagents; spawn ad-hoc                                       | original                                     |
-| `/implement` | Execute a saved plan via subagent-driven dev; parallel where independent      | superpowers `subagent-driven-development`    |
-| `/develop`   | Lightweight build — code an idea without full plan/spec flow                  | original                                     |
-| `/engineer`  | Heavy build — plan → review → tests → impl → verify → commit                  | superpowers (composed)                       |
-| `/debug`     | Systematic debugging — root cause first                                       | superpowers `systematic-debugging`           |
-| `/optimize`  | Hand code to the optimizer — perf / readability / token-efficiency            | original                                     |
-| `/budget`    | Set or check token/cost budget for session/project/day                        | original                                     |
-| `/tokens`    | Cost breakdown for current session, project, or window                        | original                                     |
-| `/route`     | Show / override the router's model pick for a task                            | original                                     |
-| `/dashboard` | Open the webviewer                                                            | original                                     |
-| `/memory`    | Search or edit memory observations (redirects to webviewer)                   | claude-mem                                   |
-| `/plans`     | List saved plans/specs; rerun, diff                                           | superpowers `writing-plans`                  |
-| `/review`    | Pre-commit / pre-PR review via code-reviewer subagent                         | superpowers `requesting-code-review`         |
-| `/verify`    | Run project's verify suite + capture output as evidence                       | superpowers `verification-before-completion` |
-| `/commit`    | Stage + commit per attribution rules                                          | original (your commit-commands)              |
+| Command      | What it does                                                                  |
+| ------------ | ----------------------------------------------------------------------------- |
+| `/learn`     | Prime the codebase into memory — reads repo, generates observations, persists |
+| `/guide`     | Brainstorm a feature interactively, save spec                                 |
+| `/explain`   | Explain a file/function/system; pulls memory for context                      |
+| `/agents`    | List configured subagents; spawn ad-hoc                                       |
+| `/implement` | Execute a saved plan via subagent-driven dev; parallel where independent      |
+| `/develop`   | Lightweight build — code an idea without full plan/spec flow                  |
+| `/engineer`  | Heavy build — plan → review → tests → impl → verify → commit                  |
+| `/debug`     | Systematic debugging — root cause first                                       |
+| `/optimize`  | Hand code to the optimizer — perf / readability / token-efficiency            |
+| `/budget`    | Set or check token/cost budget for session/project/day                        |
+| `/tokens`    | Cost breakdown for current session, project, or window                        |
+| `/route`     | Show / override the router's model pick for a task                            |
+| `/dashboard` | Open the webviewer                                                            |
+| `/memory`    | Search or edit memory observations (redirects to webviewer)                   |
+| `/plans`     | List saved plans/specs; rerun, diff                                           |
+| `/review`    | Pre-commit / pre-PR review via code-reviewer subagent                         |
+| `/verify`    | Run project's verify suite + capture output as evidence                       |
+| `/commit`    | Stage + commit per attribution rules                                          |
 
 ---
 
@@ -469,7 +465,7 @@ godmode install --autostart → launchd plist (macOS) / systemd user unit (Linux
 
 ### 5.2 Codex manifest
 
-`.codex-plugin/plugin.json` mirrors the claude-mem template with a richer interface block:
+`.codex-plugin/plugin.json` mirrors the Claude manifest with a richer interface block:
 
 ```json
 {
@@ -583,20 +579,11 @@ Example emitted `.mcp.json`:
 }
 ```
 
-### 5.7 `godmode ingest-vendored`
+### 5.7 Skill authoring
 
-One-time importer that reads from cached upstream plugins on the local machine:
+Skills are authored from scratch in `src/plugin/_sources/skills/<name>/SKILL.md` and emitted to both engines by `scripts/build-plugin.ts` — Claude commands under `plugin/commands/` and Codex skills under `plugin/skills/`. A single body serves both engines, so the command surface never drifts between them.
 
-- `~/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/`
-- `~/.claude/plugins/cache/thedotmack/claude-mem/13.2.0/`
-
-Imports (adapted to Godmode's directory + naming):
-
-From Superpowers — `brainstorming`, `writing-plans`, `subagent-driven-development`, `dispatching-parallel-agents`, `test-driven-development`, `systematic-debugging`, `requesting-code-review`, `verification-before-completion`, `using-git-worktrees`, `executing-plans`, `finishing-a-development-branch`.
-
-From claude-mem — `learn-codebase`, `mem-search`, `observation_add`/`observation_search`, the SQLite migration logic, the compression pipeline (PreCompact summarization).
-
-License notices preserved in `THIRD_PARTY/`.
+Workflow coverage spans the pillars: interactive brainstorming and plan capture (`/guide`, `/plans`), subagent-driven and parallel build (`/implement`, `/agents`), root-cause debugging (`/debug`), pre-commit/PR review and evidence-based verification (`/review`, `/verify`), and attribution-safe commits (`/commit`).
 
 ---
 
@@ -674,7 +661,7 @@ Manifests are validated against the engines' published JSON schemas at build tim
 ## Open questions
 
 1. **Tokenizer source.** Anthropic's API reports token counts per response. For _pre-call_ estimation (used by `/budget` and the dispatch gate), use `@anthropic-ai/tokenizer`? Or a cheaper heuristic (word-count × 1.3)?
-2. **Compression triggers.** claude-mem compresses on PreCompact + Stop. Godmode should match. Confirm both hook events are reliably emitted by both engines in current versions.
+2. **Compression triggers.** Compress memory on PreCompact + Stop. Confirm both hook events are reliably emitted by both engines in current versions.
 3. **MCP server bundle.** Does Godmode ship its _own_ MCP server (so external tools can query memory) at v1, or defer? Lean: defer to v0.2.
 4. **Auto-start UX.** macOS launchd requires a path quirks dance. Worth shipping `--autostart` at v1, or wait for v0.2?
 5. **Spec versioning.** When `/implement` re-runs an old plan and the codebase has moved, what does Godmode do? Probably warn + diff against last-known-state. Detail in implementation plan.

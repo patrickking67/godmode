@@ -7,10 +7,7 @@
     "url": "https://github.com/patrickking67"
   },
   "homepage": "https://github.com/patrickking67/godmode#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/patrickking67/godmode.git"
-  },
+  "repository": "https://github.com/patrickking67/godmode",
   "license": "Apache-2.0",
   "keywords": [
     "claude-code",
@@ -19,5 +16,6 @@
     "workflows",
     "mcp",
     "subagents"
-  ]
+  ],
+  "mcpServers": "./.mcp.json"
 }

@@ -204,6 +204,8 @@ function claudeManifest(): Record<string, unknown> {
     repository: MANIFEST.repository,
     license: MANIFEST.license,
     keywords: MANIFEST.keywords,
+    // Points Claude Code at the bundled MCP config so the documentation servers load on install.
+    mcpServers: "./.mcp.json",
   };
 }
 
@@ -211,7 +213,6 @@ function codexManifest(): Record<string, unknown> {
   return {
     ...claudeManifest(),
     skills: "./skills/",
-    mcpServers: "./.mcp.json",
     interface: MANIFEST.interface,
   };
 }
@@ -242,11 +243,17 @@ function validateManifests(claude: unknown, codex: unknown): void {
     name: { type: "string", pattern: "^[a-z0-9][a-z0-9-]*$" },
     version: { type: "string", minLength: 1 },
     description: { type: "string", minLength: 1 },
+    // Claude's real installer rejects an npm-style object here — it must be a plain URL string.
+    repository: { type: "string", minLength: 1 },
+    homepage: { type: "string", minLength: 1 },
+    author: { type: "object" },
+    keywords: { type: "array", items: { type: "string" } },
+    mcpServers: { type: "string", minLength: 1 },
   } as const;
 
   const claudeSchema = {
     type: "object",
-    required: ["name", "version", "description"],
+    required: ["name", "version", "description", "repository", "mcpServers"],
     properties: base,
   };
   const codexSchema = {

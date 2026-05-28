@@ -7,7 +7,8 @@
  *                                 `command`/`args` for stdio)
  *
  * HTTP servers are first-class in both engines (no `mcp-remote` shim needed).
- * Endpoints below are verified against working installs on the author's machine.
+ * Every server below is no-auth: HTTP endpoints are public, stdio servers run via
+ * `npx` with no API key. Azure uses ambient `az login` credentials — no secret in config.
  */
 
 export type McpTransport = "http" | "stdio";
@@ -26,6 +27,7 @@ export interface McpServerDef {
 }
 
 export const MCPS: McpServerDef[] = [
+  // --- Documentation ---------------------------------------------------------
   {
     name: "context7",
     transport: "stdio",
@@ -40,6 +42,12 @@ export const MCPS: McpServerDef[] = [
     description: "Official Microsoft & Azure documentation search and fetch.",
   },
   {
+    name: "aws-knowledge",
+    transport: "http",
+    url: "https://knowledge-mcp.global.api.aws",
+    description: "Official AWS documentation, code samples, and regional availability.",
+  },
+  {
     name: "cloudflare-docs",
     transport: "http",
     url: "https://docs.mcp.cloudflare.com/mcp",
@@ -51,11 +59,40 @@ export const MCPS: McpServerDef[] = [
     url: "https://docs.keeper.io/~gitbook/mcp",
     description: "Keeper Security documentation.",
   },
+  // --- Code intelligence -----------------------------------------------------
+  {
+    name: "deepwiki",
+    transport: "http",
+    url: "https://mcp.deepwiki.com/mcp",
+    description: "Ask questions about any public GitHub repo's architecture and docs.",
+  },
+  {
+    name: "grep",
+    transport: "http",
+    url: "https://mcp.grep.app",
+    description: "Regex code search across a million public GitHub repositories.",
+  },
+  // --- Browser & verification ------------------------------------------------
   {
     name: "playwright",
     transport: "stdio",
     command: "npx",
     args: ["-y", "@playwright/mcp@latest"],
     description: "Drive a real browser for testing and verification.",
+  },
+  {
+    name: "chrome-devtools",
+    transport: "stdio",
+    command: "npx",
+    args: ["-y", "chrome-devtools-mcp@latest"],
+    description: "Inspect the DOM, network, console, and performance traces in Chrome.",
+  },
+  // --- Cloud -----------------------------------------------------------------
+  {
+    name: "azure",
+    transport: "stdio",
+    command: "npx",
+    args: ["-y", "@azure/mcp@latest", "server", "start"],
+    description: "Manage Azure resources, deployments, and services (uses local az login).",
   },
 ];

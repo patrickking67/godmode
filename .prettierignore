@@ -8,6 +8,3 @@ plugin/
 
 # Generated lockfile
 pnpm-lock.yaml
-
-# Vendored upstream attribution and license texts — keep verbatim
-THIRD_PARTY/

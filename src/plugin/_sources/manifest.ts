@@ -27,7 +27,8 @@ export interface ManifestSource {
   description: string;
   author: { name: string; url?: string };
   homepage: string;
-  repository: { type: "git"; url: string };
+  /** Claude's plugin schema requires `repository` to be a plain URL string, not an npm-style object. */
+  repository: string;
   license: string;
   keywords: string[];
   interface: CodexInterface;
@@ -39,14 +40,14 @@ export const MANIFEST: ManifestSource = {
     "Learn, plan, build, and optimize — one super-plugin for Claude Code and Codex, with hero workflows and bundled documentation MCPs.",
   author: { name: "Patrick King", url: "https://github.com/patrickking67" },
   homepage: "https://github.com/patrickking67/godmode#readme",
-  repository: { type: "git", url: "git+https://github.com/patrickking67/godmode.git" },
+  repository: "https://github.com/patrickking67/godmode",
   license: "Apache-2.0",
   keywords: ["claude-code", "codex", "plugin", "workflows", "mcp", "subagents"],
   interface: {
     displayName: "Godmode",
     shortDescription: "Hero workflows + bundled docs MCPs for agentic coding.",
     longDescription:
-      "Godmode bundles battle-tested coding workflows (learn, explain, debug, implement, review, verify, commit) and five documentation MCP servers (Context7, Microsoft Learn, Cloudflare Docs, Keeper Docs, Playwright) into a single install that works in both Claude Code and Codex.",
+      "Godmode bundles battle-tested coding workflows (learn, explain, debug, implement, review, verify, commit) and ten no-auth MCP servers — docs (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs), code intelligence (DeepWiki, grep.app), browser automation (Playwright, Chrome DevTools), and cloud (Azure) — into a single install that works in both Claude Code and Codex.",
     developerName: "Patrick King",
     category: "Developer Tools",
     capabilities: ["Read", "Write", "Edit", "Bash", "WebFetch"],
