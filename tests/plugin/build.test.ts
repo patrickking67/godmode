@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it, expect, beforeAll } from "vitest";
-import { build } from "../../scripts/build-plugin.js";
+import { build, type BuildResult } from "../../scripts/build-plugin.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const PLUGIN = join(ROOT, "plugin");
@@ -12,8 +12,9 @@ function readJson(path: string): unknown {
 }
 
 describe("build-plugin emitter", () => {
+  let result: BuildResult;
   beforeAll(() => {
-    build();
+    result = build();
   });
 
   it("emits both engine manifests and a marketplace catalog", () => {
@@ -39,11 +40,35 @@ describe("build-plugin emitter", () => {
   });
 
   it("emits each `both` command as a Claude command and a shared skill", () => {
-    expect(existsSync(join(PLUGIN, "commands", "learn.md"))).toBe(true);
-    expect(existsSync(join(PLUGIN, "skills", "learn", "SKILL.md"))).toBe(true);
-    const cmd = readFileSync(join(PLUGIN, "commands", "learn.md"), "utf8");
-    expect(cmd).toMatch(/^---\nname: learn\n/);
+    expect(existsSync(join(PLUGIN, "commands", "revelation.md"))).toBe(true);
+    expect(existsSync(join(PLUGIN, "skills", "revelation", "SKILL.md"))).toBe(true);
+    const cmd = readFileSync(join(PLUGIN, "commands", "revelation.md"), "utf8");
+    expect(cmd).toMatch(/^---\nname: revelation\n/);
     expect(cmd).toContain("allowed-tools:");
+  });
+
+  it("emits the five themed subagents, each with a description (Claude-only)", () => {
+    for (const name of ["oracle", "demiurge", "inquisitor", "arbiter", "seer"]) {
+      const p = join(PLUGIN, "agents", `${name}.md`);
+      expect(existsSync(p)).toBe(true);
+      expect(readFileSync(p, "utf8")).toMatch(/^---\ndescription: /);
+    }
+    expect(result.agents).toBe(5);
+  });
+
+  it("emits hooks.json wiring three events plus its node scripts (Claude-only)", () => {
+    const hooksJson = readJson(join(PLUGIN, "hooks", "hooks.json")) as {
+      hooks: Record<string, unknown>;
+    };
+    expect(Object.keys(hooksJson.hooks).sort()).toEqual([
+      "PostToolUse",
+      "PreToolUse",
+      "SessionStart",
+    ]);
+    for (const script of ["session-start.mjs", "guard-bash.mjs", "format-edit.mjs"]) {
+      expect(existsSync(join(PLUGIN, "hooks", script))).toBe(true);
+    }
+    expect(result.hooks).toBe(3);
   });
 
   it("emits Claude MCP json (typed) and a Codex TOML snippet", () => {

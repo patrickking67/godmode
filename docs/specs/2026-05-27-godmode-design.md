@@ -119,26 +119,28 @@ godmode/                                  ← ~/Development/godmode
 
 Single-source authored in `src/plugin/_sources/<name>.md` with engine-specific frontmatter; `scripts/build-plugin.ts` emits Claude commands and Codex prompts from each.
 
-| Command      | What it does                                                                  |
-| ------------ | ----------------------------------------------------------------------------- |
-| `/learn`     | Prime the codebase into memory — reads repo, generates observations, persists |
-| `/guide`     | Brainstorm a feature interactively, save spec                                 |
-| `/explain`   | Explain a file/function/system; pulls memory for context                      |
-| `/agents`    | List configured subagents; spawn ad-hoc                                       |
-| `/implement` | Execute a saved plan via subagent-driven dev; parallel where independent      |
-| `/develop`   | Lightweight build — code an idea without full plan/spec flow                  |
-| `/engineer`  | Heavy build — plan → review → tests → impl → verify → commit                  |
-| `/debug`     | Systematic debugging — root cause first                                       |
-| `/optimize`  | Hand code to the optimizer — perf / readability / token-efficiency            |
-| `/budget`    | Set or check token/cost budget for session/project/day                        |
-| `/tokens`    | Cost breakdown for current session, project, or window                        |
-| `/route`     | Show / override the router's model pick for a task                            |
-| `/dashboard` | Open the webviewer                                                            |
-| `/memory`    | Search or edit memory observations (redirects to webviewer)                   |
-| `/plans`     | List saved plans/specs; rerun, diff                                           |
-| `/review`    | Pre-commit / pre-PR review via code-reviewer subagent                         |
-| `/verify`    | Run project's verify suite + capture output as evidence                       |
-| `/commit`    | Stage + commit per attribution rules                                          |
+The nine shipped commands use their deific names today; the remaining rows are roadmap and keep working names until they ship.
+
+| Command       | What it does                                                                  |
+| ------------- | ----------------------------------------------------------------------------- |
+| `/revelation` | Prime the codebase into memory — reads repo, generates observations, persists |
+| `/prophecy`   | Brainstorm a feature interactively, save spec                                 |
+| `/gospel`     | Explain a file/function/system; pulls memory for context                      |
+| `/summon`     | List configured subagents; spawn ad-hoc                                       |
+| `/genesis`    | Execute a saved plan via subagent-driven dev; parallel where independent      |
+| `/develop`    | Lightweight build — code an idea without full plan/spec flow                  |
+| `/engineer`   | Heavy build — plan → review → tests → impl → verify → commit                  |
+| `/exorcise`   | Systematic debugging — root cause first                                       |
+| `/optimize`   | Hand code to the optimizer — perf / readability / token-efficiency            |
+| `/budget`     | Set or check token/cost budget for session/project/day                        |
+| `/tokens`     | Cost breakdown for current session, project, or window                        |
+| `/route`      | Show / override the router's model pick for a task                            |
+| `/dashboard`  | Open the webviewer                                                            |
+| `/memory`     | Search or edit memory observations (redirects to webviewer)                   |
+| `/plans`      | List saved plans/specs; rerun, diff                                           |
+| `/judgment`   | Pre-commit / pre-PR review via code-reviewer subagent                         |
+| `/sanctify`   | Run project's verify suite + capture output as evidence                       |
+| `/covenant`   | Stage + commit per attribution rules                                          |
 
 ---
 

@@ -39,9 +39,10 @@ It consolidates that surface into a single super-plugin you install once, in eit
 
 **Available now — installs and runs in both engines, no daemon required:**
 
-- **9 hero slash commands** — `/learn`, `/explain`, `/guide`, `/agents`, `/implement`, `/debug`, `/review`, `/verify`, `/commit`. Battle-tested workflow prompts, authored once and shipped to both engines.
+- **9 hero slash commands** — `/revelation`, `/gospel`, `/prophecy`, `/genesis`, `/summon`, `/judgment`, `/sanctify`, `/exorcise`, `/covenant`. Battle-tested workflow prompts, authored once and shipped to both engines.
+- **5 subagents + 3 automatic hooks** _(Claude Code)_ — the `oracle`, `demiurge`, `inquisitor`, `arbiter`, and `seer` subagents, plus session-start context, a destructive-command guard, and format-on-edit. Auto-discovered on install.
 - **10 bundled no-auth MCP servers** — docs (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs), code intelligence (DeepWiki, grep.app), browser automation (Playwright, Chrome DevTools), and cloud (Azure). One setup, working integrations, no API keys.
-- **Dual engine, one source** — every command and MCP is authored once in `src/plugin/_sources/` and emitted for both Claude Code (`commands/` + `.mcp.json`) and Codex (`skills/` + `codex mcp add`). Full parity at every build.
+- **Dual engine, one source** — every command and MCP is authored once in `src/plugin/_sources/` and emitted for both Claude Code (`commands/` + `.mcp.json`) and Codex (`skills/` + `codex mcp add`). Subagents and hooks are Claude Code–only, since Codex has no equivalent surface.
 - **Nothing to compile to use it** — no server, no database, no native dependencies for teammates. Install straight from the marketplace and go.
 
 **On the roadmap — designed, not yet shipped:**
@@ -141,18 +142,44 @@ In Claude Code, open `/plugin` to confirm **godmode** is installed and its comma
 
 All nine ship today and behave identically in Claude Code and Codex:
 
-| Pillar        | Commands                 |
-| ------------- | ------------------------ |
-| **Learning**  | `/learn` · `/explain`    |
-| **Guiding**   | `/guide`                 |
-| **Building**  | `/implement` · `/agents` |
-| **Reviewing** | `/review` · `/verify`    |
-| **Debugging** | `/debug`                 |
-| **Git**       | `/commit`                |
+| Pillar        | Commands                  |
+| ------------- | ------------------------- |
+| **Learning**  | `/revelation` · `/gospel` |
+| **Guiding**   | `/prophecy`               |
+| **Building**  | `/genesis` · `/summon`    |
+| **Reviewing** | `/judgment` · `/sanctify` |
+| **Debugging** | `/exorcise`               |
+| **Git**       | `/covenant`               |
 
 Each command is authored once in `src/plugin/_sources/commands/` and emitted as a Claude Code slash command (`plugin/commands/<name>.md`) **and** a Codex skill (`plugin/skills/<name>/SKILL.md`) — Codex replaced user prompts with skills, so a single body serves both engines.
 
 Roadmap commands — `/plans`, `/develop`, `/engineer`, `/optimize`, `/budget`, `/tokens`, `/route`, `/memory`, `/dashboard` — arrive with the memory and economics layers.
+
+---
+
+## Subagents & hooks _(Claude Code)_
+
+Beyond the shared commands, Godmode ships a host of subagents and a set of automatic hooks for Claude Code. Both are auto-discovered on install — Codex has no equivalent surface, so it gets the nine skills and ten MCP servers.
+
+### Subagents
+
+Dispatch them directly or let `/summon` recommend the best fit for a task:
+
+| Agent          | Role                                                             |
+| -------------- | ---------------------------------------------------------------- |
+| **oracle**     | Read-only codebase reconnaissance — maps structure, traces flows |
+| **demiurge**   | Implements a well-scoped feature or fix end-to-end               |
+| **inquisitor** | Rigorous code review — bugs, security, silent failures, drift    |
+| **arbiter**    | Runs the project's own checks and reports pass/fail              |
+| **seer**       | Roots out the true cause of a bug or failing test                |
+
+### Hooks
+
+Three hooks ship wired and ready, invoking bundled Node scripts via `${CLAUDE_PLUGIN_ROOT}`:
+
+- **Session invocation** (`SessionStart`) — surfaces the command and subagent surface as context.
+- **Forbidden-act guard** (`PreToolUse` on Bash) — asks for confirmation before destructive commands (`rm -rf`, `git push --force`, `git reset --hard`, …). It warns and confirms; it never hard-blocks.
+- **Auto-sanctify edits** (`PostToolUse` on Edit/Write) — runs `prettier --write` on the changed file, but only when the project already uses prettier. A silent no-op everywhere else.
 
 ---
 

@@ -4,6 +4,15 @@ All notable changes to Godmode will be documented here. Format based on [Keep a 
 
 ## [Unreleased]
 
+### Changed
+
+- Renamed the nine slash commands to a deific lexicon: `/learn`→`/revelation`, `/explain`→`/gospel`, `/guide`→`/prophecy`, `/implement`→`/genesis`, `/agents`→`/summon`, `/review`→`/judgment`, `/verify`→`/sanctify`, `/debug`→`/exorcise`, `/commit`→`/covenant`.
+
+### Added
+
+- Five bundled subagents (Claude Code): `oracle`, `demiurge`, `inquisitor`, `arbiter`, `seer` — auto-discovered, dispatchable directly or via `/summon`.
+- Three automatic hooks (Claude Code): session-start context injection, a destructive-command guard (`PreToolUse`), and format-on-edit (`PostToolUse`).
+
 ## [0.2.0] — 2026-05-28
 
 ### Added

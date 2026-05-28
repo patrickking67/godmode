@@ -45,16 +45,16 @@ export const MANIFEST: ManifestSource = {
   keywords: ["claude-code", "codex", "plugin", "workflows", "mcp", "subagents"],
   interface: {
     displayName: "Godmode",
-    shortDescription: "Hero workflows + bundled docs MCPs for agentic coding.",
+    shortDescription: "Deific coding workflows + bundled no-auth MCP servers.",
     longDescription:
-      "Godmode bundles battle-tested coding workflows (learn, explain, debug, implement, review, verify, commit) and ten no-auth MCP servers — docs (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs), code intelligence (DeepWiki, grep.app), browser automation (Playwright, Chrome DevTools), and cloud (Azure) — into a single install that works in both Claude Code and Codex.",
+      "Godmode bundles battle-tested coding workflows — revelation, gospel, prophecy, genesis, summon, judgment, sanctify, exorcise, covenant — and ten no-auth MCP servers across docs (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs), code intelligence (DeepWiki, grep.app), browser automation (Playwright, Chrome DevTools), and cloud (Azure). In Claude Code it also ships five themed subagents (oracle, demiurge, inquisitor, arbiter, seer) and automatic hooks. One install, both engines.",
     developerName: "Patrick King",
     category: "Developer Tools",
     capabilities: ["Read", "Write", "Edit", "Bash", "WebFetch"],
     defaultPrompt: [
-      "/learn this codebase and tell me how it fits together",
-      "/review my uncommitted changes",
-      "/debug the failing test in this file",
+      "/revelation this codebase and tell me how it fits together",
+      "/judgment my uncommitted changes",
+      "/exorcise the failing test in this file",
     ],
     brandColor: "#7C3AED",
     websiteURL: "https://github.com/patrickking67/godmode",

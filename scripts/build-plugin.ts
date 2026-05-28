@@ -10,6 +10,8 @@
  *   plugin/.codex-plugin/plugin.json    Codex manifest (+ interface block)
  *   plugin/commands/<name>.md           Claude slash commands
  *   plugin/skills/<name>/SKILL.md        Shared skills (Codex's command equivalent)
+ *   plugin/agents/<name>.md             Claude subagents (Claude-only; auto-discovered)
+ *   plugin/hooks/*                       Claude hooks: hooks.json + scripts (Claude-only)
  *   plugin/.mcp.json                     Claude MCP config
  *   plugin/codex-config.toml             Codex `[mcp_servers.*]` snippet
  *   plugin/codex-mcp-setup.sh            Codex `codex mcp add` setup script
@@ -97,6 +99,57 @@ function readStandaloneSkills(): { name: string; raw: string }[] {
     .filter((name) => existsSync(join(dir, name, "SKILL.md")))
     .sort()
     .map((name) => ({ name, raw: readFileSync(join(dir, name, "SKILL.md"), "utf8") }));
+}
+
+/**
+ * Plugin subagents (Claude-only). Emitted verbatim from `_sources/agents/*.md`.
+ * Claude rejects an agent that lacks a `description`, so fail the build here rather
+ * than ship one that breaks `plugin install`.
+ */
+function readAgents(): { name: string; raw: string }[] {
+  const dir = join(SOURCES, "agents");
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => f.endsWith(".md") && !f.startsWith("_"))
+    .sort()
+    .map((file) => {
+      const raw = readFileSync(join(dir, file), "utf8");
+      const { data } = parseFrontmatter(raw);
+      const name = file.replace(/\.md$/, "");
+      if (!data.description) {
+        throw new Error(
+          `Agent "${name}" is missing a description (Claude rejects agents without one)`,
+        );
+      }
+      return { name, raw };
+    });
+}
+
+/**
+ * Plugin hooks (Claude-only). Copied verbatim from `_sources/hooks/`. `hooks.json` must
+ * be valid JSON or the build fails; `events` counts the wired event types for the log.
+ */
+function readHooks(): { files: { file: string; raw: string }[]; events: number } {
+  const dir = join(SOURCES, "hooks");
+  if (!existsSync(dir)) return { files: [], events: 0 };
+  const names = readdirSync(dir)
+    .filter((f) => !f.startsWith("_"))
+    .sort();
+  let events = 0;
+  if (names.includes("hooks.json")) {
+    try {
+      const parsed = JSON.parse(readFileSync(join(dir, "hooks.json"), "utf8")) as {
+        hooks?: Record<string, unknown>;
+      };
+      events = Object.keys(parsed.hooks ?? {}).length;
+    } catch (e) {
+      throw new Error(`hooks/hooks.json is not valid JSON: ${(e as Error).message}`);
+    }
+  }
+  return {
+    files: names.map((file) => ({ file, raw: readFileSync(join(dir, file), "utf8") })),
+    events,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -304,11 +357,15 @@ export interface BuildResult {
   commands: number;
   skills: number;
   mcps: number;
+  agents: number;
+  hooks: number;
 }
 
 export function build(): BuildResult {
   const commands = readCommands();
   const standaloneSkills = readStandaloneSkills();
+  const agents = readAgents();
+  const hooks = readHooks();
 
   // Clean previous output for a deterministic, idempotent build.
   rmSync(PLUGIN, { recursive: true, force: true });
@@ -340,13 +397,28 @@ export function build(): BuildResult {
     write(join(PLUGIN, "skills", skill.name, "SKILL.md"), skill.raw);
   }
 
-  return { commands: commands.length, skills: skillCount, mcps: MCPS.length };
+  // Subagents and hooks are Claude-only — Codex has no equivalent surface.
+  for (const agent of agents) {
+    write(join(PLUGIN, "agents", `${agent.name}.md`), agent.raw);
+  }
+  for (const h of hooks.files) {
+    write(join(PLUGIN, "hooks", h.file), h.raw);
+  }
+
+  return {
+    commands: commands.length,
+    skills: skillCount,
+    mcps: MCPS.length,
+    agents: agents.length,
+    hooks: hooks.events,
+  };
 }
 
 // Run when invoked directly (tsx scripts/build-plugin.ts), not when imported by tests.
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   const r = build();
   process.stdout.write(
-    `godmode plugin built → ${PLUGIN}\n  ${r.commands} commands, ${r.skills} skills, ${r.mcps} MCP servers\n`,
+    `godmode plugin built → ${PLUGIN}\n  ${r.commands} commands, ${r.skills} skills, ` +
+      `${r.agents} agents, ${r.hooks} hooks, ${r.mcps} MCP servers\n`,
   );
 }
