@@ -26,26 +26,22 @@
   "engines": {
     "node": ">=22"
   },
-  "bin": {
-    "godmode": "./dist/cli/index.js"
-  },
   "files": [
-    "dist",
+    "plugin",
     "LICENSE",
     "NOTICE",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
-    "dev": "tsx watch src/cli/dev.ts",
-    "build": "tsc -p tsconfig.build.json && vite build && node scripts/build-plugin.ts",
+    "build": "tsx scripts/build-plugin.ts",
     "build:plugin": "tsx scripts/build-plugin.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "fmt": "prettier --write .",
-    "fmt:check": "prettier --check .",
-    "doctor": "tsx src/cli/doctor.ts"
+    "fmt:check": "prettier --check ."
   },
   "dependencies": {
     "@hono/node-server": "^2.0.4",
