@@ -1,11 +1,11 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { build, type BuildResult } from "../../scripts/build-plugin.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const PLUGIN = join(ROOT, "plugin");
 
 function readJson(path: string): unknown {
   return JSON.parse(readFileSync(path, "utf8"));
@@ -13,14 +13,25 @@ function readJson(path: string): unknown {
 
 describe("build-plugin emitter", () => {
   let result: BuildResult;
+  let TMP: string;
+  let PLUGIN: string;
+  let MARKETPLACE: string;
+
   beforeAll(() => {
-    result = build();
+    TMP = mkdtempSync(join(tmpdir(), "gm-build-"));
+    PLUGIN = join(TMP, "plugin");
+    MARKETPLACE = join(TMP, ".claude-plugin");
+    result = build({ outDir: PLUGIN, marketplaceDir: MARKETPLACE });
+  });
+
+  afterAll(() => {
+    rmSync(TMP, { recursive: true, force: true });
   });
 
   it("emits both engine manifests and a marketplace catalog", () => {
     expect(existsSync(join(PLUGIN, ".claude-plugin", "plugin.json"))).toBe(true);
     expect(existsSync(join(PLUGIN, ".codex-plugin", "plugin.json"))).toBe(true);
-    expect(existsSync(join(ROOT, ".claude-plugin", "marketplace.json"))).toBe(true);
+    expect(existsSync(join(MARKETPLACE, "marketplace.json"))).toBe(true);
   });
 
   it("uses a lowercase plugin name and the package.json version", () => {
@@ -72,7 +83,9 @@ describe("build-plugin emitter", () => {
   });
 
   it("emits Claude MCP json (typed) and a Codex TOML snippet", () => {
-    const mcp = readJson(join(PLUGIN, ".mcp.json")) as { mcpServers: Record<string, { type: string; url?: string }> };
+    const mcp = readJson(join(PLUGIN, ".mcp.json")) as {
+      mcpServers: Record<string, { type: string; url?: string }>;
+    };
     expect(mcp.mcpServers["microsoft-learn"]).toEqual({
       type: "http",
       url: "https://learn.microsoft.com/api/mcp",

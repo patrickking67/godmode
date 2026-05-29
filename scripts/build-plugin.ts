@@ -361,48 +361,58 @@ export interface BuildResult {
   hooks: number;
 }
 
-export function build(): BuildResult {
+export interface BuildOptions {
+  /** Where the `plugin/` tree is written. Defaults to the committed `plugin/`. */
+  outDir?: string;
+  /** Where `marketplace.json` is written. Defaults to the committed `.claude-plugin/`. */
+  marketplaceDir?: string;
+}
+
+export function build(opts: BuildOptions = {}): BuildResult {
+  const pluginDir = opts.outDir ?? PLUGIN;
+  const marketplaceDir = opts.marketplaceDir ?? join(ROOT, ".claude-plugin");
+
   const commands = readCommands();
   const standaloneSkills = readStandaloneSkills();
   const agents = readAgents();
   const hooks = readHooks();
 
   // Clean previous output for a deterministic, idempotent build.
-  rmSync(PLUGIN, { recursive: true, force: true });
-  rmSync(join(ROOT, ".claude-plugin", "marketplace.json"), { force: true });
+  rmSync(pluginDir, { recursive: true, force: true });
+  rmSync(join(marketplaceDir, "marketplace.json"), { force: true });
 
   const claude = claudeManifest();
   const codex = codexManifest();
   validateManifests(claude, codex);
 
-  write(join(PLUGIN, ".claude-plugin", "plugin.json"), json(claude));
-  write(join(PLUGIN, ".codex-plugin", "plugin.json"), json(codex));
-  write(join(ROOT, ".claude-plugin", "marketplace.json"), json(marketplaceCatalog()));
+  write(join(pluginDir, ".claude-plugin", "plugin.json"), json(claude));
+  write(join(pluginDir, ".codex-plugin", "plugin.json"), json(codex));
+  write(join(marketplaceDir, "marketplace.json"), json(marketplaceCatalog()));
 
-  write(join(PLUGIN, ".mcp.json"), claudeMcpJson(MCPS));
-  write(join(PLUGIN, "codex-config.toml"), codexMcpToml(MCPS));
-  write(join(PLUGIN, "codex-mcp-setup.sh"), codexMcpSetupScript(MCPS));
+  write(join(pluginDir, ".mcp.json"), claudeMcpJson(MCPS));
+  write(join(pluginDir, "codex-config.toml"), codexMcpToml(MCPS));
+  write(join(pluginDir, "codex-mcp-setup.sh"), codexMcpSetupScript(MCPS));
 
   let skillCount = standaloneSkills.length;
   for (const cmd of commands) {
     if (cmd.engines === "both" || cmd.engines === "claude") {
-      write(join(PLUGIN, "commands", `${cmd.name}.md`), claudeCommand(cmd));
+      write(join(pluginDir, "commands", `${cmd.name}.md`), claudeCommand(cmd));
     }
     if (cmd.engines === "both" || cmd.engines === "codex") {
-      write(join(PLUGIN, "skills", cmd.name, "SKILL.md"), skillFromCommand(cmd));
+      write(join(pluginDir, "skills", cmd.name, "SKILL.md"), skillFromCommand(cmd));
       skillCount++;
     }
   }
   for (const skill of standaloneSkills) {
-    write(join(PLUGIN, "skills", skill.name, "SKILL.md"), skill.raw);
+    write(join(pluginDir, "skills", skill.name, "SKILL.md"), skill.raw);
   }
 
-  // Subagents and hooks are Claude-only — Codex has no equivalent surface.
+  // Subagents and hooks are Claude-only. Codex has no equivalent surface.
   for (const agent of agents) {
-    write(join(PLUGIN, "agents", `${agent.name}.md`), agent.raw);
+    write(join(pluginDir, "agents", `${agent.name}.md`), agent.raw);
   }
   for (const h of hooks.files) {
-    write(join(PLUGIN, "hooks", h.file), h.raw);
+    write(join(pluginDir, "hooks", h.file), h.raw);
   }
 
   return {
