@@ -1,0 +1,159 @@
+{
+  "tagline": "Learn. Plan. Build. Optimize.",
+  "pitch": "One plugin for Claude Code and Codex. Battle-tested workflows and ten bundled no-auth MCP servers, installed once from a single source in both engines.",
+  "commands": [
+    {
+      "name": "revelation",
+      "pillar": "Learning",
+      "purpose": "Deeply explore a codebase and explain how it fits together."
+    },
+    { "name": "gospel", "pillar": "Learning", "purpose": "Explain how a piece of code works." },
+    {
+      "name": "prophecy",
+      "pillar": "Guiding",
+      "purpose": "How-to guidance grounded in this codebase."
+    },
+    {
+      "name": "genesis",
+      "pillar": "Building",
+      "purpose": "Implement a well-scoped feature or fix."
+    },
+    {
+      "name": "summon",
+      "pillar": "Building",
+      "purpose": "Dispatch the right subagent for a task."
+    },
+    {
+      "name": "judgment",
+      "pillar": "Reviewing",
+      "purpose": "Review code for bugs, security, and drift."
+    },
+    {
+      "name": "sanctify",
+      "pillar": "Reviewing",
+      "purpose": "Run the project's own checks and report pass or fail."
+    },
+    {
+      "name": "exorcise",
+      "pillar": "Debugging",
+      "purpose": "Find the true root cause of a bug or failing test."
+    },
+    { "name": "covenant", "pillar": "Git", "purpose": "Commit your work cleanly." }
+  ],
+  "agents": [
+    {
+      "name": "oracle",
+      "role": "Read-only codebase reconnaissance: maps structure, traces flows."
+    },
+    { "name": "demiurge", "role": "Implements a well-scoped feature or fix end to end." },
+    {
+      "name": "inquisitor",
+      "role": "Rigorous code review: bugs, security, silent failures, drift."
+    },
+    { "name": "arbiter", "role": "Runs the project's own checks and reports pass or fail." },
+    { "name": "seer", "role": "Roots out the true cause of a bug or failing test." }
+  ],
+  "hooks": [
+    {
+      "name": "Session invocation",
+      "event": "SessionStart",
+      "detail": "Surfaces the command and subagent surface as context."
+    },
+    {
+      "name": "Forbidden-act guard",
+      "event": "PreToolUse",
+      "detail": "Asks for confirmation before destructive Bash commands. Warns and confirms, never hard-blocks."
+    },
+    {
+      "name": "Auto-sanctify edits",
+      "event": "PostToolUse",
+      "detail": "Runs prettier on the changed file, but only when the project already uses prettier."
+    }
+  ],
+  "connectors": [
+    {
+      "slug": "context7",
+      "title": "Context7",
+      "category": "Docs",
+      "blurb": "Up-to-date, version-aware docs for libraries, frameworks, SDKs, and CLIs."
+    },
+    {
+      "slug": "microsoft-learn",
+      "title": "Microsoft Learn",
+      "category": "Docs",
+      "blurb": "Search and fetch Microsoft and Azure documentation and code samples."
+    },
+    {
+      "slug": "aws-knowledge",
+      "title": "AWS Knowledge",
+      "category": "Docs",
+      "blurb": "AWS documentation, code samples, and regional availability."
+    },
+    {
+      "slug": "cloudflare-docs",
+      "title": "Cloudflare Docs",
+      "category": "Docs",
+      "blurb": "Search the Cloudflare developer platform documentation."
+    },
+    {
+      "slug": "keeper-docs",
+      "title": "Keeper Docs",
+      "category": "Docs",
+      "blurb": "Search Keeper Security documentation."
+    },
+    {
+      "slug": "deepwiki",
+      "title": "DeepWiki",
+      "category": "Code intelligence",
+      "blurb": "Ask questions about any public GitHub repo's architecture and docs."
+    },
+    {
+      "slug": "grep",
+      "title": "grep.app",
+      "category": "Code intelligence",
+      "blurb": "Regex code search across a million public GitHub repositories."
+    },
+    {
+      "slug": "playwright",
+      "title": "Playwright",
+      "category": "Browser",
+      "blurb": "Drive a real browser for testing, screenshots, and verification."
+    },
+    {
+      "slug": "chrome-devtools",
+      "title": "Chrome DevTools",
+      "category": "Browser",
+      "blurb": "Inspect the DOM, network, console, and performance traces in Chrome."
+    },
+    {
+      "slug": "azure",
+      "title": "Azure",
+      "category": "Cloud",
+      "blurb": "Manage Azure resources and deployments using your local az login."
+    }
+  ],
+  "roadmap": [
+    {
+      "phase": "Now",
+      "label": "Shipped in v1.3.0",
+      "items": [
+        "9 deific commands",
+        "5 subagents and 3 hooks (Claude Code)",
+        "10 bundled no-auth MCP servers",
+        "Dual-engine, one source"
+      ]
+    },
+    {
+      "phase": "Next",
+      "items": ["Persistent hybrid memory: global and per-project SQLite, session injection"]
+    },
+    {
+      "phase": "Later",
+      "items": [
+        "Token economics: meter, optimizer, router, budgets",
+        "Live local dashboard",
+        "godmode CLI and doctor"
+      ]
+    }
+  ]
+}

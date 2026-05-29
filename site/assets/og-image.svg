@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Godmode. Learn. Plan. Build. Optimize. One plugin for Claude Code and Codex.">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0a0a0f"/>
+      <stop offset="1" stop-color="#12121a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="250" cy="315" r="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7C3AED" stop-opacity="0.42"/>
+      <stop offset="0.55" stop-color="#7C3AED" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#7C3AED" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="flame" x1="250" y1="170" x2="250" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a855f7"/>
+      <stop offset="0.55" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="word" x1="470" y1="250" x2="980" y2="330" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ececf1"/>
+      <stop offset="1" stop-color="#c9b8f5"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-opacity="0.04" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect x="0.5" y="0.5" width="1199" height="629" rx="0" fill="none" stroke="#7C3AED" stroke-opacity="0.18" stroke-width="1"/>
+
+  <g transform="translate(120 175) scale(5)">
+    <path fill="url(#flame)" d="M33.6 6.2c.6 6.7-2.1 10.6-5.7 13.9-3.9 3.6-8.9 7.4-9 14.7-.1 8 5.6 14.4 13.4 15 9 .7 15.5-5.6 15.7-13.7.1-4.7-1.9-8.2-3.9-10.2.2 2.4-.6 4.6-2.4 5.6-.2-4.9-2-9-5.2-12.4-3-3.2-4-7.6-2.9-12.9z"/>
+  </g>
+
+  <text x="470" y="300" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="92" font-weight="700" letter-spacing="-2" fill="url(#word)">godmode</text>
+  <text x="472" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="40" font-weight="600" letter-spacing="4" fill="#10B981">Learn. Plan. Build. Optimize.</text>
+  <text x="472" y="430" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="29" fill="#9a9ab0">One plugin for Claude Code and Codex.</text>
+
+  <g font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="24" font-weight="600">
+    <g transform="translate(472 470)">
+      <rect width="232" height="56" rx="14" fill="#16161f" stroke="#7C3AED" stroke-opacity="0.5"/>
+      <circle cx="32" cy="28" r="7" fill="#7C3AED"/>
+      <text x="52" y="36" fill="#ececf1">Claude Code</text>
+    </g>
+    <g transform="translate(724 470)">
+      <rect width="172" height="56" rx="14" fill="#16161f" stroke="#10B981" stroke-opacity="0.5"/>
+      <circle cx="32" cy="28" r="7" fill="#10B981"/>
+      <text x="52" y="36" fill="#ececf1">Codex</text>
+    </g>
+  </g>
+
+  <text x="472" y="568" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" fill="#9a9ab0">9 commands  /  5 subagents  /  3 hooks  /  10 MCP servers</text>
+</svg>
