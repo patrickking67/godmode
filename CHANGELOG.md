@@ -31,7 +31,7 @@ All notable changes to Godmode will be documented here. Format based on [Keep a 
 - CONTRIBUTING points to the real source path and documents the build flow.
 - The Codex manifest no longer advertises a Claude-style `mcpServers` pointer.
 
-## [0.2.0] — 2026-05-28
+## [0.2.0] - 2026-05-28
 
 ### Added
 
@@ -44,7 +44,7 @@ All notable changes to Godmode will be documented here. Format based on [Keep a 
 - Plugin install failure: `repository` is now emitted as a plain URL string (Claude's schema rejects the npm-style object form).
 - Bundled MCPs now load on install via an `mcpServers` pointer in the Claude Code manifest.
 
-## [0.1.0] — 2026-05-27
+## [0.1.0] - 2026-05-27
 
 ### Added
 

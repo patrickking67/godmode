@@ -1,6 +1,6 @@
 ---
 name: summon
-description: "Summon the right subagent for a task — survey those available and dispatch the best fit."
+description: "Summon the right subagent for a task: survey those available and dispatch the best fit."
 ---
 
 Map the specialized subagents available in this environment and, if `$ARGUMENTS`
@@ -10,11 +10,11 @@ describes a task, recommend the best-fit agent(s) and show exactly how to dispat
 
 Gather every agent on hand from all sources:
 
-- **Host-exposed types** — the agent types your environment already lets you launch
+- **Host-exposed types**: the agent types your environment already lets you launch
   (e.g. `Explore`, or whatever the `Task` tool offers).
-- **Project agents** — definitions on disk at `.claude/agents/*.md`.
-- **Personal agents** — definitions at `~/.claude/agents/*.md`.
-- **Plugin agents** — any agents contributed by installed plugins. Godmode ships five:
+- **Project agents**: definitions on disk at `.claude/agents/*.md`.
+- **Personal agents**: definitions at `~/.claude/agents/*.md`.
+- **Plugin agents**: any agents contributed by installed plugins. Godmode ships five:
   `oracle` (read-only code recon), `demiurge` (implementation), `inquisitor` (review),
   `arbiter` (test/verify judgment), and `seer` (debugging / root-cause).
 
@@ -23,7 +23,7 @@ De-duplicate by name; note where each one comes from.
 
 ## 2. Summarize each
 
-For every agent, give a one-line summary of what it's best at — pulled from its
+For every agent, give a one-line summary of what it's best at, pulled from its
 description, not invented. Group them by source (host, project, personal, plugin) so the
 user can see what's built in versus what this repo adds.
 
@@ -31,7 +31,7 @@ user can see what's built in versus what this repo adds.
 
 If `$ARGUMENTS` names a task, pick the best-fit agent(s):
 
-- State which agent and why it fits — match the task's shape to the agent's strength.
+- State which agent and why it fits; match the task's shape to the agent's strength.
 - Show the exact dispatch: the agent type and a tight prompt describing the goal.
 - If the work splits into **independent** pieces, recommend launching multiple agents in
   a single batch so they run in parallel. Spell out the split.

@@ -2,13 +2,13 @@
  * Single source of truth for the bundled MCP servers.
  *
  * The emitter serializes this list two ways:
- *   - Claude Code `.mcp.json`  — `{ "mcpServers": { name: { type, ... } } }`
- *   - Codex `config.toml`      — `[mcp_servers.name]` tables (`url` for http,
+ *   - Claude Code `.mcp.json`: `{ "mcpServers": { name: { type, ... } } }`
+ *   - Codex `config.toml`: `[mcp_servers.name]` tables (`url` for http,
  *                                 `command`/`args` for stdio)
  *
  * HTTP servers are first-class in both engines (no `mcp-remote` shim needed).
  * Every server below is no-auth: HTTP endpoints are public, stdio servers run via
- * `npx` with no API key. Azure uses ambient `az login` credentials — no secret in config.
+ * `npx` with no API key. Azure uses ambient `az login` credentials; no secret in config.
  */
 
 export type McpTransport = "http" | "stdio";

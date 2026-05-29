@@ -9,7 +9,7 @@ by `scripts/build-plugin.ts`. Never edit the generated `plugin/` directory by ha
 | --- | --- |
 | `manifest.ts` | `plugin/.claude-plugin/plugin.json`, `plugin/.codex-plugin/plugin.json`, `.claude-plugin/marketplace.json` |
 | `mcps.ts` | `plugin/.mcp.json` (Claude), `plugin/codex-config.toml` snippet (Codex) |
-| `commands/<name>.md` | `plugin/commands/<name>.md` (Claude slash command) + `plugin/skills/<name>/SKILL.md` (shared skill — Codex's command equivalent) |
+| `commands/<name>.md` | `plugin/commands/<name>.md` (Claude slash command) + `plugin/skills/<name>/SKILL.md` (shared skill; Codex's command equivalent) |
 | `skills/<name>/SKILL.md` (optional) | `plugin/skills/<name>/SKILL.md` (copied verbatim; no standalone skills exist yet) |
 
 ## Command source format
@@ -27,12 +27,12 @@ Markdown body = the actual instructions. Identical for both engines.
 
 `engines` controls which artifacts are produced:
 
-- `both` (default) — Claude command **and** shared skill.
-- `claude` — Claude command only (e.g. relies on Claude-specific tools).
-- `codex` — shared skill only.
+- `both` (default): Claude command **and** shared skill.
+- `claude`: Claude command only (e.g. relies on Claude-specific tools).
+- `codex`: shared skill only.
 
 ## Why commands become skills
 
 Codex deprecated user prompts in favor of **skills**, so a capability authored
 as a command is emitted as a skill for Codex (and Claude can use either). One
-body, two front-matter shapes — that's the whole trick.
+body, two front-matter shapes. That's the whole trick.

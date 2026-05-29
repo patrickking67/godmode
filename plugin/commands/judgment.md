@@ -15,20 +15,20 @@ Determine what to review:
 - Otherwise review uncommitted work: run `git status` and `git diff` (staged and
   unstaged). If the tree is clean, review the most recent commit (`git show HEAD`).
 
-Read enough surrounding context — not just the diff hunks — to understand each change.
+Read enough surrounding context (not just the diff hunks) to understand each change.
 
 ## 2. Review against what matters
 
 Focus on issues with real consequences, in priority order:
 
-1. **Correctness** — logic errors, off-by-one, wrong conditionals, unhandled cases,
+1. **Correctness**: logic errors, off-by-one, wrong conditionals, unhandled cases,
    broken control flow.
-2. **Security** — injection (command/SQL/XSS), unvalidated input at boundaries, secrets
+2. **Security**: injection (command/SQL/XSS), unvalidated input at boundaries, secrets
    in code, unsafe deserialization, missing authz checks.
-3. **Silent failures** — swallowed errors, empty catches, fallbacks that mask bugs.
-4. **Conventions** — does the change follow the patterns already in this codebase?
+3. **Silent failures**: swallowed errors, empty catches, fallbacks that mask bugs.
+4. **Conventions**: does the change follow the patterns already in this codebase?
    Match the existing style; don't impose new ones.
-5. **Tests** — is new behavior covered? Are edge cases tested?
+5. **Tests**: is new behavior covered? Are edge cases tested?
 
 ## 3. Report by severity
 
@@ -42,4 +42,4 @@ Only report things you're genuinely confident about. If a change is clean, say s
 rather than inventing concerns. End with a one-line verdict: ship, ship-with-fixes, or
 needs-work.
 
-Do not commit, push, or modify files unless the user explicitly asks — this command reviews.
+Do not commit, push, or modify files unless the user explicitly asks; this command reviews.

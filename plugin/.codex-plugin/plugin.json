@@ -21,7 +21,7 @@
   "interface": {
     "displayName": "Godmode",
     "shortDescription": "Deific coding workflows + bundled no-auth MCP servers.",
-    "longDescription": "Godmode bundles battle-tested coding workflows — revelation, gospel, prophecy, genesis, summon, judgment, sanctify, exorcise, covenant — and ten no-auth MCP servers across docs (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs), code intelligence (DeepWiki, grep.app), browser automation (Playwright, Chrome DevTools), and cloud (Azure). In Claude Code it also ships five themed subagents (oracle, demiurge, inquisitor, arbiter, seer) and automatic hooks. One install, both engines.",
+    "longDescription": "Godmode bundles battle-tested coding workflows (revelation, gospel, prophecy, genesis, summon, judgment, sanctify, exorcise, covenant) and ten no-auth MCP servers across docs (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs), code intelligence (DeepWiki, grep.app), browser automation (Playwright, Chrome DevTools), and cloud (Azure). In Claude Code it also ships five themed subagents (oracle, demiurge, inquisitor, arbiter, seer) and automatic hooks. One install, both engines.",
     "developerName": "Patrick King",
     "category": "Developer Tools",
     "capabilities": [

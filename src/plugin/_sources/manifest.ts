@@ -4,11 +4,11 @@
  * The build emitter (`scripts/build-plugin.ts`) reads this and produces the
  * Claude Code manifest (`.claude-plugin/plugin.json`), the Codex manifest
  * (`.codex-plugin/plugin.json`), and the Claude marketplace catalog. `version`
- * is intentionally absent here — the emitter injects it from `package.json` so
+ * is intentionally absent here; the emitter injects it from `package.json` so
  * the package and both plugin manifests can never drift.
  */
 
-/** Codex `interface` block — controls how the plugin presents in the Codex UI. */
+/** Codex `interface` block: controls how the plugin presents in the Codex UI. */
 export interface CodexInterface {
   displayName: string;
   shortDescription: string;
@@ -47,7 +47,7 @@ export const MANIFEST: ManifestSource = {
     displayName: "Godmode",
     shortDescription: "Deific coding workflows + bundled no-auth MCP servers.",
     longDescription:
-      "Godmode bundles battle-tested coding workflows — revelation, gospel, prophecy, genesis, summon, judgment, sanctify, exorcise, covenant — and ten no-auth MCP servers across docs (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs), code intelligence (DeepWiki, grep.app), browser automation (Playwright, Chrome DevTools), and cloud (Azure). In Claude Code it also ships five themed subagents (oracle, demiurge, inquisitor, arbiter, seer) and automatic hooks. One install, both engines.",
+      "Godmode bundles battle-tested coding workflows (revelation, gospel, prophecy, genesis, summon, judgment, sanctify, exorcise, covenant) and ten no-auth MCP servers across docs (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs), code intelligence (DeepWiki, grep.app), browser automation (Playwright, Chrome DevTools), and cloud (Azure). In Claude Code it also ships five themed subagents (oracle, demiurge, inquisitor, arbiter, seer) and automatic hooks. One install, both engines.",
     developerName: "Patrick King",
     category: "Developer Tools",
     capabilities: ["Read", "Write", "Edit", "Bash", "WebFetch"],

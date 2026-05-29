@@ -22,7 +22,7 @@ Include:
 - Affected version(s)
 - Your assessment of impact
 
-We aim to acknowledge reports within 72 hours and ship a fix in the next patch release. Coordinated disclosure is appreciated — we will credit reporters in the changelog unless you prefer to stay anonymous.
+We aim to acknowledge reports within 72 hours and ship a fix in the next patch release. Coordinated disclosure is appreciated; we will credit reporters in the changelog unless you prefer to stay anonymous.
 
 ## Security model
 
@@ -30,7 +30,7 @@ We aim to acknowledge reports within 72 hours and ship a fix in the next patch r
 
 Godmode runs a local Hono server bound to `127.0.0.1` only. Every request requires a bearer token stored at `~/.godmode/auth.token` (file mode `0600`). Hook ingestion uses the same token, set via `GODMODE_TOKEN` environment variable injected by the plugin install.
 
-**No CORS open. No external bind. No embedded credentials.** MCP servers that need auth read credentials from environment variables only — Godmode never embeds keys.
+**No CORS open. No external bind. No embedded credentials.** MCP servers that need auth read credentials from environment variables only; Godmode never embeds keys.
 
 ## In scope
 
@@ -53,4 +53,4 @@ These describe the intended security boundary once the server and memory surface
 
 ## Hall of fame
 
-(empty for now — your name could be here)
+(empty for now; your name could be here)

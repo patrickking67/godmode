@@ -6,22 +6,22 @@ engines: both
 ---
 
 Turn the current changes into one clean, well-described commit. Running this command
-IS the user's explicit request to create a commit — proceed without asking again.
+IS the user's explicit request to create a commit; proceed without asking again.
 
 ## 1. Inspect state
 
 Run these in parallel to understand what changed and how this repo writes commits:
 
-- `git status` — what is staged, unstaged, and untracked.
-- `git diff` and `git diff --staged` — the actual content of the changes.
-- `git log` — recent messages, so you match the repo's existing style and prefixes.
+- `git status`: what is staged, unstaged, and untracked.
+- `git diff` and `git diff --staged`: the actual content of the changes.
+- `git log`: recent messages, so you match the repo's existing style and prefixes.
 
 Read enough of the diff to understand the intent, not just the surface edits.
 
 ## 2. Analyze and group
 
 Decide what belongs in this commit. Group related edits together. If the changes are
-clearly unrelated — say a bug fix plus an unrelated refactor — recommend splitting them
+clearly unrelated (say, a bug fix plus an unrelated refactor), recommend splitting them
 into separate commits and propose how, rather than bundling everything into one.
 
 ## 3. Draft the message
@@ -29,7 +29,7 @@ into separate commits and propose how, rather than bundling everything into one.
 Write a Conventional Commit: `type(scope): subject`.
 
 - **type**: one of `feat`, `fix`, `chore`, `docs`, `refactor`, `test` (match repo usage).
-- **subject**: concise, imperative, focused on the why — not a file list.
+- **subject**: concise, imperative, focused on the why (not a file list).
 - **body** (optional): a short paragraph only when the change needs context or rationale.
 
 Author the commit ONLY as the user's configured git identity. NEVER add a co-author,
@@ -38,7 +38,7 @@ AI, assistant, or bot attribution or trailer of any kind.
 
 ## 4. Stage the right files
 
-Add the relevant files by name. Avoid `git add -A` and `git add .` — they sweep in
+Add the relevant files by name. Avoid `git add -A` and `git add .`; they sweep in
 noise and secrets. Never stage `.env`, credential files, keys, or other secrets; if the
 user explicitly asks to commit such a file, warn them clearly before doing so.
 
@@ -55,7 +55,7 @@ EOF
 ```
 
 Create a NEW commit. Never use `--amend` unless the user explicitly asks. Never push.
-Never use `--no-verify` or otherwise skip hooks — if a pre-commit hook fails, fix the
+Never use `--no-verify` or otherwise skip hooks; if a pre-commit hook fails, fix the
 underlying issue, re-stage, and make a new commit rather than bypassing it.
 
 ## 6. Confirm

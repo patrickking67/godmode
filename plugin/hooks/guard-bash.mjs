@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Godmode PreToolUse guard: prompt for confirmation before destructive Bash commands.
 // Emits permissionDecision "ask" (a warn-and-confirm gate) on a match; otherwise stays
-// out of the way. Never hard-blocks — the user keeps the final say.
+// out of the way. Never hard-blocks; the user keeps the final say.
 let raw = "";
 process.stdin.on("data", (c) => (raw += c));
 process.stdin.on("end", () => {
@@ -9,7 +9,7 @@ process.stdin.on("end", () => {
   try {
     command = JSON.parse(raw || "{}").tool_input?.command ?? "";
   } catch {
-    process.exit(0); // unparseable input — don't interfere
+    process.exit(0); // unparseable input; don't interfere
   }
 
   const rules = [
@@ -36,7 +36,7 @@ process.stdin.on("end", () => {
           hookSpecificOutput: {
             hookEventName: "PreToolUse",
             permissionDecision: "ask",
-            permissionDecisionReason: `Godmode guard: "${label}" is destructive — confirm before running.`,
+            permissionDecisionReason: `Godmode guard: "${label}" is destructive; confirm before running.`,
           },
         }),
       );

@@ -5,7 +5,7 @@
  * committed, marketplace-installable `plugin/` directory plus the Claude
  * marketplace catalog at `.claude-plugin/marketplace.json`.
  *
- * Outputs (all generated — never hand-edit):
+ * Outputs (all generated; never hand-edit):
  *   plugin/.claude-plugin/plugin.json   Claude Code manifest
  *   plugin/.codex-plugin/plugin.json    Codex manifest (+ interface block)
  *   plugin/commands/<name>.md           Claude slash commands
@@ -226,8 +226,8 @@ function codexMcpToml(servers: McpServerDef[]): string {
 function codexMcpSetupScript(servers: McpServerDef[]): string {
   const out: string[] = [
     "#!/usr/bin/env bash",
-    "# Godmode — register bundled MCP servers with Codex via the native CLI.",
-    "# Generated from src/plugin/_sources/mcps.ts — do not hand-edit. Run: bash codex-mcp-setup.sh",
+    "# Godmode: register bundled MCP servers with Codex via the native CLI.",
+    "# Generated from src/plugin/_sources/mcps.ts; do not hand-edit. Run: bash codex-mcp-setup.sh",
     "set -euo pipefail",
     "",
   ];
@@ -296,7 +296,7 @@ function validateManifests(claude: unknown, codex: unknown): void {
     name: { type: "string", pattern: "^[a-z0-9][a-z0-9-]*$" },
     version: { type: "string", minLength: 1 },
     description: { type: "string", minLength: 1 },
-    // Claude's real installer rejects an npm-style object here — it must be a plain URL string.
+    // Claude's real installer rejects an npm-style object here; it must be a plain URL string.
     repository: { type: "string", minLength: 1 },
     homepage: { type: "string", minLength: 1 },
     author: { type: "object" },

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Godmode PostToolUse hook: prettier --write the edited file, but ONLY when the project
 // actually uses prettier (a config is present) and prettier is already installed locally.
-// In any other repo it is a silent no-op — it never reformats unexpectedly or auto-installs.
+// In any other repo it is a silent no-op; it never reformats unexpectedly or auto-installs.
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, extname, join, parse } from "node:path";
@@ -50,7 +50,7 @@ process.stdin.on("end", () => {
           break;
         }
       } catch {
-        /* malformed package.json — keep walking */
+        /* malformed package.json; keep walking */
       }
     }
     if (dir === fsRoot) break;
@@ -66,7 +66,7 @@ process.stdin.on("end", () => {
       timeout: 20000,
     });
   } catch {
-    /* prettier absent or errored — leave the file exactly as written */
+    /* prettier absent or errored; leave the file exactly as written */
   }
   done();
 });
