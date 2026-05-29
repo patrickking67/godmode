@@ -10,13 +10,13 @@ by `scripts/build-plugin.ts`. Never edit the generated `plugin/` directory by ha
 | `manifest.ts` | `plugin/.claude-plugin/plugin.json`, `plugin/.codex-plugin/plugin.json`, `.claude-plugin/marketplace.json` |
 | `mcps.ts` | `plugin/.mcp.json` (Claude), `plugin/codex-config.toml` snippet (Codex) |
 | `commands/<name>.md` | `plugin/commands/<name>.md` (Claude slash command) + `plugin/skills/<name>/SKILL.md` (shared skill — Codex's command equivalent) |
-| `skills/<name>/SKILL.md` | `plugin/skills/<name>/SKILL.md` (copied verbatim) |
+| `skills/<name>/SKILL.md` (optional) | `plugin/skills/<name>/SKILL.md` (copied verbatim; no standalone skills exist yet) |
 
 ## Command source format
 
 ```markdown
 ---
-name: learn
+name: revelation
 description: One line shown in the slash-command menu and skill list.
 allowed-tools: Task, Read, Grep, Glob, TodoWrite   # Claude command frontmatter
 engines: both        # both | claude | codex  (default: both)

@@ -16,7 +16,7 @@ One plugin for Claude Code and Codex. Battle-tested workflows and ten bundled no
 
 ## What is Godmode?
 
-Godmode takes the best ideas from across the Claude Code and Codex plugin ecosystem — brainstorming, plan-driven development, subagent orchestration, persistent memory, and disciplined verification — and **fuses them into one coherent, opinionated plugin** that ships with curated MCP servers, hybrid project + global memory, and a live local web dashboard.
+Godmode takes the best ideas from across the Claude Code and Codex plugin ecosystem (brainstorming, plan-driven development, subagent orchestration, persistent memory, and disciplined verification) and **fuses them into one coherent, opinionated plugin**. The curated MCP servers, commands, subagents, and hooks ship today; hybrid project and global memory and a live local dashboard are on the roadmap.
 
 It consolidates that surface into a single super-plugin you install once, in either engine, with no per-repo setup grind.
 
@@ -80,7 +80,7 @@ Every server is **no-auth**: the HTTP endpoints are public, the `npx`-based stdi
 
 Godmode installs from a marketplace in **both** engines — no daemon, database, or build step. Teammates install the commands and MCP servers and start working immediately. Requires Node 22+ (the `npx`-based MCPs need it) and the Claude Code or Codex CLI.
 
-> The GitHub paths below assume the repo is published at `github.com/patrickking67/godmode`. Until then — or for local development — use the **local clone** variant in each section.
+> Godmode is public at `github.com/patrickking67/godmode`, so the marketplace paths below work as written. For local development, use the **local clone** variant in each section.
 
 ### Claude Code
 
@@ -92,7 +92,7 @@ Godmode installs from a marketplace in **both** engines — no daemon, database,
 /plugin install godmode@godmode
 ```
 
-`/learn`, `/review`, `/debug`, and the rest appear in your slash-command menu; the bundled MCP servers load automatically from the plugin's `.mcp.json`. No separate MCP setup needed on Claude Code.
+`/revelation`, `/judgment`, `/exorcise`, and the rest appear in your slash-command menu; the bundled MCP servers load automatically from the plugin's `.mcp.json`. No separate MCP setup needed on Claude Code.
 
 <details><summary>From a local clone</summary>
 
@@ -134,7 +134,15 @@ Cloned the repo? Step 2 collapses to one command — `bash plugin/codex-mcp-setu
 codex mcp list     # Codex: the ten servers are listed
 ```
 
-In Claude Code, open `/plugin` to confirm **godmode** is installed and its commands are listed. In a fresh session of either engine, run `/learn` to confirm the workflows loaded.
+In Claude Code, open `/plugin` to confirm **godmode** is installed and its commands are listed. In a fresh session of either engine, run `/revelation` to confirm the workflows loaded.
+
+### Your first command
+
+Godmode surfaces its full command list as context at the start of every session, so you can always ask "what can Godmode do here?" To dive in, point it at the current repo:
+
+```text
+/revelation this codebase and tell me how it fits together
+```
 
 ---
 

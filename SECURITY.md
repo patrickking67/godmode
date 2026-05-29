@@ -13,8 +13,7 @@ Godmode follows SemVer. The current minor and the previous minor receive securit
 
 **Please do not file a public GitHub issue for security reports.**
 
-Email: `security@<owner-domain>` (replace once domain is set).
-Alternatively, use [GitHub Security Advisories](https://github.com/patrickking67/godmode/security/advisories/new) for private disclosure.
+Use [GitHub Security Advisories](https://github.com/patrickking67/godmode/security/advisories/new) for private disclosure.
 
 Include:
 
@@ -27,11 +26,15 @@ We aim to acknowledge reports within 72 hours and ship a fix in the next patch r
 
 ## Security model
 
+> Scope note: the shipped plugin (commands, agents, hooks, MCP wiring) runs no server and stores no data. The local server, hybrid memory, and dashboard described below are on the roadmap; their security model is documented here ahead of implementation.
+
 Godmode runs a local Hono server bound to `127.0.0.1` only. Every request requires a bearer token stored at `~/.godmode/auth.token` (file mode `0600`). Hook ingestion uses the same token, set via `GODMODE_TOKEN` environment variable injected by the plugin install.
 
 **No CORS open. No external bind. No embedded credentials.** MCP servers that need auth read credentials from environment variables only — Godmode never embeds keys.
 
 ## In scope
+
+These describe the intended security boundary once the server and memory surfaces ship. They are listed now so reports can be filed and triaged as implementation proceeds.
 
 - Local server auth bypass (request to `/api/*` without valid bearer)
 - Hook-injection RCE (hook payloads triggering arbitrary code execution)

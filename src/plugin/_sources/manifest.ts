@@ -37,7 +37,7 @@ export interface ManifestSource {
 export const MANIFEST: ManifestSource = {
   name: "godmode",
   description:
-    "Learn, plan, build, and optimize — one super-plugin for Claude Code and Codex, with hero workflows and bundled documentation MCPs.",
+    "Learn, plan, build, and optimize: one super-plugin for Claude Code and Codex, with hero workflows and bundled no-auth MCP servers.",
   author: { name: "Patrick King", url: "https://github.com/patrickking67" },
   homepage: "https://github.com/patrickking67/godmode#readme",
   repository: "https://github.com/patrickking67/godmode",
