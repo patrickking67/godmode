@@ -13,9 +13,15 @@
 
 export type McpTransport = "http" | "stdio";
 
+export type McpCategory = "Docs" | "Code intelligence" | "Browser" | "Cloud";
+
 export interface McpServerDef {
   /** Server key used in `.mcp.json` and `[mcp_servers.<name>]`. */
   name: string;
+  /** Clean human display title (for example "AWS Knowledge"). */
+  title: string;
+  /** Grouping shown in docs and on the site. */
+  category: McpCategory;
   transport: McpTransport;
   description: string;
   /** http only */
@@ -30,6 +36,8 @@ export const MCPS: McpServerDef[] = [
   // --- Documentation ---------------------------------------------------------
   {
     name: "context7",
+    title: "Context7",
+    category: "Docs",
     transport: "stdio",
     command: "npx",
     args: ["-y", "@upstash/context7-mcp"],
@@ -37,24 +45,32 @@ export const MCPS: McpServerDef[] = [
   },
   {
     name: "microsoft-learn",
+    title: "Microsoft Learn",
+    category: "Docs",
     transport: "http",
     url: "https://learn.microsoft.com/api/mcp",
     description: "Official Microsoft & Azure documentation search and fetch.",
   },
   {
     name: "aws-knowledge",
+    title: "AWS Knowledge",
+    category: "Docs",
     transport: "http",
     url: "https://knowledge-mcp.global.api.aws",
     description: "Official AWS documentation, code samples, and regional availability.",
   },
   {
     name: "cloudflare-docs",
+    title: "Cloudflare Docs",
+    category: "Docs",
     transport: "http",
     url: "https://docs.mcp.cloudflare.com/mcp",
     description: "Cloudflare developer platform documentation.",
   },
   {
     name: "keeper-docs",
+    title: "Keeper Docs",
+    category: "Docs",
     transport: "http",
     url: "https://docs.keeper.io/~gitbook/mcp",
     description: "Keeper Security documentation.",
@@ -62,12 +78,16 @@ export const MCPS: McpServerDef[] = [
   // --- Code intelligence -----------------------------------------------------
   {
     name: "deepwiki",
+    title: "DeepWiki",
+    category: "Code intelligence",
     transport: "http",
     url: "https://mcp.deepwiki.com/mcp",
     description: "Ask questions about any public GitHub repo's architecture and docs.",
   },
   {
     name: "grep",
+    title: "grep.app",
+    category: "Code intelligence",
     transport: "http",
     url: "https://mcp.grep.app",
     description: "Regex code search across a million public GitHub repositories.",
@@ -75,6 +95,8 @@ export const MCPS: McpServerDef[] = [
   // --- Browser & verification ------------------------------------------------
   {
     name: "playwright",
+    title: "Playwright",
+    category: "Browser",
     transport: "stdio",
     command: "npx",
     args: ["-y", "@playwright/mcp@latest"],
@@ -82,6 +104,8 @@ export const MCPS: McpServerDef[] = [
   },
   {
     name: "chrome-devtools",
+    title: "Chrome DevTools",
+    category: "Browser",
     transport: "stdio",
     command: "npx",
     args: ["-y", "chrome-devtools-mcp@latest"],
@@ -90,6 +114,8 @@ export const MCPS: McpServerDef[] = [
   // --- Cloud -----------------------------------------------------------------
   {
     name: "azure",
+    title: "Azure",
+    category: "Cloud",
     transport: "stdio",
     command: "npx",
     args: ["-y", "@azure/mcp@latest", "server", "start"],

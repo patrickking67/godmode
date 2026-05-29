@@ -41,13 +41,17 @@ describe("build-plugin emitter", () => {
     expect(claude.version).toBe(pkg.version);
   });
 
-  it("gives the Codex manifest skill/mcp pointers and an interface block", () => {
+  it("gives the Codex manifest a skill pointer and full interface, and no mcp pointer", () => {
     const codex = readJson(join(PLUGIN, ".codex-plugin", "plugin.json")) as Record<string, unknown>;
     expect(codex.skills).toBe("./skills/");
-    expect(codex.mcpServers).toBe("./.mcp.json");
+    expect(codex.mcpServers).toBeUndefined();
     const iface = codex.interface as Record<string, unknown>;
     expect(iface.displayName).toBe("Godmode");
     expect(iface.brandColor).toMatch(/^#[0-9A-Fa-f]{6}$/);
+    for (const key of ["longDescription", "developerName", "category", "websiteURL"]) {
+      expect(typeof iface[key]).toBe("string");
+      expect((iface[key] as string).length).toBeGreaterThan(0);
+    }
   });
 
   it("emits each `both` command as a Claude command and a shared skill", () => {

@@ -263,11 +263,11 @@ function claudeManifest(): Record<string, unknown> {
 }
 
 function codexManifest(): Record<string, unknown> {
-  return {
-    ...claudeManifest(),
-    skills: "./skills/",
-    interface: MANIFEST.interface,
-  };
+  // Codex registers MCP servers via `codex mcp add` (see codex-mcp-setup.sh),
+  // not via a Claude-style `mcpServers` pointer, so omit it here.
+  const base = claudeManifest();
+  delete base.mcpServers;
+  return { ...base, skills: "./skills/", interface: MANIFEST.interface };
 }
 
 function marketplaceCatalog(): Record<string, unknown> {
@@ -311,26 +311,33 @@ function validateManifests(claude: unknown, codex: unknown): void {
   };
   const codexSchema = {
     type: "object",
-    required: ["name", "version", "description", "skills", "mcpServers", "interface"],
+    required: ["name", "version", "description", "skills", "interface"],
     properties: {
       ...base,
       skills: { type: "string" },
-      mcpServers: { type: "string" },
       interface: {
         type: "object",
         required: [
           "displayName",
           "shortDescription",
+          "longDescription",
+          "developerName",
+          "category",
           "capabilities",
           "defaultPrompt",
           "brandColor",
+          "websiteURL",
         ],
         properties: {
           displayName: { type: "string", minLength: 1 },
           shortDescription: { type: "string", minLength: 1 },
+          longDescription: { type: "string", minLength: 1 },
+          developerName: { type: "string", minLength: 1 },
+          category: { type: "string", minLength: 1 },
           capabilities: { type: "array", items: { type: "string" } },
           defaultPrompt: { type: "array", items: { type: "string" } },
           brandColor: { type: "string", pattern: "^#[0-9A-Fa-f]{6}$" },
+          websiteURL: { type: "string", minLength: 1 },
         },
       },
     },
@@ -428,7 +435,7 @@ export function build(opts: BuildOptions = {}): BuildResult {
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   const r = build();
   process.stdout.write(
-    `godmode plugin built → ${PLUGIN}\n  ${r.commands} commands, ${r.skills} skills, ` +
+    `godmode plugin built to ${PLUGIN}\n  ${r.commands} commands, ${r.skills} skills, ` +
       `${r.agents} agents, ${r.hooks} hooks, ${r.mcps} MCP servers\n`,
   );
 }
