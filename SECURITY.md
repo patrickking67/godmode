@@ -2,12 +2,12 @@
 
 ## Supported versions
 
-Godmode follows SemVer. During the `v0.x` series, only the current minor version receives security fixes. Once `v1.0` ships, the policy will be the current minor + previous minor.
+Godmode follows SemVer. The current minor and the previous minor receive security fixes.
 
-| Version | Supported    |
-| ------- | ------------ |
-| v0.1.x  | ✅ (current) |
-| < v0.1  | ❌           |
+| Version | Supported |
+| ------- | --------- |
+| 1.3.x   | yes       |
+| < 1.3   | no        |
 
 ## Reporting a vulnerability
 

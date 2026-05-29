@@ -4,14 +4,32 @@ All notable changes to Godmode will be documented here. Format based on [Keep a 
 
 ## [Unreleased]
 
-### Changed
-
-- Renamed the nine slash commands to a deific lexicon: `/learn`→`/revelation`, `/explain`→`/gospel`, `/guide`→`/prophecy`, `/implement`→`/genesis`, `/agents`→`/summon`, `/review`→`/judgment`, `/verify`→`/sanctify`, `/debug`→`/exorcise`, `/commit`→`/covenant`.
+## [1.3.0] - 2026-05-28
 
 ### Added
 
-- Five bundled subagents (Claude Code): `oracle`, `demiurge`, `inquisitor`, `arbiter`, `seer` — auto-discovered, dispatchable directly or via `/summon`.
-- Three automatic hooks (Claude Code): session-start context injection, a destructive-command guard (`PreToolUse`), and format-on-edit (`PostToolUse`).
+- GitHub Pages landing site (buildless static), deployed from `main`.
+- Five bundled subagents (Claude Code): oracle, demiurge, inquisitor, arbiter, seer.
+- Three automatic hooks (Claude Code): session-start context, a destructive-command guard, and format-on-edit.
+- First hook contract tests and a site-data parity test.
+- CI drift guard: `pnpm build:plugin` followed by a staged `git diff` that fails on any source-to-artifact drift.
+- Clean human titles and categories for every bundled connector.
+
+### Changed
+
+- Renamed the nine slash commands to a deific lexicon: revelation, gospel, prophecy, genesis, summon, judgment, sanctify, exorcise, covenant.
+- Broadened the destructive-command guard (recursive chmod/chown, piping downloads to a shell, raw-disk redirects, truncate, shred, find -delete, git checkout of the worktree).
+- Reconciled the version to 1.3.0 across both manifests, the marketplace catalog, and the docs.
+- Honest shipped-vs-roadmap framing in the README, package description, and SECURITY policy.
+
+### Fixed
+
+- `pnpm build` no longer references an uninstalled `vite`.
+- Removed phantom `bin`, `dev`, and `doctor` entries that pointed at a non-existent CLI.
+- The build test no longer mutates the committed `plugin/` tree (it builds into a temp dir).
+- README quickstart now uses real command names.
+- CONTRIBUTING points to the real source path and documents the build flow.
+- The Codex manifest no longer advertises a Claude-style `mcpServers` pointer.
 
 ## [0.2.0] — 2026-05-28
 

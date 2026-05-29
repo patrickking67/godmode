@@ -6,7 +6,7 @@
 One plugin for Claude Code and Codex. Battle-tested workflows and ten bundled no-auth MCP servers install today — persistent memory, token economics, and a live dashboard are on the roadmap.
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-alpha-green.svg)](docs/specs/2026-05-27-godmode-design.md)
+[![Version](https://img.shields.io/badge/version-1.3.0-7C3AED.svg)](CHANGELOG.md)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-supported-7C3AED)](#install)
 [![Codex](https://img.shields.io/badge/Codex-supported-10B981)](#install)
 
@@ -214,16 +214,11 @@ Full design in [`docs/specs/2026-05-27-godmode-design.md`](docs/specs/2026-05-27
 
 ## Roadmap
 
-| Version  | Milestone                                                                                      |
-| -------- | ---------------------------------------------------------------------------------------------- |
-| **v0.1** | Design spec + scaffold                                                                         |
-| **v0.2** | Dual-engine plugin: 9 commands + 10 bundled MCPs, installable in both engines _(you are here)_ |
-| v0.3     | Core hybrid memory — global + per-project SQLite, FTS5, session injection                      |
-| v0.4     | Token meter, prompt optimizer, model router, budgets                                           |
-| v0.5     | Webviewer — Dashboard, Memory, Plans, Cost                                                     |
-| v0.6     | Full CLI + `godmode doctor`                                                                    |
-| v0.7     | Beta on public marketplace                                                                     |
-| **v1.0** | Stable API; full test coverage; public launch                                                  |
+| Phase     | What                                                                                         |
+| --------- | -------------------------------------------------------------------------------------------- |
+| **Now**   | Shipped in v1.3.0: 9 commands, 5 subagents, 3 hooks, 10 MCP servers, dual-engine, and a site |
+| **Next**  | Persistent hybrid memory: global and per-project SQLite, session injection                   |
+| **Later** | Token economics (meter, optimizer, router, budgets), a live dashboard, a `godmode` CLI       |
 
 ---
 
