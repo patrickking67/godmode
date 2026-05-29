@@ -29,9 +29,9 @@ process.stdin.on("end", () => {
   try {
     file = JSON.parse(raw || "{}").tool_input?.file_path ?? "";
   } catch {
-    done();
+    return done();
   }
-  if (!file || !EXT.has(extname(file).toLowerCase())) done();
+  if (!file || !EXT.has(extname(file).toLowerCase())) return done();
 
   // Walk up from the edited file for a prettier config; that directory is the project root.
   let dir = dirname(file);
@@ -56,7 +56,7 @@ process.stdin.on("end", () => {
     if (dir === fsRoot) break;
     dir = dirname(dir);
   }
-  if (!projectRoot) done();
+  if (!projectRoot) return done();
 
   try {
     // --no-install: run only if prettier is already a local/available binary; never fetch it.

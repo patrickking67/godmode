@@ -17,9 +17,16 @@ process.stdin.on("end", () => {
     [/\bgit\s+push\b[^\n]*(--force\b|\s-f\b)/, "git push --force"],
     [/\bgit\s+reset\s+--hard\b/, "git reset --hard"],
     [/\bgit\s+clean\s+-\S*f/, "git clean -f"],
+    [/\bgit\s+checkout\s+(--\s+)?\.(?:\s|$)/, "git checkout . (discards uncommitted changes)"],
     [/:\s*\(\)\s*\{\s*:\s*\|\s*:/, "fork bomb"],
-    [/\bdd\b[^\n]*\bof=/, "dd of=…"],
+    [/\bdd\b[^\n]*\bof=/, "dd of= a device or file"],
     [/\bmkfs\b/, "mkfs"],
+    [/\b(?:chmod|chown)\s+-\S*R/, "recursive chmod/chown"],
+    [/\b(?:curl|wget)\b[^\n|]*\|\s*(?:sudo\s+)?(?:sh|bash|zsh)\b/, "piping a download into a shell"],
+    [/>\s*\/dev\/(?:sd|nvme|disk|hd|mmcblk|vd)/, "redirect to a raw disk device"],
+    [/\btruncate\s+-s\s*0\b/, "truncate -s 0"],
+    [/\bshred\b/, "shred"],
+    [/\bfind\b[^\n]*\s-delete\b/, "find -delete"],
   ];
 
   for (const [re, label] of rules) {
