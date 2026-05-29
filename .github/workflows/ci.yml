@@ -18,6 +18,8 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm build:plugin
+      - run: git add -A && git diff --cached --exit-code
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm test
