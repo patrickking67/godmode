@@ -2,7 +2,7 @@
 
 Canonical instructions for every coding agent working in this repository
 (Claude Code, Cursor, GitHub Copilot, Codex). Vendor files are thin adapters
-that point here — never duplicate this content into them.
+that point here. Never duplicate this content into them.
 
 ## Purpose
 
@@ -13,13 +13,13 @@ engine with no per-repo setup. Apache-2.0 licensed.
 ## Repository map
 
 ```
-src/plugin/_sources/    THE SINGLE SOURCE OF TRUTH — every command, skill,
+src/plugin/_sources/    THE SINGLE SOURCE OF TRUTH: every command, skill,
                         agent, hook, and MCP definition lives here
-plugin/                 GENERATED — the installable plugin tree (do not hand-edit)
-.claude-plugin/         GENERATED — marketplace.json catalog (do not hand-edit)
+plugin/                 GENERATED: the installable plugin tree (do not hand-edit)
+.claude-plugin/         GENERATED: marketplace.json catalog (do not hand-edit)
 scripts/build-plugin.ts The dual-engine emitter that produces both of the above
 site/                   Static site published to GitHub Pages
-tests/                  vitest — plugin/, site/, and smoke.test.ts
+tests/                  vitest: plugin/, site/, and smoke.test.ts
 docs/plans, docs/specs  Design notes and specifications
 ```
 
@@ -59,10 +59,19 @@ pnpm fmt:check         # prettier --check .
 pnpm build:plugin && git diff --exit-code && pnpm typecheck && pnpm lint && pnpm test
 ```
 
+`pnpm fmt:check` is not part of CI. Run it on files you touch.
+
+## Deploys
+
+- Every push to `main` publishes `site/` to GitHub Pages
+  (`.github/workflows/pages.yml`). Site edits go live on merge.
+- Users install the plugin from `main` through `.claude-plugin/marketplace.json`,
+  so a merged change to `plugin/` reaches them on their next update.
+
 ## Architecture
 
 - **One source, two engines.** A command authored once in `src/plugin/_sources/`
-  emits a Claude slash command (`plugin/commands/<name>.md`) *and* a shared skill
+  emits a Claude slash command (`plugin/commands/<name>.md`) _and_ a shared skill
   (`plugin/skills/<name>/SKILL.md`), which is Codex's equivalent surface. Keep
   authored content engine-neutral; let the emitter handle the divergence.
 - **Claude-only surfaces.** Subagents (`plugin/agents/`) and hooks
