@@ -1,9 +1,10 @@
 node_modules/
 dist/
+coverage/
 .DS_Store
 *.log
 
-# local-only state — never commit
+# local-only state, never commit
 .godmode/
 ~/.godmode/
 
@@ -13,4 +14,9 @@ dist/
 
 # env
 .env
-.env.local
+.env.*
+!.env.example
+
+# Claude Code local files (only .claude/launch.json is committed)
+.claude/settings.local.json
+CLAUDE.local.md

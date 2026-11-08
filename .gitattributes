@@ -1,0 +1,16 @@
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
+*.zip binary
+
+pnpm-lock.yaml linguist-generated=true
+plugin/** linguist-generated=true
+.claude-plugin/marketplace.json linguist-generated=true
