@@ -5,6 +5,7 @@ import {
   codexMcpToml,
   parseFrontmatter,
   validateManifests,
+  validateSourceNames,
   yamlStr,
 } from "../../scripts/build-plugin.js";
 import type { McpServerDef } from "../../src/plugin/_sources/mcps.js";
@@ -156,6 +157,32 @@ describe("validateManifests", () => {
     delete partial.websiteURL;
     expect(() => validateManifests(claude, { ...codex, interface: partial })).toThrow(
       /websiteURL/,
+    );
+  });
+});
+
+describe("validateSourceNames", () => {
+  const ok = { skills: ["revelation", "gospel"], commands: [], agents: ["oracle"], mcps: ["grep"] };
+
+  it("accepts the kebab-case names the plugin ships", () => {
+    expect(() => validateSourceNames(ok)).not.toThrow();
+  });
+
+  it("rejects a name that would write outside plugin/", () => {
+    expect(() => validateSourceNames({ ...ok, skills: ["../escape"] })).toThrow(
+      /Invalid skills name "\.\.\/escape"/,
+    );
+  });
+
+  it("rejects names that would break a TOML key or a shell word", () => {
+    expect(() => validateSourceNames({ ...ok, mcps: ["my.server"] })).toThrow(/Invalid mcps/);
+    expect(() => validateSourceNames({ ...ok, mcps: ["a b"] })).toThrow(/Invalid mcps/);
+    expect(() => validateSourceNames({ ...ok, agents: ["Oracle"] })).toThrow(/Invalid agents/);
+  });
+
+  it("rejects two sources that emit to the same file", () => {
+    expect(() => validateSourceNames({ ...ok, skills: ["gospel", "gospel"] })).toThrow(
+      /Duplicate skills name "gospel"/,
     );
   });
 });
