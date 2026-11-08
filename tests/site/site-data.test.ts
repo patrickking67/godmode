@@ -43,3 +43,31 @@ describe("site data parity", () => {
     }
   });
 });
+
+describe("site without JavaScript", () => {
+  const html = readFileSync(join(ROOT, "site", "index.html"), "utf8");
+
+  it("ships every command in the static fallback markup", () => {
+    const start = html.indexOf('id="commands-root"');
+    const end = html.indexOf("</noscript>", start);
+    expect(start).toBeGreaterThan(-1);
+    expect(end).toBeGreaterThan(start);
+    const fallback = html.slice(start, end);
+    for (const c of site.commands) {
+      expect(fallback).toContain(`<span class="slash">/</span>${c.name}</p>`);
+    }
+  });
+
+  it("only hides reveal content once the page marks itself as running JavaScript", () => {
+    const css = readFileSync(join(ROOT, "site", "styles.css"), "utf8");
+    expect(html).toContain('document.documentElement.classList.add("js")');
+    expect(css).not.toMatch(/^\.reveal\s*\{/m);
+    expect(css).toMatch(/^\.js \.reveal\s*\{/m);
+  });
+
+  it("points social cards at an absolute PNG that exists", () => {
+    const og = html.match(/property="og:image"\s+content="([^"]+)"/)?.[1] ?? "";
+    expect(og).toBe("https://patrickking67.github.io/godmode/assets/og-image.png");
+    expect(() => readFileSync(join(ROOT, "site", "assets", "og-image.png"))).not.toThrow();
+  });
+});

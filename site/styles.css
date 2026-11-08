@@ -630,7 +630,7 @@ code {
   position: absolute;
   left: 4px;
   top: -1px;
-  color: #6b6b80;
+  color: #8a8aa0;
   font-weight: 700;
 }
 .why-answer {
@@ -675,7 +675,7 @@ code {
 }
 .cmd-group-title .count,
 .conn-group-title .count {
-  color: #6b6b80;
+  color: #8a8aa0;
   font-size: 0.78rem;
 }
 .cmd-grid {
@@ -1022,12 +1022,13 @@ code {
   color: var(--text);
 }
 .footer-fine {
-  color: #6b6b80;
+  color: #8a8aa0;
   font-size: 0.84rem;
 }
 
-/* ---------- Reveal on scroll ---------- */
-.reveal {
+/* ---------- Reveal on scroll ----------
+   Hidden only when JS is running (html.js), so the page stays readable without it. */
+.js .reveal {
   opacity: 0;
   transform: translateY(22px);
   transition:
@@ -1035,7 +1036,7 @@ code {
     transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
-.reveal.is-visible {
+.js .reveal.is-visible {
   opacity: 1;
   transform: none;
 }
@@ -1118,7 +1119,7 @@ code {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
-  .reveal {
+  .js .reveal {
     opacity: 1;
     transform: none;
   }
