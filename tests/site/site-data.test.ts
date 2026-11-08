@@ -71,3 +71,17 @@ describe("site without JavaScript", () => {
     expect(() => readFileSync(join(ROOT, "site", "assets", "og-image.png"))).not.toThrow();
   });
 });
+
+describe("llms.txt", () => {
+  it("is published with the site and mirrored at the repo root", () => {
+    const published = readFileSync(join(ROOT, "site", "llms.txt"), "utf8");
+    expect(readFileSync(join(ROOT, "llms.txt"), "utf8")).toBe(published);
+    expect(published.startsWith("# Godmode\n\n> ")).toBe(true);
+    for (const section of ["## Docs", "## Source", "## Live demo", "## Optional"]) {
+      expect(published).toContain(`\n${section}\n`);
+    }
+    for (const url of published.match(/\]\(([^)]+)\)/g) ?? []) {
+      expect(url).toMatch(/^\]\(https:\/\//);
+    }
+  });
+});
