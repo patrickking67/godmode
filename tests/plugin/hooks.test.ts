@@ -30,7 +30,7 @@ describe("session-start hook", () => {
       hookSpecificOutput: { hookEventName: string; additionalContext: string };
     };
     expect(out.hookSpecificOutput.hookEventName).toBe("SessionStart");
-    expect(out.hookSpecificOutput.additionalContext).toContain("/revelation");
+    expect(out.hookSpecificOutput.additionalContext).toContain("/godmode:revelation");
   });
 
   it("names every shipped workflow and subagent, so the context never drifts", () => {
@@ -41,7 +41,9 @@ describe("session-start hook", () => {
       readdirSync(join(ROOT, "src", "plugin", "_sources", dir))
         .filter((f) => f.endsWith(".md") && !f.startsWith("_"))
         .map((f) => f.replace(/\.md$/, ""));
-    for (const cmd of names("commands")) expect(context).toContain(`/${cmd}`);
+    for (const cmd of names("commands")) expect(context).toContain(`/godmode:${cmd}`);
+    // Claude Code only resolves the namespaced form; a bare /<name> would not run the skill.
+    expect(context).not.toMatch(/(^|[\s(])\/(?!godmode:)[a-z]+/);
     for (const agent of names("agents")) expect(context).toContain(agent);
   });
 });
