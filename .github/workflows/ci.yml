@@ -21,9 +21,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build:plugin
+      # Build, typecheck, lint, format check and tests, the same command agents run locally.
+      - run: pnpm check
+      # The build must not change committed output: plugin/ has to match its sources.
       - run: git add -A && git diff --cached --exit-code
-      - run: pnpm typecheck
-      - run: pnpm lint
-      - run: pnpm fmt:check
-      - run: pnpm test
