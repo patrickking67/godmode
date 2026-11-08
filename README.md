@@ -1,243 +1,179 @@
-<div align="center">
+# Godmode
 
-# 🔥 Godmode
+**Learn. Plan. Build. Optimize.** One plugin that gives Claude Code and Codex the same nine coding workflows and ten documentation and tooling MCP servers, built from a single source.
 
-**Learn. Plan. Build. Optimize.**
-One plugin for Claude Code and Codex. Battle-tested workflows and ten bundled no-auth MCP servers install today; persistent memory, token economics, and a live dashboard are on the roadmap.
-
+[![CI](https://github.com/patrickking67/godmode/actions/workflows/ci.yml/badge.svg)](https://github.com/patrickking67/godmode/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-1.3.0-7C3AED.svg)](CHANGELOG.md)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-supported-7C3AED)](#install)
-[![Codex](https://img.shields.io/badge/Codex-supported-10B981)](#install)
 
-</div>
+Most agent setups grow one plugin at a time: a review prompt here, a docs server there, a different copy for each engine. Godmode packages that surface once. You author a workflow as a Markdown file, run one build, and get a plugin that installs from a marketplace in either engine with no per-repo setup, no server and no API keys.
 
----
+## What you get
 
-## What is Godmode?
+| Surface         | Count | Engines            | Where it lives                      |
+| --------------- | ----- | ------------------ | ----------------------------------- |
+| Workflow skills | 9     | Claude Code, Codex | `plugin/skills/<name>/SKILL.md`     |
+| Subagents       | 5     | Claude Code        | `plugin/agents/<name>.md`           |
+| Hooks           | 3     | Claude Code        | `plugin/hooks/hooks.json` + scripts |
+| MCP servers     | 10    | Claude Code, Codex | `plugin/.mcp.json`                  |
 
-Godmode takes the best ideas from across the Claude Code and Codex plugin ecosystem (brainstorming, plan-driven development, subagent orchestration, persistent memory, and disciplined verification) and **fuses them into one coherent, opinionated plugin**. The curated MCP servers, commands, subagents, and hooks ship today; hybrid project and global memory and a live local dashboard are on the roadmap.
+### Workflow skills
 
-It consolidates that surface into a single super-plugin you install once, in either engine, with no per-repo setup grind.
+| Skill        | Pillar | What it does                                                               |
+| ------------ | ------ | -------------------------------------------------------------------------- |
+| `revelation` | Learn  | Explores a codebase and explains how it fits together.                     |
+| `gospel`     | Learn  | Explains how a file, symbol, function, flow or error works.                |
+| `prophecy`   | Plan   | Step-by-step guidance for a task, grounded in this repo.                   |
+| `genesis`    | Build  | Implements a change with a tight plan, build and verify loop.              |
+| `summon`     | Build  | Picks the right subagent for a task and dispatches it.                     |
+| `judgment`   | Review | Reviews uncommitted (or named) changes for bugs, security and drift.       |
+| `sanctify`   | Review | Runs the project's own checks (typecheck, tests, lint, build) and reports. |
+| `exorcise`   | Debug  | Finds the root cause of a bug or failing test before fixing it.            |
+| `covenant`   | Ship   | Turns the current changes into one Conventional Commit.                    |
 
----
+### Subagents and hooks (Claude Code)
 
-## Why Godmode?
+- **Subagents:** `oracle` (read-only reconnaissance), `demiurge` (implements a scoped change), `inquisitor` (code review), `arbiter` (runs the checks), `seer` (root-cause analysis). `summon` routes work to them.
+- **SessionStart** adds a short summary of the workflows and subagents to the session context.
+- **PreToolUse on Bash** asks for confirmation before destructive commands such as `rm -rf`, `git push --force`, `git reset --hard` or piping a download into a shell. It asks; it never blocks.
+- **PostToolUse on Edit/Write** runs `prettier --write` on the edited file, only when the project already has a prettier config and prettier installed. Everywhere else it does nothing.
 
-| Problem                                            | Godmode's answer                                                                                             |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| 12 plugins doing 12 jobs with overlapping commands | One plugin, one command surface, one mental model                                                            |
-| Memory that disappears every new session           | Hybrid global + per-project SQLite memory, auto-injected on session start, browseable in the dashboard       |
-| No idea what each session is costing you           | Real-time token meter, prompt optimizer, cache-aware shaping, per-scope budgets, cost dashboard              |
-| Codex and Claude Code drifting apart               | Dual-engine plugin built from a single source, with full parity at every release                             |
-| Same setup grind every new repo                    | One marketplace install wires the same commands and MCP servers into every repo, in both engines             |
-| MCP servers configured one at a time               | Curated 10-server no-auth bundle (docs, code intelligence, browser, cloud) pre-wired and opt-out, not opt-in |
+Codex ignores the subagents. It can load plugin hooks, but only after you review and trust them.
 
----
+### MCP servers
 
-## Highlights
+None of them need an API key. Six are remote HTTPS endpoints; four run locally through `npx`.
 
-**Available now: installs and runs in both engines, no daemon required:**
+| Server            | Type          | Category          | Gives you                                                    |
+| ----------------- | ------------- | ----------------- | ------------------------------------------------------------ |
+| `context7`        | stdio (`npx`) | Docs              | Current, version-aware docs for libraries and frameworks     |
+| `microsoft-learn` | HTTPS         | Docs              | Microsoft and Azure documentation and code samples           |
+| `aws-knowledge`   | HTTPS         | Docs              | AWS documentation, code samples and regional availability    |
+| `cloudflare-docs` | HTTPS         | Docs              | Cloudflare developer platform documentation                  |
+| `keeper-docs`     | HTTPS         | Docs              | Keeper Security documentation                                |
+| `deepwiki`        | HTTPS         | Code intelligence | Questions about any public GitHub repo's architecture        |
+| `grep`            | HTTPS         | Code intelligence | Regex code search across public GitHub repositories          |
+| `playwright`      | stdio (`npx`) | Browser           | Drives a real browser for testing and screenshots            |
+| `chrome-devtools` | stdio (`npx`) | Browser           | DOM, network, console and performance traces in Chrome       |
+| `azure`           | stdio (`npx`) | Cloud             | Azure resources and deployments, using your local `az login` |
 
-- **9 hero slash commands**: `/revelation`, `/gospel`, `/prophecy`, `/genesis`, `/summon`, `/judgment`, `/sanctify`, `/exorcise`, `/covenant`. Battle-tested workflow prompts, authored once and shipped to both engines.
-- **5 subagents + 3 automatic hooks** _(Claude Code)_: the `oracle`, `demiurge`, `inquisitor`, `arbiter`, and `seer` subagents, plus session-start context, a destructive-command guard, and format-on-edit. Auto-discovered on install.
-- **10 bundled no-auth MCP servers**: docs (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs), code intelligence (DeepWiki, grep.app), browser automation (Playwright, Chrome DevTools), and cloud (Azure). One setup, working integrations, no API keys.
-- **Dual engine, one source**: every command and MCP is authored once in `src/plugin/_sources/` and emitted for both Claude Code (`commands/` + `.mcp.json`) and Codex (`skills/` + `codex mcp add`). Subagents and hooks are Claude Code-only, since Codex has no equivalent surface.
-- **Nothing to compile to use it**: no server, no database, no native dependencies for teammates. Install straight from the marketplace and go.
-
-**On the roadmap (designed, not yet shipped):**
-
-- **Persistent hybrid memory**: `~/.godmode/memory.db` for cross-project patterns, `.godmode/memory.db` for repo-local context, FTS5-searched, auto-injected on session start.
-- **Token & credit economics**: live meter, prompt optimizer, model router, per-scope budgets, cost dashboard.
-- **Live webviewer**: Hono + React/Tailwind dashboard on `127.0.0.1` for sessions, memory, plans, and cost.
-
-See the [roadmap](#roadmap) for sequencing.
-
----
-
-## Bundled MCP servers
-
-Godmode ships these ten curated MCP servers and wires them into both engines during install:
-
-| MCP                 | Category          | What it gives you                                                    |
-| ------------------- | ----------------- | -------------------------------------------------------------------- |
-| **Context7**        | Docs              | Up-to-date, version-aware docs for libraries, frameworks, SDKs, CLIs |
-| **Microsoft Learn** | Docs              | Search and fetch Microsoft / Azure documentation and code samples    |
-| **AWS Knowledge**   | Docs              | AWS documentation, code samples, and regional availability           |
-| **Cloudflare Docs** | Docs              | Search the Cloudflare developer platform documentation               |
-| **Keeper Docs**     | Docs              | Search Keeper Security documentation                                 |
-| **DeepWiki**        | Code intelligence | Ask questions about any public GitHub repo's architecture and docs   |
-| **grep.app**        | Code intelligence | Regex code search across a million public GitHub repositories        |
-| **Playwright**      | Browser           | Drive a real browser for testing, screenshots, and verification      |
-| **Chrome DevTools** | Browser           | Inspect the DOM, network, console, and performance traces in Chrome  |
-| **Azure**           | Cloud             | Manage Azure resources and deployments (uses your local `az login`)  |
-
-Every server is **no-auth**: the HTTP endpoints are public, the `npx`-based stdio servers need no API key, and Azure uses your ambient `az login` credentials. No secrets live in the config. To opt one out, remove its entry from `plugin/.mcp.json` (Claude Code) or skip its line in the Codex setup below.
-
----
+The `npx` servers need Node 22 or later and download their package on first use.
 
 ## Install
-
-Godmode installs from a marketplace in **both** engines with no daemon, database, or build step. Teammates install the commands and MCP servers and start working immediately. Requires Node 22+ (the `npx`-based MCPs need it) and the Claude Code or Codex CLI.
-
-> Godmode is public at `github.com/patrickking67/godmode`, so the marketplace paths below work as written. For local development, use the **local clone** variant in each section.
 
 ### Claude Code
 
 ```text
-# 1. Register the marketplace
 /plugin marketplace add patrickking67/godmode
-
-# 2. Install (commands, skills, and all ten MCP servers come wired in)
 /plugin install godmode@godmode
 ```
 
-`/revelation`, `/judgment`, `/exorcise`, and the rest appear in your slash-command menu; the bundled MCP servers load automatically from the plugin's `.mcp.json`. No separate MCP setup needed on Claude Code.
+Or from your shell:
 
-<details><summary>From a local clone</summary>
-
-```text
-git clone https://github.com/patrickking67/godmode.git
-# then, inside Claude Code (use the absolute path):
-/plugin marketplace add /absolute/path/to/godmode
-/plugin install godmode@godmode
+```sh
+claude plugin marketplace add patrickking67/godmode
+claude plugin install godmode@godmode
 ```
 
-</details>
+The skills, subagents, hooks and MCP servers load from the plugin. Run `claude plugin details godmode` to see the inventory.
 
 ### Codex
 
-Codex pulls the workflow **skills** from the marketplace, then registers the MCP servers with the native `codex mcp add` CLI.
-
 ```sh
-# 1. Register the marketplace (brings in the workflow skills)
 codex plugin marketplace add patrickking67/godmode
-
-# 2. Wire up the ten bundled MCP servers
-codex mcp add context7        -- npx -y @upstash/context7-mcp
-codex mcp add microsoft-learn --url "https://learn.microsoft.com/api/mcp"
-codex mcp add aws-knowledge   --url "https://knowledge-mcp.global.api.aws"
-codex mcp add cloudflare-docs --url "https://docs.mcp.cloudflare.com/mcp"
-codex mcp add keeper-docs     --url "https://docs.keeper.io/~gitbook/mcp"
-codex mcp add deepwiki        --url "https://mcp.deepwiki.com/mcp"
-codex mcp add grep            --url "https://mcp.grep.app"
-codex mcp add playwright      -- npx -y @playwright/mcp@latest
-codex mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest
-codex mcp add azure           -- npx -y @azure/mcp@latest server start
+codex plugin add godmode@godmode
 ```
 
-Cloned the repo? Step 2 collapses to one command: `bash plugin/codex-mcp-setup.sh`. It is generated from the same source as the list above, so it never drifts. (You can also append `plugin/codex-config.toml` to `~/.codex/config.toml`.) For a local marketplace, use `codex plugin marketplace add /absolute/path/to/godmode`.
+The nine skills install with the plugin, and the plugin points Codex at the same `.mcp.json`, so `codex mcp list` shows the ten servers afterward. To add the servers without the plugin, run `bash plugin/codex-mcp-setup.sh` from a clone, or append `plugin/codex-config.toml` to `~/.codex/config.toml`.
 
-### Verify
+### From a local clone
 
 ```sh
-codex mcp list     # Codex: the ten servers are listed
+git clone https://github.com/patrickking67/godmode.git
+claude plugin marketplace add /absolute/path/to/godmode   # or: codex plugin marketplace add ...
 ```
 
-In Claude Code, open `/plugin` to confirm **godmode** is installed and its commands are listed. In a fresh session of either engine, run `/revelation` to confirm the workflows loaded.
+Then install `godmode@godmode` as above.
 
-### Your first command
+## Example workflow
 
-Godmode surfaces its full command list as context at the start of every session, so you can always ask "what can Godmode do here?" To dive in, point it at the current repo:
+Claude Code namespaces plugin skills, so each workflow runs as `/godmode:<name>`. In Codex the same skills are listed as `godmode:<name>`; name one in your prompt to use it.
 
 ```text
-/revelation this codebase and tell me how it fits together
+/godmode:revelation map the auth flow in this service
+/godmode:prophecy add rate limiting to the login endpoint
+/godmode:genesis add rate limiting to the login endpoint, following that plan
+/godmode:judgment
+/godmode:sanctify
+/godmode:covenant
 ```
 
----
+That is learn, plan, build, review, verify and commit, each step with its own instructions, and the same steps in either engine. When a test starts failing along the way, `/godmode:exorcise` traces it to the cause before anything gets patched.
 
-## Commands at a glance
-
-All nine ship today and behave identically in Claude Code and Codex:
-
-| Pillar        | Commands                  |
-| ------------- | ------------------------- |
-| **Learning**  | `/revelation` · `/gospel` |
-| **Guiding**   | `/prophecy`               |
-| **Building**  | `/genesis` · `/summon`    |
-| **Reviewing** | `/judgment` · `/sanctify` |
-| **Debugging** | `/exorcise`               |
-| **Git**       | `/covenant`               |
-
-Each command is authored once in `src/plugin/_sources/commands/` and emitted as a Claude Code slash command (`plugin/commands/<name>.md`) **and** a Codex skill (`plugin/skills/<name>/SKILL.md`). Codex replaced user prompts with skills, so a single body serves both engines.
-
-Roadmap commands (`/plans`, `/develop`, `/engineer`, `/optimize`, `/budget`, `/tokens`, `/route`, `/memory`, `/dashboard`) arrive with the memory and economics layers.
-
----
-
-## Subagents & hooks _(Claude Code)_
-
-Beyond the shared commands, Godmode ships a host of subagents and a set of automatic hooks for Claude Code. Both are auto-discovered on install. Codex has no equivalent surface, so it gets the nine skills and ten MCP servers.
-
-### Subagents
-
-Dispatch them directly or let `/summon` recommend the best fit for a task:
-
-| Agent          | Role                                                            |
-| -------------- | --------------------------------------------------------------- |
-| **oracle**     | Read-only codebase reconnaissance: maps structure, traces flows |
-| **demiurge**   | Implements a well-scoped feature or fix end-to-end              |
-| **inquisitor** | Rigorous code review: bugs, security, silent failures, drift    |
-| **arbiter**    | Runs the project's own checks and reports pass/fail             |
-| **seer**       | Roots out the true cause of a bug or failing test               |
-
-### Hooks
-
-Three hooks ship wired and ready, invoking bundled Node scripts via `${CLAUDE_PLUGIN_ROOT}`:
-
-- **Session invocation** (`SessionStart`): surfaces the command and subagent surface as context.
-- **Forbidden-act guard** (`PreToolUse` on Bash): asks for confirmation before destructive commands (`rm -rf`, `git push --force`, `git reset --hard`, …). It warns and confirms; it never hard-blocks.
-- **Auto-sanctify edits** (`PostToolUse` on Edit/Write): runs `prettier --write` on the changed file, but only when the project already uses prettier. A silent no-op everywhere else.
-
----
-
-## Architecture
-
-The full Godmode is a single TypeScript package with four runtime surfaces. The **plugin** surface (commands, skills, manifests, MCP wiring) ships today; **server**, **core**, and **web** land with the roadmap features:
+## How it works
 
 ```text
-┌─────────────────────────────────────────────────────────────────────────┐
-│                              Godmode                                      │
-│                                                                         │
-│   src/plugin     src/server     src/core      src/web                   │
-│   ─────────     ──────────     ────────     ────────                    │
-│   commands      Hono + ws      SQLite       React + Vite                │
-│   skills        REST API       memory       Tailwind + shadcn           │
-│   hooks         ingestion      tokens       Dashboard / Memory /        │
-│   manifests     telemetry      router       Plans / Cost                │
-│                                optimizer                                │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-                                  │
-                                  ▼
-                  http://127.0.0.1:51847 (bearer-authed)
-                                  │
-                                  ▼
-                  Browser: live dashboard + memory + plans + cost
+src/plugin/_sources/            one source of truth
+  commands/<name>.md            workflow: frontmatter + Markdown body
+  agents/<name>.md              Claude Code subagents
+  hooks/                        hooks.json + Node scripts
+  mcps.ts                       the ten MCP server definitions
+  manifest.ts                   plugin identity and the Codex interface block
+        |
+        |  pnpm build:plugin  (scripts/build-plugin.ts)
+        v
+plugin/                         generated, committed, installable
+  .claude-plugin/plugin.json    Claude Code manifest
+  .codex-plugin/plugin.json     Codex manifest
+  skills/<name>/SKILL.md        one copy of each workflow, loaded by both engines
+  agents/  hooks/  .mcp.json
+  codex-config.toml             manual Codex fallback
+  codex-mcp-setup.sh            manual Codex fallback
+.claude-plugin/marketplace.json marketplace catalog read by both engines
 ```
 
-Full design in [`docs/specs/2026-05-27-godmode-design.md`](docs/specs/2026-05-27-godmode-design.md).
+A few decisions worth knowing about:
 
----
+- **One skill per workflow.** Both engines load `skills/`, and both also read a plugin's `commands/` folder (Codex converts those files into skills). Emitting a workflow to both folders would register it twice, so the build writes `skills/` only.
+- **Schema checks at build time.** The emitter validates both manifests with ajv and fails on a bad name, an npm-style `repository` object, a missing MCP pointer or an incomplete Codex `interface` block.
+- **Generated output is committed and checked.** CI rebuilds the plugin and fails if `plugin/` differs from what the sources produce. A test does the same comparison locally.
+- **No secrets anywhere.** Every bundled server is public or uses ambient credentials (`az login`).
+
+Design notes live in [`docs/specs/`](docs/specs/) and [`docs/plans/`](docs/plans/). The static landing page in [`site/`](site/) deploys to GitHub Pages.
+
+## Development
+
+Requires Node 22+ and pnpm.
+
+```sh
+pnpm install --frozen-lockfile
+pnpm build:plugin      # regenerate plugin/ and the marketplace catalog
+pnpm typecheck         # tsc --noEmit
+pnpm lint              # eslint
+pnpm test              # vitest
+```
+
+The full check CI runs:
+
+```sh
+pnpm build:plugin && git diff --exit-code && pnpm typecheck && pnpm lint && pnpm test
+```
+
+To check the packaging against the installed Claude Code:
+
+```sh
+claude plugin validate --strict .          # marketplace catalog
+claude plugin validate --strict ./plugin   # plugin manifest and components
+```
+
+The test suite covers the frontmatter parser, the three MCP emitters, manifest schema validation, a byte-for-byte drift check of `plugin/` against a fresh build, skill frontmatter, hook wiring, version sync across manifests, and the behavior of all three hook scripts.
+
+To add a workflow, create `src/plugin/_sources/commands/<name>.md` with `name`, `description` and optional `allowed-tools` frontmatter, then run `pnpm build:plugin` and commit the regenerated `plugin/` with it. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Roadmap
 
-| Phase     | What                                                                                         |
-| --------- | -------------------------------------------------------------------------------------------- |
-| **Now**   | Shipped in v1.3.0: 9 commands, 5 subagents, 3 hooks, 10 MCP servers, dual-engine, and a site |
-| **Next**  | Persistent hybrid memory: global and per-project SQLite, session injection                   |
-| **Later** | Token economics (meter, optimizer, router, budgets), a live dashboard, a `godmode` CLI       |
+Shipped in 1.3.0: the nine workflows, five subagents, three hooks, ten MCP servers, both engines and the site. Designed but not built yet: persistent project and global memory, token and cost tracking, and a local dashboard. See [`docs/specs/2026-05-27-godmode-design.md`](docs/specs/2026-05-27-godmode-design.md).
 
----
+## Security and license
 
-## Contributing
-
-See [`CONTRIBUTING.md`](CONTRIBUTING.md). Issues, PRs, MCP suggestions, and skill contributions all welcome.
-
-## Security
-
-See [`SECURITY.md`](SECURITY.md) for reporting and the security model.
-
-## License
-
-Licensed under the **Apache License, Version 2.0**. See [`LICENSE`](LICENSE) for the full text.
+Report vulnerabilities privately as described in [`SECURITY.md`](SECURITY.md). Licensed under the [Apache License, Version 2.0](LICENSE).

@@ -21,7 +21,7 @@ Everything ships from `src/plugin/_sources/`. The committed `plugin/` directory 
 - **File an issue**: bug reports, feature requests, MCP suggestions, design feedback. Reproduction steps + environment (OS, Node version, engine) help a lot.
 - **Open a PR**: fixes, docs, tests, new skills, new commands. See "PR flow" below.
 - **Add a bundled MCP**: open an issue first describing the server, the auth model, and why it earns a bundled slot (we keep the curated set tight).
-- **Add a command** by creating `src/plugin/_sources/commands/<name>.md` (front-matter plus a Markdown body). The build emits a Claude slash command and a shared Codex skill from that one file.
+- **Add a command** by creating `src/plugin/_sources/commands/<name>.md` (front-matter plus a Markdown body). The build emits one shared skill (`plugin/skills/<name>/SKILL.md`) that Claude Code and Codex both load.
 
 ## PR flow
 

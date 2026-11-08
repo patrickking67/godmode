@@ -247,8 +247,8 @@
             <p class="kicker">Commands</p>
             <h2 id="commands-title">Nine deific commands, identical in both engines.</h2>
             <p class="section-lead">
-              Authored once in a single source and emitted as Claude Code slash commands and Codex
-              skills.
+              Authored once in a single source and emitted as one skill that Claude Code and Codex
+              both load.
             </p>
           </header>
           <div class="commands-groups" id="commands-root" data-fallback>
@@ -359,7 +359,7 @@
               tabindex="0"
               aria-labelledby="tab-claude"
             >
-              <p class="panel-note">Commands, skills, and all ten MCP servers come wired in.</p>
+              <p class="panel-note">The nine skills and all ten MCP servers come wired in.</p>
               <div class="code-block">
                 <pre><code>/plugin marketplace add patrickking67/godmode
 /plugin install godmode@godmode</code></pre>
@@ -372,8 +372,8 @@
                 </button>
               </div>
               <p class="panel-foot">
-                The slash commands appear in your menu and the bundled servers load automatically
-                from the plugin's
+                The skills appear in your slash menu and the bundled servers load automatically from
+                the plugin's
                 <code>.mcp.json</code>. No separate MCP setup on Claude Code.
               </p>
             </div>
@@ -386,24 +386,22 @@
               aria-labelledby="tab-codex"
               hidden
             >
-              <p class="panel-note">
-                Codex pulls the workflow skills, then wires the servers with one script.
-              </p>
+              <p class="panel-note">The nine skills and all ten MCP servers come wired in.</p>
               <div class="code-block">
                 <pre><code>codex plugin marketplace add patrickking67/godmode
-bash plugin/codex-mcp-setup.sh</code></pre>
+codex plugin add godmode@godmode</code></pre>
                 <button
                   class="copy-btn"
                   type="button"
-                  data-copy="codex plugin marketplace add patrickking67/godmode&#10;bash plugin/codex-mcp-setup.sh"
+                  data-copy="codex plugin marketplace add patrickking67/godmode&#10;codex plugin add godmode@godmode"
                 >
                   <span class="copy-label">Copy</span>
                 </button>
               </div>
               <p class="panel-foot">
-                The setup script is generated from the same source as the per-server
-                <code>codex mcp add</code> lines, so it never drifts. You can also run those
-                <code>codex mcp add</code> commands individually if you prefer.
+                The plugin points Codex at the same <code>.mcp.json</code>, so
+                <code>codex mcp list</code> shows the servers after install. Want the servers
+                without the plugin? A clone includes <code>plugin/codex-mcp-setup.sh</code>.
               </p>
             </div>
           </div>
