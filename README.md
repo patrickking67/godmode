@@ -4,7 +4,10 @@
 
 [![CI](https://github.com/patrickking67/godmode/actions/workflows/ci.yml/badge.svg)](https://github.com/patrickking67/godmode/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.3.0-7C3AED.svg)](CHANGELOG.md)
+
+Site: **https://patrickking67.github.io/godmode/**
+
+[![Godmode: Learn. Plan. Build. Optimize. One plugin for Claude Code and Codex.](site/assets/og-image.png)](https://patrickking67.github.io/godmode/)
 
 Most agent setups grow one plugin at a time: a review prompt here, a docs server there, a different copy for each engine. Godmode packages that surface once. You author a workflow as a Markdown file, run one build, and get a plugin that installs from a marketplace in either engine with no per-repo setup, no server and no API keys.
 
@@ -135,11 +138,11 @@ plugin/                         generated, committed, installable
 A few decisions worth knowing about:
 
 - **One skill per workflow.** Both engines load `skills/`, and both also read a plugin's `commands/` folder (Codex converts those files into skills). Emitting a workflow to both folders would register it twice, so the build writes `skills/` only.
-- **Schema checks at build time.** The emitter validates both manifests with ajv and fails on a bad name, an npm-style `repository` object, a missing MCP pointer or an incomplete Codex `interface` block.
+- **Schema checks at build time.** The emitter validates both manifests with ajv and fails on a bad name, an npm-style `repository` object, a missing MCP pointer or an incomplete Codex `interface` block. It also rejects a source name that is not kebab-case or that two sources share, before it writes anything.
 - **Generated output is committed and checked.** CI rebuilds the plugin and fails if `plugin/` differs from what the sources produce. A test does the same comparison locally.
 - **No secrets anywhere.** Every bundled server is public or uses ambient credentials (`az login`).
 
-Design notes live in [`docs/specs/`](docs/specs/) and [`docs/plans/`](docs/plans/). The static landing page in [`site/`](site/) deploys to GitHub Pages.
+Design notes live in [`docs/specs/`](docs/specs/) and [`docs/plans/`](docs/plans/). Agents working in the repo should start with [`AGENTS.md`](AGENTS.md); [`llms.txt`](llms.txt) indexes the docs for LLM tools.
 
 ## Development
 
@@ -147,26 +150,30 @@ Requires Node 22+ and pnpm.
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm build:plugin      # regenerate plugin/ and the marketplace catalog
-pnpm typecheck         # tsc --noEmit
-pnpm lint              # eslint
-pnpm test              # vitest
+pnpm check             # build:plugin, typecheck, lint, fmt:check, test
 ```
 
-The full check CI runs:
-
-```sh
-pnpm build:plugin && git diff --exit-code && pnpm typecheck && pnpm lint && pnpm test
-```
+`pnpm check` is what CI runs, followed by a `git diff` that fails if the build changed any committed file. The single steps are `pnpm build:plugin`, `pnpm typecheck`, `pnpm lint`, `pnpm fmt:check` and `pnpm test`.
 
 To check the packaging against the installed Claude Code:
 
 ```sh
-claude plugin validate --strict .          # marketplace catalog
-claude plugin validate --strict ./plugin   # plugin manifest and components
+pnpm validate:plugin   # claude plugin validate --strict on the catalog and ./plugin
 ```
 
-The test suite covers the frontmatter parser, the three MCP emitters, manifest schema validation, a byte-for-byte drift check of `plugin/` against a fresh build, skill frontmatter, hook wiring, version sync across manifests, and the behavior of all three hook scripts.
+### Tests
+
+The vitest suite covers the frontmatter parser, the three MCP emitters, manifest schema validation, source name checks, a byte-for-byte drift check of `plugin/` against a fresh build, skill frontmatter, hook wiring, version sync across manifests, the behavior of all three hook scripts, and the site: data parity with the plugin, the no-JavaScript fallback and `llms.txt`.
+
+### Site and deploy
+
+The landing page in `site/` is static HTML, CSS and one script with no build step. Preview it with:
+
+```sh
+python3 -m http.server 4103 --directory site   # http://localhost:4103/
+```
+
+Pushing to `main` deploys `site/` to GitHub Pages through `.github/workflows/pages.yml`. The plugin itself has no deploy step: both engines install the committed `plugin/` from the repository.
 
 To add a workflow, create `src/plugin/_sources/commands/<name>.md` with `name`, `description` and optional `allowed-tools` frontmatter, then run `pnpm build:plugin` and commit the regenerated `plugin/` with it. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
