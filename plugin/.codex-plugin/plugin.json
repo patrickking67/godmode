@@ -17,6 +17,7 @@
     "mcp",
     "subagents"
   ],
+  "mcpServers": "./.mcp.json",
   "skills": "./skills/",
   "interface": {
     "displayName": "Godmode",

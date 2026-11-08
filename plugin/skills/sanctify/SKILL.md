@@ -1,6 +1,7 @@
 ---
 name: sanctify
 description: "Run the project's checks (typecheck, tests, lint, build) and report results."
+allowed-tools: Bash, Read, Grep, Glob
 ---
 
 Run this project's own quality checks (or the subset named in `$ARGUMENTS`) and report

@@ -1,6 +1,7 @@
 ---
 name: revelation
 description: "Deeply explore a codebase and explain how it fits together."
+allowed-tools: Task, Read, Grep, Glob, TodoWrite
 ---
 
 Build an accurate mental model of this codebase (or the area named in `$ARGUMENTS`)

@@ -1,12 +1,10 @@
 {
   "name": "godmode",
   "owner": {
-    "name": "Patrick King"
+    "name": "Patrick King",
+    "url": "https://github.com/patrickking67"
   },
-  "metadata": {
-    "description": "Learn, plan, build, and optimize: one super-plugin for Claude Code and Codex, with hero workflows and bundled no-auth MCP servers.",
-    "homepage": "https://github.com/patrickking67/godmode#readme"
-  },
+  "description": "Learn, plan, build, and optimize: one super-plugin for Claude Code and Codex, with hero workflows and bundled no-auth MCP servers.",
   "plugins": [
     {
       "name": "godmode",

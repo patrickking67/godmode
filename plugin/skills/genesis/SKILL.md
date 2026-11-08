@@ -1,6 +1,7 @@
 ---
 name: genesis
 description: "Implement a feature or change with a tight plan, build, and verify loop."
+allowed-tools: Read, Grep, Glob, Edit, Write, Bash, Task, TodoWrite
 ---
 
 Build the feature or change described in `$ARGUMENTS` cleanly and correctly: plan it,

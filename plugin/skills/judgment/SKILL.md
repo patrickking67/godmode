@@ -1,6 +1,7 @@
 ---
 name: judgment
 description: "Review uncommitted (or specified) changes for bugs, security, and convention drift."
+allowed-tools: Bash, Read, Grep, Glob, Task, TodoWrite
 ---
 
 Review code changes the way a careful senior engineer would: catch real problems, skip

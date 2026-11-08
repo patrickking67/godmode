@@ -1,6 +1,7 @@
 ---
 name: exorcise
 description: "Systematically find the root cause of a bug or failing test."
+allowed-tools: Bash, Read, Grep, Glob, Edit, Task, TodoWrite
 ---
 
 Track down the true root cause of the problem described in `$ARGUMENTS` (a bug report,

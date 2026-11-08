@@ -1,5 +1,6 @@
 # Godmode bundled MCP servers for Codex.
-# Append these tables to ~/.codex/config.toml (or run the documented install step).
+# Installing the plugin wires these from .mcp.json. To add them without the plugin,
+# append these tables to ~/.codex/config.toml.
 
 # Up-to-date library & framework documentation, version-aware.
 [mcp_servers.context7]
