@@ -62,7 +62,7 @@ describe("site without JavaScript", () => {
     const css = readFileSync(join(ROOT, "site", "styles.css"), "utf8");
     expect(html).toContain('document.documentElement.classList.add("js")');
     expect(css).not.toMatch(/^\.reveal\s*\{/m);
-    expect(css).toMatch(/^\.js \.reveal\s*\{/m);
+    expect(css).toMatch(/^\.js \.hero \.reveal\s*\{/m);
   });
 
   it("points social cards at an absolute PNG that exists", () => {
