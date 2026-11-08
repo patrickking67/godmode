@@ -6,6 +6,11 @@ All notable changes to Godmode will be documented here. Format based on [Keep a 
 
 ### Fixed
 
+- The SessionStart context listed bare `/revelation`-style commands, but Claude Code runs plugin skills as `/godmode:<name>`. The context, the Codex default prompts and the `prophecy` skill now use names that resolve.
+- The emitter rejects a workflow, skill, agent or MCP name that is not kebab-case or that two sources share. Before, a frontmatter name like `../x` wrote outside `plugin/` and duplicates overwrote each other silently.
+- With JavaScript off, the site's hero, section heads and install steps were invisible (they started at opacity 0). The page now hides them only while JS runs, and the command cards ship as static markup with a `noscript` note.
+- Social cards pointed at a relative SVG; they now use an absolute 1200x630 PNG. The tagline no longer runs off the og image, and three grey text colors were raised to WCAG AA contrast.
+
 - Each workflow was registered twice in Claude Code (once from `commands/`, once from `skills/`), doubling its always-on context cost; Codex also migrated `commands/covenant.md` into a duplicate skill. The build now emits one shared skill per workflow, and the skill keeps its `allowed-tools`.
 - The marketplace catalog no longer carries `metadata.homepage`, which `claude plugin validate --strict` flags as unknown. The description moved to the documented top-level field.
 - The Codex manifest now points at `.mcp.json`, matching the documented Codex plugin format.
@@ -13,10 +18,17 @@ All notable changes to Godmode will be documented here. Format based on [Keep a 
 
 ### Added
 
+- `pnpm check` (build, typecheck, lint, format check, tests), which CI now runs, and `pnpm validate:plugin` for `claude plugin validate --strict`.
+- `llms.txt` at the site root and the repo root.
+- `.editorconfig`, `.gitattributes`, `CODEOWNERS`, Dependabot config, issue and PR templates, and `.claude/launch.json` for a site preview on port 4103.
+- Tests for source name checks, the namespaced SessionStart context, the site's no-JS fallback, the og image and `llms.txt`.
 - Tests for the frontmatter parser, the MCP emitters and manifest validation, plus packaging checks: a drift comparison against a fresh build, skill frontmatter, hook script paths, version sync and MCP definitions.
 
 ### Changed
 
+- CI runs with a read-only token and checks formatting.
+- Only the site hero animates in; section labels use sentence case instead of tracked capitals.
+- `AGENTS.md` rewritten: it no longer forbids the stdio servers the plugin ships, and it covers run, test, preview and ship. `CLAUDE.md` and the Copilot file are now short pointers. `CONTRIBUTING.md` and `SECURITY.md` updated to match what ships.
 - README rewritten with accurate counts and install steps verified against Claude Code 2.1.319 and codex-cli 0.167.0, including the `codex plugin add` step.
 
 ## [1.3.0] - 2026-05-28
