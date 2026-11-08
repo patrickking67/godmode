@@ -1,102 +1,98 @@
 # Repository agent instructions
 
-Canonical instructions for every coding agent working in this repository
-(Claude Code, Cursor, GitHub Copilot, Codex). Vendor files are thin adapters
-that point here — never duplicate this content into them.
+Canonical guide for every coding agent in this repo (Claude Code, Codex, Copilot, Cursor).
+`CLAUDE.md` and `.github/copilot-instructions.md` are thin pointers to this file.
 
-## Purpose
+## What this is
 
-**Godmode** is a single super-plugin for **Claude Code and Codex**: curated MCP
-servers, slash commands, subagents, skills, and hooks that install once in either
-engine with no per-repo setup. Apache-2.0 licensed.
+Godmode is one plugin for Claude Code and Codex, built from a single source: nine workflow
+skills, five Claude Code subagents, three Claude Code hooks and ten no-auth MCP servers.
+It runs no server and stores no data. Apache-2.0.
 
-## Repository map
+## Stack
 
+- TypeScript (strict), run with `tsx`. Node 22 or later. pnpm (CI pins v9, lockfile v9).
+- ajv for manifest validation, vitest for tests, ESLint and Prettier.
+- Hook scripts are plain Node ESM (`.mjs`), no dependencies.
+- The site in `site/` is buildless static HTML, CSS and one script. No framework.
+
+## Layout
+
+```text
+src/plugin/_sources/    Single source of truth: commands/, agents/, hooks/, mcps.ts, manifest.ts
+scripts/build-plugin.ts Emitter: writes plugin/ and .claude-plugin/marketplace.json
+plugin/                 GENERATED installable plugin tree (do not hand-edit)
+.claude-plugin/         GENERATED marketplace catalog (do not hand-edit)
+site/                   GitHub Pages site: index.html, styles.css, main.js, data/, assets/, llms.txt
+tests/                  vitest: plugin/ (emitter, packaging, hooks), site/ (data parity, no-JS)
+docs/specs, docs/plans  Design notes. Memory, token tracking and a dashboard are roadmap only
+llms.txt                Copy of site/llms.txt (a test keeps them identical)
+.claude/launch.json     Preview config: static site on port 4103
 ```
-src/plugin/_sources/    THE SINGLE SOURCE OF TRUTH — every command, skill,
-                        agent, hook, and MCP definition lives here
-plugin/                 GENERATED — the installable plugin tree (do not hand-edit)
-.claude-plugin/         GENERATED — marketplace.json catalog (do not hand-edit)
-scripts/build-plugin.ts The dual-engine emitter that produces both of the above
-site/                   Static site published to GitHub Pages
-tests/                  vitest — plugin/, site/, and smoke.test.ts
-docs/plans, docs/specs  Design notes and specifications
+
+## Run, test, preview, ship
+
+```bash
+pnpm install --frozen-lockfile   # setup (Node 22+, pnpm)
+pnpm check                       # build:plugin, typecheck, lint, fmt:check, test: run before every commit
+pnpm validate:plugin             # claude plugin validate --strict on catalog and plugin (needs the claude CLI)
+python3 -m http.server 4103 --directory site   # preview the site at http://localhost:4103/
 ```
+
+Single steps: `pnpm build:plugin`, `pnpm typecheck`, `pnpm lint`, `pnpm fmt` (write),
+`pnpm fmt:check`, `pnpm test`. In Claude Code the preview is the `godmode-site` config in
+`.claude/launch.json`.
+
+CI runs `pnpm check` and then `git add -A && git diff --cached --exit-code`, so commit the
+regenerated `plugin/` with any source change. To ship: work on a `feat/`, `fix/`, `docs/`
+or `chore/` branch, keep `pnpm check` green, open a PR against `main`. Pushing to `main`
+deploys `site/` to GitHub Pages through `.github/workflows/pages.yml`. Installs read the
+committed `plugin/` straight from the default branch; there is no publish step.
 
 ## Generated files
 
-**`plugin/` and `.claude-plugin/marketplace.json` are generated. Never hand-edit
-them.** Edit `src/plugin/_sources/`, then run:
+`plugin/` and `.claude-plugin/marketplace.json` come from `pnpm build:plugin`. Edit
+`src/plugin/_sources/` and commit the regenerated output in the same commit. CI rebuilds
+and fails on any drift. The emitter validates both manifests with ajv and rejects
+non-kebab-case or duplicate source names before it writes anything.
 
-```bash
-pnpm build:plugin
-```
+## Conventions
 
-CI runs the build and then `git add -A && git diff --cached --exit-code`, so any
-drift between the sources and the committed output **fails the build**. Always
-commit the regenerated output alongside a source change.
+- One source, two engines. A workflow in `commands/<name>.md` becomes one shared
+  `plugin/skills/<name>/SKILL.md`. Never also emit it to `plugin/commands/`: both engines
+  read that folder too, so it would register twice.
+- Keep workflow text engine-neutral. Refer to another workflow by name (`genesis`), not as
+  `/genesis`; Claude Code runs plugin skills as `/godmode:<name>`.
+- Subagents and hooks are Claude Code only. Codex ignores agents and runs plugin hooks
+  only after the user trusts them.
+- MCP servers are defined once in `mcps.ts` and emitted three ways: `plugin/.mcp.json`
+  (both manifests point at it), `codex-config.toml` and `codex-mcp-setup.sh`.
+- `site/data/godmode.json` must list exactly the shipped commands and connectors, and the
+  static command cards in `site/index.html` must match it. Tests enforce both.
+- Conventional Commits, one logical change per commit.
 
-The emitter validates both the Claude and Codex manifests with ajv and exits
-non-zero on any schema violation.
+## Safety
 
-## Setup and validation
+- Bundled MCP servers need no API key or secret in config. Prefer a public HTTPS endpoint.
+  The four stdio servers run a published npm package through `npx`; Azure uses the local
+  `az login`. Do not add a server that needs a token, a localhost endpoint or Docker.
+- Hooks must never hard-block: the Bash guard returns `ask`, the formatter is a no-op
+  outside projects that already use Prettier.
+- Never commit secrets, `.env` files, `CLAUDE.local.md` or `.claude/settings.local.json`.
+- Do not weaken tests, lint or type checks to make a change pass.
+- Commits use only the owner's git identity. No AI or bot authors, co-authors, trailers or
+  "generated with" notes.
 
-Package manager is **pnpm** (CI pins v9). Node **>= 22**.
+## Do not touch
 
-```bash
-pnpm install           # use --frozen-lockfile in CI
-pnpm build:plugin      # regenerate plugin/ and the marketplace catalog
-pnpm typecheck         # tsc --noEmit
-pnpm lint              # eslint .
-pnpm test              # vitest run
-pnpm fmt               # prettier --write .
-pnpm fmt:check         # prettier --check .
-```
-
-**Full validation before completion:**
-
-```bash
-pnpm build:plugin && git diff --exit-code && pnpm typecheck && pnpm lint && pnpm test
-```
-
-## Architecture
-
-- **One source, two engines.** A workflow authored once in
-  `src/plugin/_sources/commands/` emits one shared skill
-  (`plugin/skills/<name>/SKILL.md`) that both Claude Code and Codex load. Do not
-  also emit it to `plugin/commands/`: both engines pick up that folder too, so
-  the workflow would register twice. Keep authored content engine-neutral.
-- **Claude-only surfaces.** Subagents (`plugin/agents/`) and hooks
-  (`plugin/hooks/`) are written for Claude Code. Codex ignores the agents and
-  only runs plugin hooks after the user trusts them, so do not rely on either
-  on the Codex side.
-- **MCP is emitted three ways** from one definition: `plugin/.mcp.json`, which
-  both manifests point at, plus `plugin/codex-config.toml` and
-  `plugin/codex-mcp-setup.sh` as manual Codex fallbacks. Change the source,
-  never one output.
-
-## Coding and security
-
-- Follow existing patterns before introducing a dependency or abstraction.
-- Bundled MCP servers are **remote HTTPS and no-auth**. Do not add a stdio server,
-  a localhost endpoint, or a launcher (`npx`, `uvx`, Docker, a binary).
-- Never commit secrets, API keys, or tokens.
-- Do not weaken tests, lint, or type checks to make a change pass.
-
-## AI configuration maintenance
-
-- This `AGENTS.md` is canonical. Update it only when durable repository knowledge
-  changes, then re-sync the thin adapters (`CLAUDE.md`,
-  `.github/copilot-instructions.md`).
-- Never commit `CLAUDE.local.md`, `.claude/settings.local.json`, or machine paths.
-- **Attribution:** commits use only the repository owner's git identity. Never add
-  Claude, Anthropic, an AI, or a bot as author, co-author, committer, trailer, or
-  reviewer. No "generated with" notes.
+- `plugin/` and `.claude-plugin/` by hand.
+- `LICENSE` and `NOTICE`.
+- `.github/workflows/pages.yml` deploy settings and repository settings.
 
 ## Definition of done
 
-- Requested behavior is complete.
-- `plugin/` was regenerated and committed; `git diff --exit-code` is clean.
-- `pnpm typecheck`, `pnpm lint`, and `pnpm test` pass.
-- Durable documentation and instructions are current.
-- Commands run and unresolved risks are reported.
+- The requested behavior works, with tests for changed behavior in `scripts/`,
+  `src/plugin/_sources/` or `site/`.
+- `plugin/` regenerated and committed; `pnpm check` passes and `git status` is clean.
+- README, this file and the CHANGELOG `[Unreleased]` section match the change.
+- Commands run and anything unverified are reported.
