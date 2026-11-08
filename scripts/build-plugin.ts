@@ -8,8 +8,8 @@
  * Outputs (all generated; never hand-edit):
  *   plugin/.claude-plugin/plugin.json   Claude Code manifest
  *   plugin/.codex-plugin/plugin.json    Codex manifest (+ interface block)
- *   plugin/commands/<name>.md           Claude slash commands
- *   plugin/skills/<name>/SKILL.md        Shared skills (Codex's command equivalent)
+ *   plugin/skills/<name>/SKILL.md        Shared workflow skills, loaded by both engines
+ *   plugin/commands/<name>.md           Claude-only commands (`engines: claude`; none today)
  *   plugin/agents/<name>.md             Claude subagents (Claude-only; auto-discovered)
  *   plugin/hooks/*                       Claude hooks: hooks.json + scripts (Claude-only)
  *   plugin/.mcp.json                     Claude MCP config
@@ -47,7 +47,7 @@ interface CommandSource {
 // Parsing
 // ---------------------------------------------------------------------------
 
-function parseFrontmatter(raw: string): { data: Record<string, string>; body: string } {
+export function parseFrontmatter(raw: string): { data: Record<string, string>; body: string } {
   const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
   if (!m) return { data: {}, body: raw };
   const data: Record<string, string> = {};
@@ -157,7 +157,7 @@ function readHooks(): { files: { file: string; raw: string }[]; events: number }
 // ---------------------------------------------------------------------------
 
 /** Safely double-quoted YAML scalar. */
-function yamlStr(s: string): string {
+export function yamlStr(s: string): string {
   return `"${s.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
 }
 
@@ -177,20 +177,19 @@ function claudeCommand(cmd: CommandSource): string {
   return lines.join("\n");
 }
 
+/**
+ * Shared skill. Both engines scan `skills/`, so this is the one copy of each workflow.
+ * `allowed-tools` is Claude skill frontmatter; Codex ignores fields it does not use.
+ */
 function skillFromCommand(cmd: CommandSource): string {
-  return [
-    "---",
-    `name: ${cmd.name}`,
-    `description: ${yamlStr(cmd.description)}`,
-    "---",
-    "",
-    cmd.body,
-    "",
-  ].join("\n");
+  const lines = ["---", `name: ${cmd.name}`, `description: ${yamlStr(cmd.description)}`];
+  if (cmd.allowedTools) lines.push(`allowed-tools: ${cmd.allowedTools}`);
+  lines.push("---", "", cmd.body, "");
+  return lines.join("\n");
 }
 
 /** Claude `.mcp.json`: wrapped `mcpServers` map with a `type` discriminator. */
-function claudeMcpJson(servers: McpServerDef[]): string {
+export function claudeMcpJson(servers: McpServerDef[]): string {
   const map: Record<string, unknown> = {};
   for (const s of servers) {
     map[s.name] =
@@ -202,10 +201,11 @@ function claudeMcpJson(servers: McpServerDef[]): string {
 }
 
 /** Codex `config.toml`: one `[mcp_servers.<name>]` table per server. */
-function codexMcpToml(servers: McpServerDef[]): string {
+export function codexMcpToml(servers: McpServerDef[]): string {
   const out: string[] = [
     "# Godmode bundled MCP servers for Codex.",
-    "# Append these tables to ~/.codex/config.toml (or run the documented install step).",
+    "# Installing the plugin wires these from .mcp.json. To add them without the plugin,",
+    "# append these tables to ~/.codex/config.toml.",
     "",
   ];
   for (const s of servers) {
@@ -223,10 +223,11 @@ function codexMcpToml(servers: McpServerDef[]): string {
 }
 
 /** Codex setup script: native `codex mcp add` calls, drift-free from MCPS. */
-function codexMcpSetupScript(servers: McpServerDef[]): string {
+export function codexMcpSetupScript(servers: McpServerDef[]): string {
   const out: string[] = [
     "#!/usr/bin/env bash",
     "# Godmode: register bundled MCP servers with Codex via the native CLI.",
+    "# Installing the plugin already wires them; use this only without the plugin.",
     "# Generated from src/plugin/_sources/mcps.ts; do not hand-edit. Run: bash codex-mcp-setup.sh",
     "set -euo pipefail",
     "",
@@ -263,18 +264,17 @@ function claudeManifest(): Record<string, unknown> {
 }
 
 function codexManifest(): Record<string, unknown> {
-  // Codex registers MCP servers via `codex mcp add` (see codex-mcp-setup.sh),
-  // not via a Claude-style `mcpServers` pointer, so omit it here.
-  const base = claudeManifest();
-  delete base.mcpServers;
-  return { ...base, skills: "./skills/", interface: MANIFEST.interface };
+  // Codex's plugin format takes the same `mcpServers` pointer, so a plugin install wires the
+  // bundled servers. codex-config.toml and codex-mcp-setup.sh stay as manual fallbacks.
+  return { ...claudeManifest(), skills: "./skills/", interface: MANIFEST.interface };
 }
 
 function marketplaceCatalog(): Record<string, unknown> {
+  // Only fields Claude Code reads: `claude plugin validate --strict` warns on anything else.
   return {
     name: MANIFEST.name,
-    owner: { name: MANIFEST.author.name },
-    metadata: { description: MANIFEST.description, homepage: MANIFEST.homepage },
+    owner: MANIFEST.author,
+    description: MANIFEST.description,
     plugins: [
       {
         name: MANIFEST.name,
@@ -290,7 +290,7 @@ function marketplaceCatalog(): Record<string, unknown> {
 // Validation
 // ---------------------------------------------------------------------------
 
-function validateManifests(claude: unknown, codex: unknown): void {
+export function validateManifests(claude: unknown, codex: unknown): void {
   const ajv = new Ajv({ allErrors: true });
   const base = {
     name: { type: "string", pattern: "^[a-z0-9][a-z0-9-]*$" },
@@ -400,12 +400,14 @@ export function build(opts: BuildOptions = {}): BuildResult {
   write(join(pluginDir, "codex-config.toml"), codexMcpToml(MCPS));
   write(join(pluginDir, "codex-mcp-setup.sh"), codexMcpSetupScript(MCPS));
 
+  // Claude Code and Codex both load every `skills/<name>/SKILL.md`, and both also pick up
+  // `commands/*.md` (Codex migrates them into skills). Emitting a workflow to both folders
+  // registers it twice, so a shared workflow goes to `skills/` only.
   let skillCount = standaloneSkills.length;
   for (const cmd of commands) {
-    if (cmd.engines === "both" || cmd.engines === "claude") {
+    if (cmd.engines === "claude") {
       write(join(pluginDir, "commands", `${cmd.name}.md`), claudeCommand(cmd));
-    }
-    if (cmd.engines === "both" || cmd.engines === "codex") {
+    } else {
       write(join(pluginDir, "skills", cmd.name, "SKILL.md"), skillFromCommand(cmd));
       skillCount++;
     }
@@ -435,7 +437,7 @@ export function build(opts: BuildOptions = {}): BuildResult {
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   const r = build();
   process.stdout.write(
-    `godmode plugin built to ${PLUGIN}\n  ${r.commands} commands, ${r.skills} skills, ` +
+    `godmode plugin built to ${PLUGIN}\n  ${r.commands} workflows, ${r.skills} skills, ` +
       `${r.agents} agents, ${r.hooks} hooks, ${r.mcps} MCP servers\n`,
   );
 }

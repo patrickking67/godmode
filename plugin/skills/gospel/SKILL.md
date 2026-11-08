@@ -1,6 +1,7 @@
 ---
 name: gospel
 description: "Explain how a file, symbol, function, flow, or error works."
+allowed-tools: Read, Grep, Glob, Task, WebFetch
 ---
 
 Explain what `$ARGUMENTS` actually does by reading the real code paths, not by guessing,

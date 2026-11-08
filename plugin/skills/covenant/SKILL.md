@@ -1,6 +1,7 @@
 ---
 name: covenant
 description: "Craft and create a Conventional Commit from your current changes."
+allowed-tools: Bash, Read
 ---
 
 Turn the current changes into one clean, well-described commit. Running this command

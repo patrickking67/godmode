@@ -61,16 +61,19 @@ pnpm build:plugin && git diff --exit-code && pnpm typecheck && pnpm lint && pnpm
 
 ## Architecture
 
-- **One source, two engines.** A command authored once in `src/plugin/_sources/`
-  emits a Claude slash command (`plugin/commands/<name>.md`) *and* a shared skill
-  (`plugin/skills/<name>/SKILL.md`), which is Codex's equivalent surface. Keep
-  authored content engine-neutral; let the emitter handle the divergence.
+- **One source, two engines.** A workflow authored once in
+  `src/plugin/_sources/commands/` emits one shared skill
+  (`plugin/skills/<name>/SKILL.md`) that both Claude Code and Codex load. Do not
+  also emit it to `plugin/commands/`: both engines pick up that folder too, so
+  the workflow would register twice. Keep authored content engine-neutral.
 - **Claude-only surfaces.** Subagents (`plugin/agents/`) and hooks
-  (`plugin/hooks/`) are emitted for Claude only. Do not assume they exist on the
-  Codex side.
-- **MCP is emitted three ways** from one definition: `plugin/.mcp.json` for
-  Claude, `plugin/codex-config.toml` for Codex, and `plugin/codex-mcp-setup.sh`
-  for `codex mcp add`. Change the source, never one output.
+  (`plugin/hooks/`) are written for Claude Code. Codex ignores the agents and
+  only runs plugin hooks after the user trusts them, so do not rely on either
+  on the Codex side.
+- **MCP is emitted three ways** from one definition: `plugin/.mcp.json`, which
+  both manifests point at, plus `plugin/codex-config.toml` and
+  `plugin/codex-mcp-setup.sh` as manual Codex fallbacks. Change the source,
+  never one output.
 
 ## Coding and security
 

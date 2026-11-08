@@ -41,10 +41,10 @@ describe("build-plugin emitter", () => {
     expect(claude.version).toBe(pkg.version);
   });
 
-  it("gives the Codex manifest a skill pointer and full interface, and no mcp pointer", () => {
+  it("gives the Codex manifest skill and MCP pointers and a full interface", () => {
     const codex = readJson(join(PLUGIN, ".codex-plugin", "plugin.json")) as Record<string, unknown>;
     expect(codex.skills).toBe("./skills/");
-    expect(codex.mcpServers).toBeUndefined();
+    expect(codex.mcpServers).toBe("./.mcp.json");
     const iface = codex.interface as Record<string, unknown>;
     expect(iface.displayName).toBe("Godmode");
     expect(iface.brandColor).toMatch(/^#[0-9A-Fa-f]{6}$/);
@@ -54,12 +54,18 @@ describe("build-plugin emitter", () => {
     }
   });
 
-  it("emits each `both` command as a Claude command and a shared skill", () => {
-    expect(existsSync(join(PLUGIN, "commands", "revelation.md"))).toBe(true);
-    expect(existsSync(join(PLUGIN, "skills", "revelation", "SKILL.md"))).toBe(true);
-    const cmd = readFileSync(join(PLUGIN, "commands", "revelation.md"), "utf8");
-    expect(cmd).toMatch(/^---\nname: revelation\n/);
-    expect(cmd).toContain("allowed-tools:");
+  it("emits each `both` workflow once, as a shared skill that keeps its allowed-tools", () => {
+    const skill = readFileSync(join(PLUGIN, "skills", "revelation", "SKILL.md"), "utf8");
+    expect(skill).toMatch(/^---\nname: revelation\ndescription: ".+"\nallowed-tools: /);
+    expect(existsSync(join(PLUGIN, "commands"))).toBe(false);
+    expect(result.commands).toBe(9);
+    expect(result.skills).toBe(9);
+  });
+
+  it("writes a marketplace catalog with only fields Claude Code reads", () => {
+    const market = readJson(join(MARKETPLACE, "marketplace.json")) as Record<string, unknown>;
+    expect(Object.keys(market).sort()).toEqual(["description", "name", "owner", "plugins"]);
+    expect(market.owner).toMatchObject({ name: "Patrick King" });
   });
 
   it("emits the five themed subagents, each with a description (Claude-only)", () => {

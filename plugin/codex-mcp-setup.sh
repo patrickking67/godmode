@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Godmode: register bundled MCP servers with Codex via the native CLI.
+# Installing the plugin already wires them; use this only without the plugin.
 # Generated from src/plugin/_sources/mcps.ts; do not hand-edit. Run: bash codex-mcp-setup.sh
 set -euo pipefail
 

@@ -4,6 +4,21 @@ All notable changes to Godmode will be documented here. Format based on [Keep a 
 
 ## [Unreleased]
 
+### Fixed
+
+- Each workflow was registered twice in Claude Code (once from `commands/`, once from `skills/`), doubling its always-on context cost; Codex also migrated `commands/covenant.md` into a duplicate skill. The build now emits one shared skill per workflow, and the skill keeps its `allowed-tools`.
+- The marketplace catalog no longer carries `metadata.homepage`, which `claude plugin validate --strict` flags as unknown. The description moved to the documented top-level field.
+- The Codex manifest now points at `.mcp.json`, matching the documented Codex plugin format.
+- ESLint and Prettier no longer walk into nested git worktrees.
+
+### Added
+
+- Tests for the frontmatter parser, the MCP emitters and manifest validation, plus packaging checks: a drift comparison against a fresh build, skill frontmatter, hook script paths, version sync and MCP definitions.
+
+### Changed
+
+- README rewritten with accurate counts and install steps verified against Claude Code 2.1.319 and codex-cli 0.167.0, including the `codex plugin add` step.
+
 ## [1.3.0] - 2026-05-28
 
 ### Added

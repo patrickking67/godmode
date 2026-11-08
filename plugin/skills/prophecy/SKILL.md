@@ -1,6 +1,7 @@
 ---
 name: prophecy
 description: "Get step-by-step guidance for accomplishing a task in this repo."
+allowed-tools: Read, Grep, Glob, Task, WebFetch
 ---
 
 Produce a concrete, repo-grounded how-to for the task in `$ARGUMENTS`: the exact files,

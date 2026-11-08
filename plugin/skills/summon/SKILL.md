@@ -1,6 +1,7 @@
 ---
 name: summon
 description: "Summon the right subagent for a task: survey those available and dispatch the best fit."
+allowed-tools: Read, Glob, Grep, Task
 ---
 
 Map the specialized subagents available in this environment and, if `$ARGUMENTS`

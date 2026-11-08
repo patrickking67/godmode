@@ -1,4 +1,6 @@
 import { execFileSync } from "node:child_process";
+import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it, expect } from "vitest";
@@ -29,6 +31,43 @@ describe("session-start hook", () => {
     };
     expect(out.hookSpecificOutput.hookEventName).toBe("SessionStart");
     expect(out.hookSpecificOutput.additionalContext).toContain("/revelation");
+  });
+
+  it("names every shipped workflow and subagent, so the context never drifts", () => {
+    const { stdout } = runHook("session-start.mjs", {});
+    const context = (JSON.parse(stdout) as { hookSpecificOutput: { additionalContext: string } })
+      .hookSpecificOutput.additionalContext;
+    const names = (dir: string) =>
+      readdirSync(join(ROOT, "src", "plugin", "_sources", dir))
+        .filter((f) => f.endsWith(".md") && !f.startsWith("_"))
+        .map((f) => f.replace(/\.md$/, ""));
+    for (const cmd of names("commands")) expect(context).toContain(`/${cmd}`);
+    for (const agent of names("agents")) expect(context).toContain(agent);
+  });
+});
+
+describe("guard-bash hook input handling", () => {
+  it("stays silent and exits 0 on malformed JSON", () => {
+    const { stdout, status } = runHookRaw("guard-bash.mjs", "not-json{");
+    expect(status).toBe(0);
+    expect(stdout.trim()).toBe("");
+  });
+
+  it("stays silent when there is no command", () => {
+    for (const payload of [{}, { tool_input: {} }]) {
+      const { stdout, status } = runHook("guard-bash.mjs", payload);
+      expect(status).toBe(0);
+      expect(stdout.trim()).toBe("");
+    }
+  });
+
+  it("asks (never denies) and names the matched rule", () => {
+    const { stdout } = runHook("guard-bash.mjs", { tool_input: { command: "sudo rm -fr build" } });
+    const out = JSON.parse(stdout) as {
+      hookSpecificOutput: { permissionDecision: string; permissionDecisionReason: string };
+    };
+    expect(out.hookSpecificOutput.permissionDecision).toBe("ask");
+    expect(out.hookSpecificOutput.permissionDecisionReason).toContain("rm");
   });
 });
 
@@ -93,6 +132,20 @@ describe("format-edit hook", () => {
     const { stdout, status } = runHook("format-edit.mjs", {});
     expect(status).toBe(0);
     expect(JSON.parse(stdout)).toEqual({ suppressOutput: true });
+  });
+  it("leaves a file untouched in a project with no prettier config", () => {
+    const dir = mkdtempSync(join(tmpdir(), "gm-fmt-"));
+    try {
+      const file = join(dir, "messy.json");
+      const messy = '{"a":1,   "b":[1,2,3]}';
+      writeFileSync(file, messy);
+      const { stdout, status } = runHook("format-edit.mjs", { tool_input: { file_path: file } });
+      expect(status).toBe(0);
+      expect(JSON.parse(stdout)).toEqual({ suppressOutput: true });
+      expect(readFileSync(file, "utf8")).toBe(messy);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
   it("does not crash on malformed JSON", () => {
     const { stdout, status } = runHookRaw("format-edit.mjs", "not-json{");
