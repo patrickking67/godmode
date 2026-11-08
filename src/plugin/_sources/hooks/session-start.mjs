@@ -4,12 +4,14 @@
 let raw = "";
 process.stdin.on("data", (c) => (raw += c));
 process.stdin.on("end", () => {
+  // Claude Code namespaces plugin skills, so each workflow runs as /godmode:<name>.
   const additionalContext = [
-    "Godmode is active. Deific slash commands:",
-    "/revelation explore a codebase · /gospel explain code · /prophecy how-to guidance ·",
-    "/genesis implement · /summon dispatch subagents · /judgment review · /sanctify run checks ·",
-    "/exorcise debug root cause · /covenant commit.",
-    "Bundled subagents (via /summon or Task): oracle, demiurge, inquisitor, arbiter, seer.",
+    "Godmode is active. Workflow skills (run as /godmode:<name>):",
+    "/godmode:revelation explore a codebase · /godmode:gospel explain code ·",
+    "/godmode:prophecy how-to guidance · /godmode:genesis implement ·",
+    "/godmode:summon dispatch subagents · /godmode:judgment review ·",
+    "/godmode:sanctify run checks · /godmode:exorcise debug root cause · /godmode:covenant commit.",
+    "Bundled subagents (via /godmode:summon or Task): oracle, demiurge, inquisitor, arbiter, seer.",
   ].join("\n");
   process.stdout.write(
     JSON.stringify({

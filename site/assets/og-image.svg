@@ -33,7 +33,7 @@
   </g>
 
   <text x="470" y="300" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="92" font-weight="700" letter-spacing="-2" fill="url(#word)">godmode</text>
-  <text x="472" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="40" font-weight="600" letter-spacing="4" fill="#10B981">Learn. Plan. Build. Optimize.</text>
+  <text x="472" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="30" font-weight="600" letter-spacing="1" fill="#10B981">Learn. Plan. Build. Optimize.</text>
   <text x="472" y="430" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="29" fill="#9a9ab0">One plugin for Claude Code and Codex.</text>
 
   <g font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="24" font-weight="600">

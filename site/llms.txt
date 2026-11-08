@@ -1,0 +1,28 @@
+# Godmode
+
+> Godmode is one plugin for Claude Code and Codex, built from a single source. It ships nine workflow skills (revelation, gospel, prophecy, genesis, summon, judgment, sanctify, exorcise, covenant) that both engines load, ten no-auth MCP servers for docs, code intelligence, browser automation and Azure, and, in Claude Code only, five subagents and three hooks. It installs from a marketplace with no server, database or API keys. Apache-2.0.
+
+## Docs
+
+- [README](https://github.com/patrickking67/godmode/blob/main/README.md): what ships, install steps for both engines, how the build works
+- [AGENTS.md](https://github.com/patrickking67/godmode/blob/main/AGENTS.md): repository layout, build and test commands, conventions for contributors and coding agents
+- [CONTRIBUTING](https://github.com/patrickking67/godmode/blob/main/CONTRIBUTING.md): setup, branch naming, commit style, PR checklist
+- [CHANGELOG](https://github.com/patrickking67/godmode/blob/main/CHANGELOG.md): release history
+- [SECURITY](https://github.com/patrickking67/godmode/blob/main/SECURITY.md): supported versions and private vulnerability reporting
+
+## Source
+
+- [Repository](https://github.com/patrickking67/godmode): source, issues and releases
+- [Plugin sources](https://github.com/patrickking67/godmode/tree/main/src/plugin/_sources): workflows, subagents, hooks and MCP definitions (the single source of truth)
+- [Build script](https://github.com/patrickking67/godmode/blob/main/scripts/build-plugin.ts): emits the Claude Code and Codex plugin from the sources
+- [Generated plugin](https://github.com/patrickking67/godmode/tree/main/plugin): the installable tree both engines read
+
+## Live demo
+
+- [Landing site](https://patrickking67.github.io/godmode/): overview of commands, subagents, hooks and connectors
+- [Site data](https://patrickking67.github.io/godmode/data/godmode.json): the commands, agents, hooks and connectors as JSON
+
+## Optional
+
+- [Design spec](https://github.com/patrickking67/godmode/blob/main/docs/specs/2026-05-27-godmode-design.md): the original design, including roadmap items not built yet
+- [License](https://github.com/patrickking67/godmode/blob/main/LICENSE): Apache License 2.0

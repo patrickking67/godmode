@@ -1,0 +1,46 @@
+name: Bug report
+description: Something in the plugin, the build or the site does not work as documented.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected and what you saw instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. claude plugin install godmode@godmode
+        2. /godmode:sanctify
+        3. ...
+    validations:
+      required: true
+  - type: dropdown
+    id: engine
+    attributes:
+      label: Engine
+      options:
+        - Claude Code
+        - Codex
+        - Both
+        - Not engine specific (build, site)
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Godmode version, engine CLI version, Node version and OS.
+      placeholder: "godmode 1.3.0, Claude Code 2.1.x, Node 22, macOS 26"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or output
+      description: Paste relevant output. Remove tokens, keys and personal data first.
+      render: text

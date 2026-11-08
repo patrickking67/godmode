@@ -1,22 +1,14 @@
 # GitHub Copilot repository instructions
 
-Before changing code:
+Read and follow the root `AGENTS.md`. It is canonical for layout, commands, conventions and
+validation.
 
-- Read and follow the root `AGENTS.md`.
-- Treat `AGENTS.md` as canonical for architecture, commands, standards, and validation.
+The rules that matter most:
 
-Critical non-negotiables (repeated here because they must be direct):
+- `plugin/` and `.claude-plugin/marketplace.json` are generated. Edit `src/plugin/_sources/`,
+  run `pnpm build:plugin` and commit the output. CI fails on drift.
+- pnpm, not npm. Node 22 or later.
+- Bundled MCP servers need no API key or secret in config.
+- Never commit secrets. Never add an AI or bot as author, co-author or trailer.
 
-- `plugin/` and `.claude-plugin/marketplace.json` are **generated**. Never
-  hand-edit them. Edit `src/plugin/_sources/`, then run `pnpm build:plugin` and
-  commit the regenerated output — CI fails on drift.
-- Package manager is pnpm, not npm. Node >= 22.
-- Bundled MCP servers are remote HTTPS and no-auth. Never add a stdio server, a
-  localhost endpoint, or an `npx`/`uvx`/Docker launcher.
-- Never commit secrets.
-- Commits use only the repository owner's git identity. Never add an AI or bot as
-  author, co-author, trailer, or reviewer.
-
-Before completion:
-
-- Run `pnpm build:plugin && git diff --exit-code && pnpm typecheck && pnpm lint && pnpm test`.
+Before completion run `pnpm check` and commit the regenerated `plugin/`.

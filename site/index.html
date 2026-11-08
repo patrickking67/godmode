@@ -9,6 +9,10 @@
       content="Learn. Plan. Build. Optimize. One plugin for Claude Code and Codex with battle-tested workflows and ten bundled no-auth MCP servers, installed once from a single source."
     />
     <meta name="theme-color" content="#7C3AED" />
+    <meta name="color-scheme" content="dark" />
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
     <link rel="canonical" href="https://patrickking67.github.io/godmode/" />
 
     <!-- Open Graph -->
@@ -20,7 +24,12 @@
       content="Learn. Plan. Build. Optimize. Battle-tested workflows and ten bundled no-auth MCP servers, installed once from a single source in both engines."
     />
     <meta property="og:url" content="https://patrickking67.github.io/godmode/" />
-    <meta property="og:image" content="./assets/og-image.svg" />
+    <meta
+      property="og:image"
+      content="https://patrickking67.github.io/godmode/assets/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
       content="Godmode wordmark with the line Learn. Plan. Build. Optimize. and Claude Code and Codex badges."
@@ -33,13 +42,17 @@
       name="twitter:description"
       content="Learn. Plan. Build. Optimize. Battle-tested workflows and ten bundled no-auth MCP servers, installed once from a single source."
     />
-    <meta name="twitter:image" content="./assets/og-image.svg" />
+    <meta
+      name="twitter:image"
+      content="https://patrickking67.github.io/godmode/assets/og-image.png"
+    />
 
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Cdefs%3E%3ClinearGradient%20id='f'%20x1='32'%20y1='6'%20x2='32'%20y2='58'%20gradientUnits='userSpaceOnUse'%3E%3Cstop%20offset='0'%20stop-color='%23a855f7'/%3E%3Cstop%20offset='0.55'%20stop-color='%237C3AED'/%3E%3Cstop%20offset='1'%20stop-color='%2310B981'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%2312121a'/%3E%3Cpath%20fill='url(%23f)'%20d='M33.6%206.2c.6%206.7-2.1%2010.6-5.7%2013.9-3.9%203.6-8.9%207.4-9%2014.7-.1%208%205.6%2014.4%2013.4%2015%209%20.7%2015.5-5.6%2015.7-13.7.1-4.7-1.9-8.2-3.9-10.2.2%202.4-.6%204.6-2.4%205.6-.2-4.9-2-9-5.2-12.4-3-3.2-4-7.6-2.9-12.9z'/%3E%3C/svg%3E"
     />
     <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="text/plain" href="./llms.txt" title="llms.txt" />
 
     <link
       rel="preload"
@@ -252,12 +265,55 @@
             </p>
           </header>
           <div class="commands-groups" id="commands-root" data-fallback>
-            <p class="loading-note">
-              Loading commands. The full list lives in
-              <a href="./data/godmode.json">data/godmode.json</a>: revelation, gospel, prophecy,
-              genesis, summon, judgment, sanctify, exorcise, and covenant.
-            </p>
+            <div class="cmd-group">
+              <div class="cmd-grid">
+                <article class="cmd-card card-surface">
+                  <p class="cmd-name"><span class="slash">/</span>revelation</p>
+                  <p class="cmd-purpose">
+                    Deeply explore a codebase and explain how it fits together.
+                  </p>
+                </article>
+                <article class="cmd-card card-surface">
+                  <p class="cmd-name"><span class="slash">/</span>gospel</p>
+                  <p class="cmd-purpose">Explain how a piece of code works.</p>
+                </article>
+                <article class="cmd-card card-surface">
+                  <p class="cmd-name"><span class="slash">/</span>prophecy</p>
+                  <p class="cmd-purpose">How-to guidance grounded in this codebase.</p>
+                </article>
+                <article class="cmd-card card-surface">
+                  <p class="cmd-name"><span class="slash">/</span>genesis</p>
+                  <p class="cmd-purpose">Implement a well-scoped feature or fix.</p>
+                </article>
+                <article class="cmd-card card-surface">
+                  <p class="cmd-name"><span class="slash">/</span>summon</p>
+                  <p class="cmd-purpose">Dispatch the right subagent for a task.</p>
+                </article>
+                <article class="cmd-card card-surface">
+                  <p class="cmd-name"><span class="slash">/</span>judgment</p>
+                  <p class="cmd-purpose">Review code for bugs, security, and drift.</p>
+                </article>
+                <article class="cmd-card card-surface">
+                  <p class="cmd-name"><span class="slash">/</span>sanctify</p>
+                  <p class="cmd-purpose">Run the project's own checks and report pass or fail.</p>
+                </article>
+                <article class="cmd-card card-surface">
+                  <p class="cmd-name"><span class="slash">/</span>exorcise</p>
+                  <p class="cmd-purpose">Find the true root cause of a bug or failing test.</p>
+                </article>
+                <article class="cmd-card card-surface">
+                  <p class="cmd-name"><span class="slash">/</span>covenant</p>
+                  <p class="cmd-purpose">Commit your work cleanly.</p>
+                </article>
+              </div>
+            </div>
           </div>
+          <noscript>
+            <p class="loading-note">
+              JavaScript is off, so commands show without pillar grouping. Everything else on this
+              page works without it.
+            </p>
+          </noscript>
         </div>
       </section>
 
@@ -279,7 +335,7 @@
               <h3 class="block-title">Subagents</h3>
               <ul class="agents-list" id="agents-root" data-fallback>
                 <li class="loading-note">
-                  Loading subagents: oracle, demiurge, inquisitor, arbiter, seer.
+                  Subagents: oracle, demiurge, inquisitor, arbiter, seer.
                 </li>
               </ul>
             </div>
@@ -287,7 +343,7 @@
               <h3 class="block-title">Hooks</h3>
               <ul class="hooks-list" id="hooks-root" data-fallback>
                 <li class="loading-note">
-                  Loading hooks: session invocation, forbidden-act guard, auto-sanctify edits.
+                  Hooks: session invocation, forbidden-act guard, auto-sanctify edits.
                 </li>
               </ul>
             </div>
@@ -308,8 +364,8 @@
           </header>
           <div class="connectors-groups" id="connectors-root" data-fallback>
             <p class="loading-note">
-              Loading connectors. The bundle: Context7, Microsoft Learn, AWS Knowledge, Cloudflare
-              Docs, Keeper Docs, DeepWiki, grep.app, Playwright, Chrome DevTools, and Azure.
+              The bundle: Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs,
+              DeepWiki, grep.app, Playwright, Chrome DevTools, and Azure.
             </p>
           </div>
         </div>
@@ -417,8 +473,8 @@ codex plugin add godmode@godmode</code></pre>
           </header>
           <ol class="roadmap" id="roadmap-root" data-fallback>
             <li class="loading-note">
-              Loading roadmap. Now: the v1.3.0 surface. Next: persistent hybrid memory. Later: token
-              economics, a live dashboard, and a godmode CLI.
+              Now: the v1.3.0 surface. Next: persistent hybrid memory. Later: token economics, a
+              live dashboard, and a godmode CLI.
             </li>
           </ol>
         </div>

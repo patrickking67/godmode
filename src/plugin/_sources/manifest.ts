@@ -52,9 +52,9 @@ export const MANIFEST: ManifestSource = {
     category: "Developer Tools",
     capabilities: ["Read", "Write", "Edit", "Bash", "WebFetch"],
     defaultPrompt: [
-      "/revelation this codebase and tell me how it fits together",
-      "/judgment my uncommitted changes",
-      "/exorcise the failing test in this file",
+      "Use godmode:revelation to explain how this codebase fits together",
+      "Use godmode:judgment to review my uncommitted changes",
+      "Use godmode:exorcise to find why the failing test in this file fails",
     ],
     brandColor: "#7C3AED",
     websiteURL: "https://github.com/patrickking67/godmode",

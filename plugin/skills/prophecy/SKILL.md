@@ -7,8 +7,8 @@ allowed-tools: Read, Grep, Glob, Task, WebFetch
 Produce a concrete, repo-grounded how-to for the task in `$ARGUMENTS`: the exact files,
 conventions, and commands someone needs to do it here, not generic advice.
 
-Unlike `/genesis`, this command explains how the task would be done; it does not make
-the changes itself.
+Unlike the `genesis` workflow, this one explains how the task would be done; it does
+not make the changes itself.
 
 ## 1. Orient
 
@@ -50,4 +50,4 @@ End with the exact commands to run, copy-paste ready and in order (generate, bui
 lint, run), using the project's real scripts from step 1. State how to confirm success:
 which test should pass, what output to expect, what the result should look like.
 
-Hand back the guide. Do not edit files or run the build; `/genesis` does that.
+Hand back the guide. Do not edit files or run the build; the `genesis` workflow does that.

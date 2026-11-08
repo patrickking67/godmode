@@ -357,6 +357,40 @@ export function validateManifests(claude: unknown, codex: unknown): void {
 }
 
 // ---------------------------------------------------------------------------
+// Source name checks
+// ---------------------------------------------------------------------------
+
+/** Same rule the manifests use. Names become paths, TOML keys and shell words. */
+const SAFE_NAME = /^[a-z0-9][a-z0-9-]*$/;
+
+export interface SourceNames {
+  /** Workflows that become `skills/<name>/` (engines both/codex) plus standalone skills. */
+  skills: string[];
+  /** Claude-only workflows that become `commands/<name>.md`. */
+  commands: string[];
+  agents: string[];
+  mcps: string[];
+}
+
+/**
+ * Fails on a name that is not kebab-case (a frontmatter `name: ../x` would otherwise write
+ * outside `plugin/`) and on two sources that emit to the same file, which would otherwise
+ * overwrite each other silently.
+ */
+export function validateSourceNames(names: SourceNames): void {
+  for (const [kind, list] of Object.entries(names) as [keyof SourceNames, string[]][]) {
+    const seen = new Set<string>();
+    for (const name of list) {
+      if (!SAFE_NAME.test(name)) {
+        throw new Error(`Invalid ${kind} name "${name}": use lowercase letters, digits and dashes`);
+      }
+      if (seen.has(name)) throw new Error(`Duplicate ${kind} name "${name}"`);
+      seen.add(name);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Build
 // ---------------------------------------------------------------------------
 
@@ -383,6 +417,15 @@ export function build(opts: BuildOptions = {}): BuildResult {
   const standaloneSkills = readStandaloneSkills();
   const agents = readAgents();
   const hooks = readHooks();
+  validateSourceNames({
+    skills: [
+      ...commands.filter((c) => c.engines !== "claude").map((c) => c.name),
+      ...standaloneSkills.map((s) => s.name),
+    ],
+    commands: commands.filter((c) => c.engines === "claude").map((c) => c.name),
+    agents: agents.map((a) => a.name),
+    mcps: MCPS.map((m) => m.name),
+  });
 
   // Clean previous output for a deterministic, idempotent build.
   rmSync(pluginDir, { recursive: true, force: true });

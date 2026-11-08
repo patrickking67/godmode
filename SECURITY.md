@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Godmode follows SemVer. The current minor and the previous minor receive security fixes.
+Godmode follows SemVer. The latest minor release gets security fixes.
 
 | Version | Supported |
 | ------- | --------- |
@@ -11,46 +11,38 @@ Godmode follows SemVer. The current minor and the previous minor receive securit
 
 ## Reporting a vulnerability
 
-**Please do not file a public GitHub issue for security reports.**
+Please do not open a public issue for a security problem. Report it privately through
+[GitHub Security Advisories](https://github.com/patrickking67/godmode/security/advisories/new).
 
-Use [GitHub Security Advisories](https://github.com/patrickking67/godmode/security/advisories/new) for private disclosure.
+Include what you found, steps or a proof of concept, the affected version and your view of
+the impact.
 
-Include:
+I aim to acknowledge a report within 72 hours and to ship a fix in the next patch release.
+I will credit you in the changelog unless you would rather stay anonymous.
 
-- A clear description of the issue
-- Reproduction steps or proof-of-concept
-- Affected version(s)
-- Your assessment of impact
+## What ships today
 
-We aim to acknowledge reports within 72 hours and ship a fix in the next patch release. Coordinated disclosure is appreciated; we will credit reporters in the changelog unless you prefer to stay anonymous.
-
-## Security model
-
-> Scope note: the shipped plugin (commands, agents, hooks, MCP wiring) runs no server and stores no data. The local server, hybrid memory, and dashboard described below are on the roadmap; their security model is documented here ahead of implementation.
-
-Godmode runs a local Hono server bound to `127.0.0.1` only. Every request requires a bearer token stored at `~/.godmode/auth.token` (file mode `0600`). Hook ingestion uses the same token, set via `GODMODE_TOKEN` environment variable injected by the plugin install.
-
-**No CORS open. No external bind. No embedded credentials.** MCP servers that need auth read credentials from environment variables only; Godmode never embeds keys.
+The plugin runs no server and stores no data. It is Markdown skills and subagents, three
+Node hook scripts and MCP server configuration. None of the bundled MCP servers need a key
+in config; Azure uses the local `az login`.
 
 ## In scope
 
-These describe the intended security boundary once the server and memory surfaces ship. They are listed now so reports can be filed and triaged as implementation proceeds.
-
-- Local server auth bypass (request to `/api/*` without valid bearer)
-- Hook-injection RCE (hook payloads triggering arbitrary code execution)
-- MCP credential leak (logs, error messages, or memory observations containing secrets)
-- Sandbox escape via skill / agent definitions
-- Memory exfiltration between projects (data from project A surfacing in project B through Godmode)
-- SQL injection in `/api/observations` search or other parameterized endpoints
-- WebSocket auth bypass
+- The hook scripts in `src/plugin/_sources/hooks/` (shipped as `plugin/hooks/`): for
+  example a payload that makes a hook run an unintended command, or a destructive command
+  the Bash guard should catch but does not.
+- The build script `scripts/build-plugin.ts`: for example output written outside `plugin/`
+  or a manifest that loads something other than what the sources declare.
+- MCP wiring in `plugin/.mcp.json`, `plugin/codex-config.toml` and
+  `plugin/codex-mcp-setup.sh`: for example a server definition that leaks credentials.
+- Skill or subagent instructions that steer an agent into an unsafe action.
+- The site in `site/`.
 
 ## Out of scope
 
-- Physical access compromise of the host machine
-- Social engineering of the user
-- User-misconfigured MCP servers or third-party plugins
-- Vulnerabilities in upstream dependencies that have been patched but not yet rolled in (please report upstream; we'll update in the next patch release)
-
-## Hall of fame
-
-(empty for now; your name could be here)
+- Vulnerabilities in the third-party MCP servers themselves. Report those to their owners.
+- Physical access to the host, social engineering, or user-misconfigured MCP servers and
+  other plugins.
+- Upstream dependency issues already patched upstream but not yet picked up here.
+- Roadmap features that are designed but not built (memory, token tracking, a local
+  dashboard).
