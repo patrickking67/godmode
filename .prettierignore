@@ -3,6 +3,10 @@ node_modules
 dist
 coverage
 
+# Nested git worktrees are separate checkouts
+.worktrees/
+.claude/worktrees/
+
 # Generated plugin tree — formatting is owned by scripts/build-plugin.ts
 plugin/
 

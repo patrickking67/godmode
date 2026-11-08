@@ -5,7 +5,16 @@ import prettier from "eslint-config-prettier";
 
 export default [
   {
-    ignores: ["dist/**", "node_modules/**", "coverage/**", "**/*.config.ts", "eslint.config.js"],
+    ignores: [
+      "dist/**",
+      "node_modules/**",
+      "coverage/**",
+      "**/*.config.ts",
+      "eslint.config.js",
+      // Git worktrees nested in the repo are separate checkouts; lint them from inside.
+      ".worktrees/**",
+      ".claude/worktrees/**",
+    ],
   },
   {
     files: ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"],
