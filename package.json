@@ -46,28 +46,28 @@
     "validate:plugin": "claude plugin validate --strict . && claude plugin validate --strict ./plugin"
   },
   "dependencies": {
-    "@hono/node-server": "^2.0.4",
+    "@hono/node-server": "^2.1.6",
     "ajv": "^8.20.0",
     "better-sqlite3": "^12.10.0",
-    "hono": "^4.12.23",
+    "hono": "^4.13.16",
     "ulidx": "^2.4.1",
-    "ws": "^8.21.0",
-    "zod": "^4.4.3"
+    "ws": "^8.22.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.9.1",
-    "@types/supertest": "^7.2.0",
-    "@types/ws": "^8.18.1",
-    "@typescript-eslint/eslint-plugin": "^8.60.0",
-    "@typescript-eslint/parser": "^8.60.0",
+    "@types/supertest": "^7.2.1",
+    "@types/ws": "^8.18.2",
+    "@typescript-eslint/eslint-plugin": "^8.72.1",
+    "@typescript-eslint/parser": "^8.72.1",
     "@vitest/coverage-v8": "^4.1.7",
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
-    "prettier": "^3.8.3",
-    "supertest": "^7.2.2",
-    "tsx": "^4.22.3",
+    "prettier": "^3.9.10",
+    "supertest": "^7.3.1",
+    "tsx": "^4.23.15",
     "typescript": "^6.0.3",
     "vitest": "^4.1.7"
   }
