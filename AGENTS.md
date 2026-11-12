@@ -29,7 +29,8 @@ plugin/                 GENERATED installable plugin tree (do not hand-edit)
 site/                   GitHub Pages site: index.html, styles.css, main.js, assets/, llms.txt
 site/data/godmode.json  GENERATED catalog the site renders (do not hand-edit)
 tests/                  vitest: plugin/ (emitters, packaging, hooks, skill lint), catalog parity,
-                        site/ (static fallback, no-JS, llms.txt, theme tokens and contrast)
+                        site/ (static fallback, no-JS, llms.txt, theme tokens and contrast,
+                        and main.js run against a small fake DOM: copy, tabs, theme, menu)
 docs/                   architecture.md, mcp-servers.md, assets/ (screenshots, og-image source)
 docs/specs, docs/plans  Design notes. Memory, token tracking and a dashboard are roadmap only
 llms.txt                Copy of site/llms.txt (a test keeps them identical)

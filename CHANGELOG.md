@@ -20,6 +20,7 @@ All notable changes to Godmode will be documented here. Format based on [Keep a 
 
 - The site has a light theme. It follows the system setting, a toggle in the header switches it, and the choice is kept in `localStorage`. A stored choice is applied by an inline script before the stylesheet loads, so the page never paints in the wrong theme. Code blocks stay dark in both themes.
 - `tests/site/theme.test.ts`: the light tokens must be declared identically for the system setting and the stored choice, every text token must meet WCAG AA on the surfaces it is used on in both themes, colors must live in tokens, and every `localStorage` call must sit inside a `try`.
+- `tests/site/behavior.test.ts` runs the real `site/main.js` against a small fake DOM (`tests/site/fake-dom.ts`, no new dependency) and drives the copy buttons, the workflow tabs, the theme toggle and the mobile menu.
 - A new icon (SVG plus 128 and 512 px PNG) shipped in `plugin/assets/` and referenced by the Claude Code `icon` field and the Codex `composerIcon` and `logo` fields. The site favicon, touch icon and social card use it too.
 - Both manifests declare a privacy statement URL (the README's Privacy section), which clears the last `claude plugin validate --strict` directory warning.
 - `tests/plugin/skills.test.ts`: a lint for every skill and subagent (description length and trigger, required sections, numbered steps, valid routes to other workflows, scoped tool grants).
@@ -42,6 +43,9 @@ All notable changes to Godmode will be documented here. Format based on [Keep a 
 
 ### Fixed
 
+- Site copy buttons: clicking a button again within 1.8 seconds let the first click's timer reset the "Copied" message early. Each button now restarts its own timer.
+- Site copy buttons: on the fallback path (no Clipboard API, or permission refused) keyboard focus was dropped to the page body after the copy. Focus now returns to the button.
+- Site workflow tabs: the group headings sat inside the `tablist` as plain paragraphs, which a tablist may not own. They are now presentational and each tab references its heading with `aria-describedby`.
 - The SessionStart context listed bare `/revelation`-style commands, but Claude Code runs plugin skills as `/godmode:<name>`. The context, the Codex default prompts and the `prophecy` skill now use names that resolve.
 - The emitter rejects a workflow, skill, agent or MCP name that is not kebab-case or that two sources share. Before, a frontmatter name like `../x` wrote outside `plugin/` and duplicates overwrote each other silently.
 - With JavaScript off, the site's hero, section heads and install steps were invisible (they started at opacity 0). The page now hides them only while JS runs, and the command cards ship as static markup with a `noscript` note.
