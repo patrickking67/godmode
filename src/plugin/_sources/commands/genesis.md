@@ -2,6 +2,7 @@
 name: genesis
 description: Implement a feature or change end to end (restate the goal, match existing patterns, build in small tested steps, run the project's checks). Use when the user asks to build, add, change or refactor something concrete. For a plan only use prophecy; for a bug or failing test use exorcise.
 allowed-tools: Read, Grep, Glob
+pillar: Build
 engines: both
 ---
 

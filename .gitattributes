@@ -14,3 +14,4 @@
 pnpm-lock.yaml linguist-generated=true
 plugin/** linguist-generated=true
 .claude-plugin/marketplace.json linguist-generated=true
+site/data/godmode.json linguist-generated=true

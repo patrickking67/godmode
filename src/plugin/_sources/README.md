@@ -13,6 +13,7 @@ by `scripts/build-plugin.ts`. Never edit the generated `plugin/` directory by ha
 | `agents/<name>.md` | `plugin/agents/<name>.md` (Claude Code subagents, copied verbatim) |
 | `hooks/*` | `plugin/hooks/*` (Claude Code hooks: `hooks.json` plus its Node scripts) |
 | `skills/<name>/SKILL.md` (optional) | `plugin/skills/<name>/SKILL.md` (copied verbatim; no standalone skills exist yet) |
+| `site.ts` plus all of the above | `site/data/godmode.json` (the catalog the landing site renders) |
 | `assets/*` | `plugin/assets/*` (icon and logo, copied byte for byte; both manifests point at them) |
 
 ## Command source format
@@ -23,6 +24,7 @@ name: revelation
 description: One line shown in the slash-command menu and skill list.
 allowed-tools: Read, Grep, Glob   # tools Claude Code pre-approves while the skill runs
 invocation: auto     # auto | manual  (default: auto)
+pillar: Learn        # Learn | Plan | Build | Review | Debug | Ship; site and README grouping only
 engines: both        # both | claude | codex  (default: both)
 ---
 

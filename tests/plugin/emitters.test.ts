@@ -8,6 +8,9 @@ import {
   codexSkillPolicy,
   firstSentence,
   marketplaceCatalog,
+  mcpEndpoint,
+  procedureSteps,
+  siteData,
   parseFrontmatter,
   shQuote,
   skillFromCommand,
@@ -26,6 +29,7 @@ const HTTP: McpServerDef = {
   transport: "http",
   url: "https://example.com/mcp",
   description: "Example docs server.",
+  homepage: "https://example.com/docs",
 };
 const STDIO: McpServerDef = {
   name: "browser",
@@ -35,6 +39,7 @@ const STDIO: McpServerDef = {
   command: "npx",
   args: ["-y", "example-mcp@1.0.0"],
   description: "Example stdio server.",
+  homepage: "https://example.com/browser",
 };
 
 describe("parseFrontmatter", () => {
@@ -185,6 +190,7 @@ describe("skill emitters (golden output)", () => {
     allowedTools: "Read, Grep",
     engines: "both",
     invocation: "auto",
+    pillar: "Learn",
     body: "Body line one.\n\n## Procedure\n\nDo it.",
   };
   const manual: CommandSource = { ...auto, name: "ship-it", invocation: "manual" };
@@ -247,6 +253,57 @@ describe("skill emitters (golden output)", () => {
     expect(firstSentence("Do one thing. Use when asked.")).toBe("Do one thing.");
     expect(firstSentence("Run v1.2 checks (fast). Then stop.")).toBe("Run v1.2 checks (fast).");
     expect(firstSentence("No full stop")).toBe("No full stop");
+  });
+});
+
+describe("site catalog", () => {
+  const cmd: CommandSource = {
+    name: "example",
+    description: "Explain a thing. Use when the user asks about it.",
+    allowedTools: "Read, Bash(git diff *)",
+    engines: "both",
+    invocation: "manual",
+    pillar: "Learn",
+    body: "Intro.\n\n## Procedure\n\n### 1. Look\n\nx\n\n### 2. Report back\n\ny\n\n## Verify\n\nz",
+  };
+  const agent = {
+    name: "scout",
+    raw: "---\ndescription: Finds things. Never edits.\ntools: Read, Grep\n---\n\nBody",
+  };
+
+  it("reads step titles from a workflow body", () => {
+    expect(procedureSteps(cmd.body)).toEqual(["Look", "Report back"]);
+    expect(procedureSteps("no steps here")).toEqual([]);
+  });
+
+  it("describes how each transport is reached", () => {
+    expect(mcpEndpoint(HTTP)).toBe("https://example.com/mcp");
+    expect(mcpEndpoint(STDIO)).toBe("npx -y example-mcp@1.0.0");
+  });
+
+  it("derives the workflow and subagent entries from their sources", () => {
+    const data = siteData([cmd], [agent]) as {
+      commands: Record<string, unknown>[];
+      agents: Record<string, unknown>[];
+      connectors: unknown[];
+    };
+    expect(data.commands).toEqual([
+      {
+        name: "example",
+        pillar: "Learn",
+        purpose: "Explain a thing.",
+        description: cmd.description,
+        invocation: "manual",
+        allowedTools: ["Read", "Bash(git diff *)"],
+        steps: ["Look", "Report back"],
+        source: "src/plugin/_sources/commands/example.md",
+        body: cmd.body,
+      },
+    ]);
+    expect(data.agents).toEqual([
+      { name: "scout", role: "Finds things.", tools: ["Read", "Grep"] },
+    ]);
+    expect(data.connectors.length).toBeGreaterThan(0);
   });
 });
 

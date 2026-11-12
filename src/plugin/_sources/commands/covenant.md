@@ -3,6 +3,7 @@ name: covenant
 description: Create one Conventional Commit from the current changes (inspect the diff, stage explicit paths, write the message, commit as the user, confirm). Use only when the user explicitly asks to commit. Never pushes, amends or skips hooks.
 allowed-tools: Read, Bash(git status *), Bash(git diff *), Bash(git log *), Bash(git branch *), Bash(git add *), Bash(git commit *)
 invocation: manual
+pillar: Ship
 engines: both
 ---
 

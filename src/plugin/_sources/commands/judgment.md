@@ -2,6 +2,7 @@
 name: judgment
 description: Review a diff for correctness bugs, security flaws, silent failures, convention drift and missing tests, and report findings by severity. Use when the user asks for a code review of uncommitted changes, a commit, a range or named files. Read-only, it never edits.
 allowed-tools: Read, Grep, Glob, Bash(git status *), Bash(git diff *), Bash(git show *), Bash(git log *)
+pillar: Review
 engines: both
 ---
 

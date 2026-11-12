@@ -2,6 +2,7 @@
 name: prophecy
 description: Write a step-by-step plan for doing a task in this repository without changing any files (the precedent to copy, the files to touch, the commands to run). Use when the user asks how to do something here or wants a plan before building. To make the change use genesis.
 allowed-tools: Read, Grep, Glob
+pillar: Plan
 engines: both
 ---
 

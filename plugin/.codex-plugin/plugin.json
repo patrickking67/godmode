@@ -1,7 +1,7 @@
 {
   "name": "godmode",
   "version": "1.3.0",
-  "description": "Learn, plan, build, and optimize: one super-plugin for Claude Code and Codex, with hero workflows and bundled no-auth MCP servers.",
+  "description": "One plugin for Claude Code and Codex, built from a single source: nine coding workflow skills and ten no-auth MCP servers.",
   "author": {
     "name": "Patrick King",
     "url": "https://github.com/patrickking67"
@@ -13,7 +13,7 @@
     "claude-code",
     "codex",
     "plugin",
-    "workflows",
+    "agent-skills",
     "mcp",
     "subagents"
   ],
@@ -22,8 +22,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Godmode",
-    "shortDescription": "Deific coding workflows + bundled no-auth MCP servers.",
-    "longDescription": "Godmode bundles battle-tested coding workflows (revelation, gospel, prophecy, genesis, summon, judgment, sanctify, exorcise, covenant) and ten no-auth MCP servers across docs (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs), code intelligence (DeepWiki, grep.app), browser automation (Playwright, Chrome DevTools), and cloud (Azure). In Claude Code it also ships five themed subagents (oracle, demiurge, inquisitor, arbiter, seer) and automatic hooks. One install, both engines.",
+    "shortDescription": "Nine coding workflows and ten no-auth MCP servers.",
+    "longDescription": "Godmode adds nine coding workflow skills (revelation, gospel, prophecy, genesis, summon, judgment, sanctify, exorcise, covenant) and ten MCP servers that need no API key: documentation (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs), code intelligence (DeepWiki, grep.app), browser automation (Playwright, Chrome DevTools) and cloud (Azure). In Claude Code it also adds five subagents (oracle, demiurge, inquisitor, arbiter, seer) and three hooks. Claude Code and Codex load the same files, built from one source.",
     "developerName": "Patrick King",
     "category": "Developer Tools",
     "capabilities": [

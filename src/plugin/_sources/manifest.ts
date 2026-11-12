@@ -41,17 +41,17 @@ export interface ManifestSource {
 export const MANIFEST: ManifestSource = {
   name: "godmode",
   description:
-    "Learn, plan, build, and optimize: one super-plugin for Claude Code and Codex, with hero workflows and bundled no-auth MCP servers.",
+    "One plugin for Claude Code and Codex, built from a single source: nine coding workflow skills and ten no-auth MCP servers.",
   author: { name: "Patrick King", url: "https://github.com/patrickking67" },
   homepage: "https://github.com/patrickking67/godmode#readme",
   repository: "https://github.com/patrickking67/godmode",
   license: "Apache-2.0",
-  keywords: ["claude-code", "codex", "plugin", "workflows", "mcp", "subagents"],
+  keywords: ["claude-code", "codex", "plugin", "agent-skills", "mcp", "subagents"],
   interface: {
     displayName: "Godmode",
-    shortDescription: "Deific coding workflows + bundled no-auth MCP servers.",
+    shortDescription: "Nine coding workflows and ten no-auth MCP servers.",
     longDescription:
-      "Godmode bundles battle-tested coding workflows (revelation, gospel, prophecy, genesis, summon, judgment, sanctify, exorcise, covenant) and ten no-auth MCP servers across docs (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs), code intelligence (DeepWiki, grep.app), browser automation (Playwright, Chrome DevTools), and cloud (Azure). In Claude Code it also ships five themed subagents (oracle, demiurge, inquisitor, arbiter, seer) and automatic hooks. One install, both engines.",
+      "Godmode adds nine coding workflow skills (revelation, gospel, prophecy, genesis, summon, judgment, sanctify, exorcise, covenant) and ten MCP servers that need no API key: documentation (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs), code intelligence (DeepWiki, grep.app), browser automation (Playwright, Chrome DevTools) and cloud (Azure). In Claude Code it also adds five subagents (oracle, demiurge, inquisitor, arbiter, seer) and three hooks. Claude Code and Codex load the same files, built from one source.",
     developerName: "Patrick King",
     category: "Developer Tools",
     capabilities: ["Read", "Write", "Edit", "Bash", "WebFetch"],

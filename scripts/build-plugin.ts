@@ -18,6 +18,7 @@
  *   plugin/codex-config.toml             Codex `[mcp_servers.*]` snippet
  *   plugin/codex-mcp-setup.sh            Codex `codex mcp add` setup script
  *   .claude-plugin/marketplace.json      Claude marketplace catalog
+ *   site/data/godmode.json               Catalog the landing site renders
  *
  * Run: `pnpm build:plugin` (tsx). Validates both manifests with ajv and exits
  * non-zero on any schema violation.
@@ -28,6 +29,7 @@ import { fileURLToPath } from "node:url";
 import Ajv from "ajv";
 import { MANIFEST } from "../src/plugin/_sources/manifest.js";
 import { MCPS, type McpServerDef } from "../src/plugin/_sources/mcps.js";
+import { SITE } from "../src/plugin/_sources/site.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..");
@@ -45,6 +47,8 @@ export interface CommandSource {
   allowedTools: string | null;
   engines: Engines;
   invocation: Invocation;
+  /** Group shown on the site and in the README. Never emitted into the skill. */
+  pillar: string;
   body: string;
 }
 
@@ -88,12 +92,17 @@ function readCommands(): CommandSource[] {
       if (!["auto", "manual"].includes(invocation)) {
         throw new Error(`Command "${name}" has invalid invocation: "${invocation}"`);
       }
+      const pillar = data.pillar ?? "";
+      if (!SITE.pillars.includes(pillar)) {
+        throw new Error(`Command "${name}" has invalid pillar: "${pillar}"`);
+      }
       return {
         name,
         description,
         allowedTools: data["allowed-tools"] ?? null,
         engines,
         invocation,
+        pillar,
         body: body.trim(),
       };
     });
@@ -336,6 +345,67 @@ export function marketplaceCatalog(): Record<string, unknown> {
 }
 
 // ---------------------------------------------------------------------------
+// Site catalog
+// ---------------------------------------------------------------------------
+
+/** How a server is reached: its URL, or the command line that starts it. */
+export function mcpEndpoint(s: McpServerDef): string {
+  return s.transport === "http" ? (s.url ?? "") : [s.command, ...(s.args ?? [])].join(" ");
+}
+
+/** Titles of the numbered `### N. Title` steps in a workflow body. */
+export function procedureSteps(body: string): string[] {
+  return [...body.matchAll(/^### \d+\. (.+)$/gm)].map((m) => (m[1] ?? "").trim());
+}
+
+/**
+ * The catalog the landing site renders. It is built from the same definitions as the
+ * plugin, so the page cannot list a workflow, subagent or server that does not ship.
+ */
+export function siteData(
+  commands: CommandSource[],
+  agents: { name: string; raw: string }[],
+): Record<string, unknown> {
+  return {
+    generated: "Built by scripts/build-plugin.ts from src/plugin/_sources. Do not hand-edit.",
+    version: VERSION,
+    tagline: SITE.tagline,
+    pitch: SITE.pitch,
+    pillars: SITE.pillars,
+    commands: commands.map((c) => ({
+      name: c.name,
+      pillar: c.pillar,
+      purpose: firstSentence(c.description),
+      description: c.description,
+      invocation: c.invocation,
+      allowedTools: (c.allowedTools ?? "").split(/,\s*/).filter(Boolean),
+      steps: procedureSteps(c.body),
+      source: `src/plugin/_sources/commands/${c.name}.md`,
+      body: c.body,
+    })),
+    agents: agents.map((a) => {
+      const { data } = parseFrontmatter(a.raw);
+      return {
+        name: a.name,
+        role: firstSentence(data.description ?? ""),
+        tools: (data.tools ?? "").split(/,\s*/).filter(Boolean),
+      };
+    }),
+    hooks: SITE.hooks,
+    connectors: MCPS.map((m) => ({
+      slug: m.name,
+      title: m.title,
+      category: m.category,
+      blurb: m.description,
+      transport: m.transport,
+      endpoint: mcpEndpoint(m),
+      homepage: m.homepage,
+    })),
+    roadmap: SITE.roadmap,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Validation
 // ---------------------------------------------------------------------------
 
@@ -462,11 +532,14 @@ export interface BuildOptions {
   outDir?: string;
   /** Where `marketplace.json` is written. Defaults to the committed `.claude-plugin/`. */
   marketplaceDir?: string;
+  /** Where the site catalog is written. Defaults to the committed `site/data/godmode.json`. */
+  siteDataPath?: string;
 }
 
 export function build(opts: BuildOptions = {}): BuildResult {
   const pluginDir = opts.outDir ?? PLUGIN;
   const marketplaceDir = opts.marketplaceDir ?? join(ROOT, ".claude-plugin");
+  const siteDataPath = opts.siteDataPath ?? join(ROOT, "site", "data", "godmode.json");
 
   const commands = readCommands();
   const standaloneSkills = readStandaloneSkills();
@@ -500,6 +573,7 @@ export function build(opts: BuildOptions = {}): BuildResult {
   write(join(pluginDir, ".claude-plugin", "plugin.json"), json(claude));
   write(join(pluginDir, ".codex-plugin", "plugin.json"), json(codex));
   write(join(marketplaceDir, "marketplace.json"), json(marketplaceCatalog()));
+  write(siteDataPath, json(siteData(commands, agents)));
 
   write(join(pluginDir, ".mcp.json"), claudeMcpJson(MCPS));
   write(join(pluginDir, "codex-config.toml"), codexMcpToml(MCPS));

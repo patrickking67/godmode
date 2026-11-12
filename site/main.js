@@ -6,7 +6,7 @@
 (function () {
   "use strict";
 
-  var PILLAR_ORDER = ["Learning", "Guiding", "Building", "Reviewing", "Debugging", "Git"];
+  var PILLAR_ORDER = ["Learn", "Plan", "Build", "Review", "Debug", "Ship"];
   var CATEGORY_ORDER = ["Docs", "Code intelligence", "Browser", "Cloud"];
 
   function el(tag, className, text) {

@@ -2,6 +2,7 @@
 name: sanctify
 description: Run the project's own checks (typecheck, lint, tests, build) and report pass or fail per check with the failing output. Use when the user asks to verify, run the checks or confirm a change is green before committing. It reports and does not fix.
 allowed-tools: Read, Grep, Glob
+pillar: Review
 engines: both
 ---
 

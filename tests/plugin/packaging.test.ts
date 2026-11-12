@@ -32,12 +32,14 @@ describe("plugin packaging", () => {
   let TMP: string;
   let PLUGIN: string;
   let MARKETPLACE_DIR: string;
+  let SITE_DATA: string;
 
   beforeAll(() => {
     TMP = mkdtempSync(join(tmpdir(), "gm-pack-"));
     PLUGIN = join(TMP, "plugin");
     MARKETPLACE_DIR = join(TMP, ".claude-plugin");
-    build({ outDir: PLUGIN, marketplaceDir: MARKETPLACE_DIR });
+    SITE_DATA = join(TMP, "site", "godmode.json");
+    build({ outDir: PLUGIN, marketplaceDir: MARKETPLACE_DIR, siteDataPath: SITE_DATA });
   });
 
   afterAll(() => {
@@ -57,11 +59,14 @@ describe("plugin packaging", () => {
     expect(readFileSync(COMMITTED_MARKETPLACE, "utf8")).toBe(
       readFileSync(join(MARKETPLACE_DIR, "marketplace.json"), "utf8"),
     );
+    expect(readFileSync(join(ROOT, "site", "data", "godmode.json"), "utf8")).toBe(
+      readFileSync(SITE_DATA, "utf8"),
+    );
   });
 
   it("is deterministic and removes stale output on rebuild", () => {
     const before = listFiles(PLUGIN).map((f) => [f, readFileSync(join(PLUGIN, f), "utf8")]);
-    build({ outDir: PLUGIN, marketplaceDir: MARKETPLACE_DIR });
+    build({ outDir: PLUGIN, marketplaceDir: MARKETPLACE_DIR, siteDataPath: SITE_DATA });
     const after = listFiles(PLUGIN).map((f) => [f, readFileSync(join(PLUGIN, f), "utf8")]);
     expect(after).toEqual(before);
   });

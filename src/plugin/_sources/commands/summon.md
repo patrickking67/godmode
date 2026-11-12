@@ -2,6 +2,7 @@
 name: summon
 description: List the subagents available in this session and pick the best one for a task, with the exact dispatch prompt. Use when the user asks which agent to use, wants work delegated or run in parallel, or asks what agents exist.
 allowed-tools: Read, Grep, Glob
+pillar: Build
 engines: both
 ---
 

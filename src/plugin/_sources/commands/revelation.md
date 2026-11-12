@@ -2,6 +2,7 @@
 name: revelation
 description: Map an unfamiliar codebase or subsystem and explain how it fits together (layout, entry points, data flow, conventions, risks). Use when the user asks for an overview, an architecture tour or onboarding to a repo or area. For one file, symbol or error use gospel.
 allowed-tools: Read, Grep, Glob
+pillar: Learn
 engines: both
 ---
 

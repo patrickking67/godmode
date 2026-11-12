@@ -2,6 +2,7 @@
 name: gospel
 description: Explain how one file, symbol, function, flow or error works by tracing the real code path. Use when the user asks what something does, why an error fires or how a value gets from one place to another. For a whole-repo overview use revelation; to fix a failure use exorcise.
 allowed-tools: Read, Grep, Glob
+pillar: Learn
 engines: both
 ---
 

@@ -2,6 +2,7 @@
 name: exorcise
 description: Find the root cause of a bug or failing test before fixing it (reproduce, rank hypotheses, isolate, explain, apply the smallest fix, re-run). Use when something fails, crashes, flakes or behaves wrongly and the cause is unknown.
 allowed-tools: Read, Grep, Glob
+pillar: Debug
 engines: both
 ---
 

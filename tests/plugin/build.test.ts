@@ -21,7 +21,11 @@ describe("build-plugin emitter", () => {
     TMP = mkdtempSync(join(tmpdir(), "gm-build-"));
     PLUGIN = join(TMP, "plugin");
     MARKETPLACE = join(TMP, ".claude-plugin");
-    result = build({ outDir: PLUGIN, marketplaceDir: MARKETPLACE });
+    result = build({
+      outDir: PLUGIN,
+      marketplaceDir: MARKETPLACE,
+      siteDataPath: join(TMP, "site", "godmode.json"),
+    });
   });
 
   afterAll(() => {
