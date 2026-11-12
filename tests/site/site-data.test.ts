@@ -7,7 +7,7 @@ import { MCPS } from "../../src/plugin/_sources/mcps.js";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 interface SiteData {
-  commands: { name: string }[];
+  commands: { name: string; purpose: string; steps: string[] }[];
   connectors: { slug: string; title: string; category: string; blurb: string }[];
 }
 
@@ -58,6 +58,44 @@ describe("site without JavaScript", () => {
     }
   });
 
+  it("shows each workflow's purpose and every server endpoint in the static markup", () => {
+    const decode = (t: string) => t.replace(/&#x27;/g, "'").replace(/&quot;/g, '"');
+    const text = decode(html).replace(/\s+/g, " ");
+    for (const c of site.commands) expect(text, c.name).toContain(c.purpose);
+    for (const m of MCPS) {
+      const endpoint = m.url ?? [m.command, ...(m.args ?? [])].join(" ");
+      expect(text, m.name).toContain(`<code>${endpoint}</code>`);
+    }
+  });
+
+  it("shows the sanctify procedure in the demo exactly as the skill defines it", () => {
+    const steps = site.commands.find((c) => c.name === "sanctify")!.steps;
+    const start = html.indexOf('id="demo-steps"');
+    const listed = [
+      ...html.slice(start, html.indexOf("</ol>", start)).matchAll(/<li>(.+?)<\/li>/g),
+    ];
+    expect(listed.map((m) => m[1])).toEqual(steps);
+  });
+
+  it("puts both install commands in the hero with matching copy buttons", () => {
+    const hero = html.slice(html.indexOf('class="hero"'), html.indexOf('id="workflows"'));
+    const copies = [...hero.matchAll(/data-copy="([^"]+)"/g)].map((m) => m[1]!.split("&#10;"));
+    expect(copies).toEqual([
+      ["/plugin marketplace add patrickking67/godmode", "/plugin install godmode@godmode"],
+      ["codex plugin marketplace add patrickking67/godmode", "codex plugin add godmode@godmode"],
+    ]);
+    for (const line of copies.flat()) expect(hero).toContain(line);
+  });
+
+  it("loads no third-party scripts, styles or fonts", () => {
+    const external = [...html.matchAll(/<(?:script|link)[^>]+(?:src|href)="(https?:[^"]+)"/g)];
+    expect(
+      external.map((m) => m[1]).filter((u) => !u!.includes("patrickking67.github.io")),
+    ).toEqual([]);
+    const css = readFileSync(join(ROOT, "site", "styles.css"), "utf8");
+    expect(css).not.toMatch(/@import|url\(\s*["']?https?:/);
+  });
+
   it("only hides reveal content once the page marks itself as running JavaScript", () => {
     const css = readFileSync(join(ROOT, "site", "styles.css"), "utf8");
     expect(html).toContain('document.documentElement.classList.add("js")');
@@ -77,7 +115,7 @@ describe("llms.txt", () => {
     const published = readFileSync(join(ROOT, "site", "llms.txt"), "utf8");
     expect(readFileSync(join(ROOT, "llms.txt"), "utf8")).toBe(published);
     expect(published.startsWith("# Godmode\n\n> ")).toBe(true);
-    for (const section of ["## Docs", "## Source", "## Live demo", "## Optional"]) {
+    for (const section of ["## Docs", "## Source", "## Live site", "## Optional"]) {
       expect(published).toContain(`\n${section}\n`);
     }
     for (const url of published.match(/\]\(([^)]+)\)/g) ?? []) {
