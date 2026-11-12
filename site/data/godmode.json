@@ -290,7 +290,7 @@
       "category": "Docs",
       "blurb": "Up-to-date library & framework documentation, version-aware.",
       "transport": "stdio",
-      "endpoint": "npx -y @upstash/context7-mcp",
+      "endpoint": "npx -y @upstash/context7-mcp@4.6.0",
       "homepage": "https://github.com/upstash/context7"
     },
     {
@@ -353,7 +353,7 @@
       "category": "Browser",
       "blurb": "Drive a real browser for testing and verification.",
       "transport": "stdio",
-      "endpoint": "npx -y @playwright/mcp@latest",
+      "endpoint": "npx -y @playwright/mcp@0.0.85",
       "homepage": "https://github.com/microsoft/playwright-mcp"
     },
     {
@@ -362,7 +362,7 @@
       "category": "Browser",
       "blurb": "Inspect the DOM, network, console, and performance traces in Chrome.",
       "transport": "stdio",
-      "endpoint": "npx -y chrome-devtools-mcp@latest",
+      "endpoint": "npx -y chrome-devtools-mcp@1.13.0",
       "homepage": "https://github.com/ChromeDevTools/chrome-devtools-mcp"
     },
     {
@@ -371,7 +371,7 @@
       "category": "Cloud",
       "blurb": "Manage Azure resources, deployments, and services (uses local az login).",
       "transport": "stdio",
-      "endpoint": "npx -y @azure/mcp@latest server start",
+      "endpoint": "npx -y @azure/mcp@3.0.0 server start",
       "homepage": "https://github.com/microsoft/mcp"
     }
   ],

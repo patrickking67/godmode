@@ -369,7 +369,7 @@ describe("namespacing", () => {
 
 describe("shQuote", () => {
   it("leaves plain words alone", () => {
-    for (const w of ["npx", "-y", "@azure/mcp@latest", "server", "a=b", "x:y,z"]) {
+    for (const w of ["npx", "-y", "@azure/mcp@3.0.0", "server", "a=b", "x:y,z"]) {
       expect(shQuote(w)).toBe(w);
     }
   });

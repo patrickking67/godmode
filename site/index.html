@@ -8,10 +8,24 @@
       name="description"
       content="Nine coding workflows and ten no-auth MCP servers for Claude Code and Codex, written once and built for both from a single source."
     />
-    <meta name="theme-color" content="#0a0a0f" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f7f6fb" media="(prefers-color-scheme: light)" />
+    <meta name="color-scheme" content="dark light" />
     <script>
+      /* Runs before the stylesheet so a stored theme choice applies on the first paint. */
       document.documentElement.classList.add("js");
+      try {
+        var savedTheme = localStorage.getItem("godmode-theme");
+        if (savedTheme === "light" || savedTheme === "dark") {
+          document.documentElement.setAttribute("data-theme", savedTheme);
+          var themeColor = savedTheme === "light" ? "#f7f6fb" : "#0a0a0f";
+          document.querySelectorAll('meta[name="theme-color"]').forEach(function (meta) {
+            meta.setAttribute("content", themeColor);
+          });
+        }
+      } catch (e) {
+        /* Storage is blocked: follow the system setting. */
+      }
     </script>
     <link rel="canonical" href="https://patrickking67.github.io/godmode/" />
 
@@ -106,6 +120,12 @@
             >GitHub</a
           >
         </div>
+        <button class="theme-toggle" type="button" aria-label="Switch theme">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <circle cx="12" cy="12" r="8.25" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <path d="M12 3.75a8.25 8.25 0 0 1 0 16.5z" fill="currentColor" />
+          </svg>
+        </button>
       </nav>
     </header>
 
@@ -286,7 +306,7 @@ codex plugin add godmode@godmode</code></pre>
                 <tr>
                   <th scope="row">Context7</th>
                   <td>Docs</td>
-                  <td><code>npx -y @upstash/context7-mcp</code></td>
+                  <td><code>npx -y @upstash/context7-mcp@4.6.0</code></td>
                 </tr>
                 <tr>
                   <th scope="row">Microsoft Learn</th>
@@ -321,17 +341,17 @@ codex plugin add godmode@godmode</code></pre>
                 <tr>
                   <th scope="row">Playwright</th>
                   <td>Browser</td>
-                  <td><code>npx -y @playwright/mcp@latest</code></td>
+                  <td><code>npx -y @playwright/mcp@0.0.85</code></td>
                 </tr>
                 <tr>
                   <th scope="row">Chrome DevTools</th>
                   <td>Browser</td>
-                  <td><code>npx -y chrome-devtools-mcp@latest</code></td>
+                  <td><code>npx -y chrome-devtools-mcp@1.13.0</code></td>
                 </tr>
                 <tr>
                   <th scope="row">Azure</th>
                   <td>Cloud</td>
-                  <td><code>npx -y @azure/mcp@latest server start</code></td>
+                  <td><code>npx -y @azure/mcp@3.0.0 server start</code></td>
                 </tr>
               </tbody>
             </table>
@@ -378,7 +398,7 @@ codex plugin add godmode@godmode</code></pre>
                   markerHeight="7"
                   orient="auto-start-reverse"
                 >
-                  <path d="M0 0 10 5 0 10z" fill="#9a9ab0" />
+                  <path class="d-arrow" d="M0 0 10 5 0 10z" />
                 </marker>
               </defs>
 
@@ -528,21 +548,23 @@ All matched files use Prettier code style!
 
  RUN  v4.1.7 <span class="t-dim">[path trimmed]</span>
 
- ✓ tests/site/site-data.test.ts (10 tests) 12ms
- ✓ tests/catalog.test.ts (23 tests) 16ms
- ✓ tests/plugin/skills.test.ts (89 tests) 39ms
- ✓ tests/plugin/build.test.ts (10 tests) 62ms
- ✓ tests/plugin/emitters.test.ts (38 tests) 94ms
- ✓ tests/plugin/packaging.test.ts (11 tests) 114ms
- ✓ tests/plugin/hooks.test.ts (31 tests) 1370ms
+ ✓ tests/site/theme.test.ts (11 tests) 5ms
+ ✓ tests/site/site-data.test.ts (14 tests) 11ms
+ ✓ tests/site/behavior.test.ts (13 tests) 32ms
+ ✓ tests/catalog.test.ts (25 tests) 14ms
+ ✓ tests/plugin/skills.test.ts (89 tests) 14ms
+ ✓ tests/plugin/build.test.ts (10 tests) 52ms
+ ✓ tests/plugin/emitters.test.ts (38 tests) 67ms
+ ✓ tests/plugin/packaging.test.ts (11 tests) 70ms
+ ✓ tests/plugin/hooks.test.ts (31 tests) 1285ms
 
- Test Files  7 passed (7)
-      Tests  212 passed (212)
-   Start at  00:24:01
-   Duration  1.64s (transform 440ms, setup 0ms, import 828ms, tests 1.71s, environment 0ms)
+ Test Files  9 passed (9)
+      Tests  242 passed (242)
+   Start at  01:02:26
+   Duration  1.48s (transform 451ms, setup 0ms, import 709ms, tests 1.55s, environment 0ms)
 
 <span class="t-dim">[one line naming a local path trimmed]</span>
-check-claims: 212 tests, and every published count agrees.</code></pre>
+check-claims: 242 tests, and every published count agrees.</code></pre>
               <p class="note">
                 Real output, trimmed where marked. It was run by hand, not by an agent: a recording
                 of an agent session would show the same commands with the report format on the left.
@@ -605,7 +627,7 @@ check-claims: 212 tests, and every published count agrees.</code></pre>
           </header>
           <dl class="proof">
             <div>
-              <dt><span id="test-count">212</span> tests</dt>
+              <dt><span id="test-count">242</span> tests</dt>
               <dd>
                 Emitter golden output, manifest schemas, name safety, hook behavior, a lint for
                 every skill, and this page's data.

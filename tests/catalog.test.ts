@@ -88,7 +88,34 @@ describe("MCP server list", () => {
     for (const m of STDIO) {
       expect(m.command, m.name).toBe("npx");
       expect(m.args?.[0], m.name).toBe("-y");
-      expect(m.args?.[1], m.name).toMatch(/^(@[a-z0-9-]+\/)?[a-z0-9-]+(@latest)?$/);
+      expect(m.args?.[1], m.name).toMatch(/^(@[a-z0-9-]+\/)?[a-z0-9-]+@[^@]+$/);
+    }
+  });
+
+  it("pins every stdio package to one exact stable version", () => {
+    // A dist-tag such as @latest can move to a prerelease without notice, and a bare
+    // package name means the same thing to npx. Only x.y.z is accepted.
+    const pinned = /^(@[a-z0-9-]+\/)?[a-z0-9-]+@\d+\.\d+\.\d+$/;
+    for (const m of STDIO) expect(m.args?.[1], m.name).toMatch(pinned);
+    const config = JSON.parse(read("plugin", ".mcp.json")) as {
+      mcpServers: Record<string, { type: string; args?: string[] }>;
+    };
+    for (const [name, def] of Object.entries(config.mcpServers)) {
+      if (def.type === "stdio") expect(def.args?.[1], name).toMatch(pinned);
+    }
+  });
+
+  it("names no floating dist-tag anywhere a launch command is published", () => {
+    const published = [
+      ["plugin", ".mcp.json"],
+      ["plugin", "codex-config.toml"],
+      ["plugin", "codex-mcp-setup.sh"],
+      ["site", "data", "godmode.json"],
+      ["site", "index.html"],
+      ["README.md"],
+    ];
+    for (const path of published) {
+      expect(read(...path), path.join("/")).not.toMatch(/@(latest|next|canary|beta|alpha)\b/);
     }
   });
 

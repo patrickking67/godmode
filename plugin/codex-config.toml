@@ -5,7 +5,7 @@
 # Up-to-date library & framework documentation, version-aware.
 [mcp_servers.context7]
 command = "npx"
-args = ["-y","@upstash/context7-mcp"]
+args = ["-y","@upstash/context7-mcp@4.6.0"]
 
 # Official Microsoft & Azure documentation search and fetch.
 [mcp_servers.microsoft-learn]
@@ -34,14 +34,14 @@ url = "https://mcp.grep.app"
 # Drive a real browser for testing and verification.
 [mcp_servers.playwright]
 command = "npx"
-args = ["-y","@playwright/mcp@latest"]
+args = ["-y","@playwright/mcp@0.0.85"]
 
 # Inspect the DOM, network, console, and performance traces in Chrome.
 [mcp_servers.chrome-devtools]
 command = "npx"
-args = ["-y","chrome-devtools-mcp@latest"]
+args = ["-y","chrome-devtools-mcp@1.13.0"]
 
 # Manage Azure resources, deployments, and services (uses local az login).
 [mcp_servers.azure]
 command = "npx"
-args = ["-y","@azure/mcp@latest","server","start"]
+args = ["-y","@azure/mcp@3.0.0","server","start"]

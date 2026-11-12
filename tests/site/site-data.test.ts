@@ -110,6 +110,35 @@ describe("site without JavaScript", () => {
   });
 });
 
+describe("README screenshots", () => {
+  const readme = readFileSync(join(ROOT, "README.md"), "utf8");
+  const shots = [
+    ["desktop", 1280, 800],
+    ["mobile", 390, 844],
+  ] as const;
+
+  it.each(shots)(
+    "ships a %s capture per theme at %dx%d, each under 300 KB",
+    (name, width, height) => {
+      for (const theme of ["dark", "light"]) {
+        const png = readFileSync(join(ROOT, "docs", "assets", `site-${name}-${theme}.png`));
+        expect(png.subarray(1, 4).toString("latin1"), theme).toBe("PNG");
+        // Width and height are the first two fields of the IHDR chunk.
+        expect([png.readUInt32BE(16), png.readUInt32BE(20)], theme).toEqual([width, height]);
+        expect(png.length, theme).toBeLessThan(300 * 1024);
+      }
+    },
+  );
+
+  it.each(shots)("shows the %s capture that matches the reader's color scheme", (name) => {
+    const picture = new RegExp(
+      `<picture>\\s*<source media="\\(prefers-color-scheme: dark\\)" srcset="docs/assets/site-${name}-dark\\.png" />` +
+        `\\s*<img src="docs/assets/site-${name}-light\\.png" alt="[^"]{20,}" width="\\d+" />\\s*</picture>`,
+    );
+    expect(readme).toMatch(picture);
+  });
+});
+
 describe("llms.txt", () => {
   it("is published with the site and mirrored at the repo root", () => {
     const published = readFileSync(join(ROOT, "site", "llms.txt"), "utf8");

@@ -108,13 +108,19 @@
         return c.pillar === pillar;
       });
       if (!group.length) return;
-      list.appendChild(el("p", "wf-group-title", pillar));
+      // A tablist may own only tabs, so the group heading is presentational and each tab
+      // points at it as its description instead.
+      var heading = el("p", "wf-group-title", pillar);
+      heading.id = "wf-group-" + pillar.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      heading.setAttribute("role", "presentation");
+      list.appendChild(heading);
       group.forEach(function (cmd) {
         var tab = el("button", "wf-tab", cmd.name);
         tab.type = "button";
         tab.id = "wf-tab-" + cmd.name;
         tab.setAttribute("role", "tab");
         tab.setAttribute("aria-controls", "wf-panel");
+        tab.setAttribute("aria-describedby", heading.id);
         tab.setAttribute("data-name", cmd.name);
         tab.addEventListener("click", function () {
           select(tab, false);
@@ -256,45 +262,117 @@
     });
   }
 
+  /* ---------- Theme toggle ----------
+     The inline script in index.html applies a stored choice before the first paint. With
+     no stored choice the page follows the system setting through CSS alone. */
+
+  var THEME_KEY = "godmode-theme";
+  var THEME_COLOR = { dark: "#0a0a0f", light: "#f7f6fb" };
+
+  function systemTheme() {
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches
+      ? "light"
+      : "dark";
+  }
+
+  function activeTheme() {
+    var chosen = document.documentElement.getAttribute("data-theme");
+    return chosen === "light" || chosen === "dark" ? chosen : systemTheme();
+  }
+
+  function initTheme() {
+    var toggle = document.querySelector(".theme-toggle");
+    if (!toggle) return;
+
+    function describe() {
+      var label = "Switch to " + (activeTheme() === "light" ? "dark" : "light") + " theme";
+      toggle.setAttribute("aria-label", label);
+      toggle.title = label;
+    }
+
+    toggle.addEventListener("click", function () {
+      var next = activeTheme() === "light" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", next);
+      Array.prototype.forEach.call(
+        document.querySelectorAll('meta[name="theme-color"]'),
+        function (meta) {
+          meta.setAttribute("content", THEME_COLOR[next]);
+        },
+      );
+      try {
+        window.localStorage.setItem(THEME_KEY, next);
+      } catch (e) {
+        /* Storage is blocked: the choice lasts for this page view only. */
+      }
+      describe();
+    });
+
+    if (window.matchMedia) {
+      var query = window.matchMedia("(prefers-color-scheme: light)");
+      if (query.addEventListener) query.addEventListener("change", describe);
+      else if (query.addListener) query.addListener(describe);
+    }
+    describe();
+  }
+
   /* ---------- Copy buttons ---------- */
 
   function initCopy() {
     Array.prototype.forEach.call(document.querySelectorAll(".copy-btn"), function (btn) {
       var label = btn.querySelector(".copy-label") || btn;
+      var resetTimer = 0;
+
+      function show(message, ok) {
+        label.textContent = message;
+        btn.classList.toggle("is-copied", ok);
+        // A second click restarts the wait, so an earlier timer cannot cut the message short.
+        window.clearTimeout(resetTimer);
+        resetTimer = window.setTimeout(function () {
+          label.textContent = "Copy";
+          btn.classList.remove("is-copied");
+        }, 1800);
+      }
+
+      /* For pages without the async Clipboard API (plain http, older browsers) and for a
+         refused permission. The textarea is fixed in the viewport so selecting it does not
+         scroll the page, and focus goes back to the button afterwards. */
+      function fallback(text) {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.setAttribute("aria-hidden", "true");
+        ta.tabIndex = -1;
+        ta.style.position = "fixed";
+        ta.style.top = "0";
+        ta.style.left = "0";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.focus({ preventScroll: true });
+        ta.select();
+        var ok = false;
+        try {
+          ok = document.execCommand("copy");
+        } catch (e) {
+          ok = false;
+        }
+        document.body.removeChild(ta);
+        btn.focus({ preventScroll: true });
+        show(ok ? "Copied" : "Select and copy", ok);
+      }
+
       btn.addEventListener("click", function () {
         var text = btn.getAttribute("data-copy") || "";
-
-        function show(message, ok) {
-          label.textContent = message;
-          btn.classList.toggle("is-copied", ok);
-          window.setTimeout(function () {
-            label.textContent = "Copy";
-            btn.classList.remove("is-copied");
-          }, 1800);
-        }
-        function fallback() {
-          var ta = document.createElement("textarea");
-          ta.value = text;
-          ta.setAttribute("readonly", "");
-          ta.style.position = "absolute";
-          ta.style.left = "-9999px";
-          document.body.appendChild(ta);
-          ta.select();
-          var ok = false;
-          try {
-            ok = document.execCommand("copy");
-          } catch (e) {
-            ok = false;
-          }
-          document.body.removeChild(ta);
-          show(ok ? "Copied" : "Select and copy", ok);
-        }
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(function () {
-            show("Copied", true);
-          }, fallback);
+          navigator.clipboard.writeText(text).then(
+            function () {
+              show("Copied", true);
+            },
+            function () {
+              fallback(text);
+            },
+          );
         } else {
-          fallback();
+          fallback(text);
         }
       });
     });
@@ -308,6 +386,7 @@
 
   function init() {
     initNav();
+    initTheme();
     initCopy();
     revealHero();
     loadData();
