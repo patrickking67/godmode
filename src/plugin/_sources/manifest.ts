@@ -19,6 +19,8 @@ export interface CodexInterface {
   defaultPrompt: string[];
   brandColor: string;
   websiteURL: string;
+  /** Where the privacy statement lives. Also emitted as Claude Code's `privacyPolicyUrl`. */
+  privacyPolicyURL: string;
   /** Small square icon Codex shows in the composer. Path inside the plugin, under ./assets/. */
   composerIcon: string;
   /** Square listing icon. Also emitted as the Claude Code manifest `icon`. */
@@ -62,6 +64,7 @@ export const MANIFEST: ManifestSource = {
     ],
     brandColor: "#7C3AED",
     websiteURL: "https://patrickking67.github.io/godmode/",
+    privacyPolicyURL: "https://github.com/patrickking67/godmode#privacy",
     composerIcon: "./assets/icon.png",
     logo: "./assets/logo.png",
   },

@@ -18,5 +18,6 @@
     "subagents"
   ],
   "mcpServers": "./.mcp.json",
-  "icon": "./assets/logo.png"
+  "icon": "./assets/logo.png",
+  "privacyPolicyUrl": "https://github.com/patrickking67/godmode#privacy"
 }

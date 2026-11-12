@@ -321,6 +321,7 @@ describe("manifests (golden output)", () => {
       "keywords",
       "mcpServers",
       "icon",
+      "privacyPolicyUrl",
     ]);
     expect(claude).toMatchObject({
       name: "godmode",

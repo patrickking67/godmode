@@ -19,6 +19,7 @@
   ],
   "mcpServers": "./.mcp.json",
   "icon": "./assets/logo.png",
+  "privacyPolicyUrl": "https://github.com/patrickking67/godmode#privacy",
   "skills": "./skills/",
   "interface": {
     "displayName": "Godmode",
@@ -40,6 +41,7 @@
     ],
     "brandColor": "#7C3AED",
     "websiteURL": "https://patrickking67.github.io/godmode/",
+    "privacyPolicyURL": "https://github.com/patrickking67/godmode#privacy",
     "composerIcon": "./assets/icon.png",
     "logo": "./assets/logo.png"
   }

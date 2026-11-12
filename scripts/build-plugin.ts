@@ -318,6 +318,8 @@ export function claudeManifest(): Record<string, unknown> {
     mcpServers: "./.mcp.json",
     // Listing icon. Claude Code itself does not read it; plugin directories do.
     icon: MANIFEST.interface.logo,
+    // The plugin talks to remote MCP servers, so plugin directories ask for a privacy statement.
+    privacyPolicyUrl: MANIFEST.interface.privacyPolicyURL,
   };
 }
 
@@ -422,6 +424,7 @@ export function validateManifests(claude: unknown, codex: unknown): void {
     keywords: { type: "array", items: { type: "string" } },
     mcpServers: { type: "string", minLength: 1 },
     icon: { type: "string", pattern: "^\\./assets/[a-z0-9.-]+$" },
+    privacyPolicyUrl: { type: "string", pattern: "^https://" },
   } as const;
 
   const claudeSchema = {
@@ -460,6 +463,7 @@ export function validateManifests(claude: unknown, codex: unknown): void {
           defaultPrompt: { type: "array", items: { type: "string" } },
           brandColor: { type: "string", pattern: "^#[0-9A-Fa-f]{6}$" },
           websiteURL: { type: "string", minLength: 1 },
+          privacyPolicyURL: { type: "string", pattern: "^https://" },
           composerIcon: { type: "string", pattern: "^\\./assets/[a-z0-9.-]+$" },
           logo: { type: "string", pattern: "^\\./assets/[a-z0-9.-]+$" },
         },
