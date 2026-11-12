@@ -5,7 +5,7 @@
 set -euo pipefail
 
 # Up-to-date library & framework documentation, version-aware.
-codex mcp add context7 -- npx -y @upstash/context7-mcp
+codex mcp add context7 -- npx -y @upstash/context7-mcp@4.6.0
 
 # Official Microsoft & Azure documentation search and fetch.
 codex mcp add microsoft-learn --url "https://learn.microsoft.com/api/mcp"
@@ -26,10 +26,10 @@ codex mcp add deepwiki --url "https://mcp.deepwiki.com/mcp"
 codex mcp add grep --url "https://mcp.grep.app"
 
 # Drive a real browser for testing and verification.
-codex mcp add playwright -- npx -y @playwright/mcp@latest
+codex mcp add playwright -- npx -y @playwright/mcp@0.0.85
 
 # Inspect the DOM, network, console, and performance traces in Chrome.
-codex mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest
+codex mcp add chrome-devtools -- npx -y chrome-devtools-mcp@1.13.0
 
 # Manage Azure resources, deployments, and services (uses local az login).
-codex mcp add azure -- npx -y @azure/mcp@latest server start
+codex mcp add azure -- npx -y @azure/mcp@3.0.0 server start

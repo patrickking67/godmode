@@ -5,7 +5,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@upstash/context7-mcp"
+        "@upstash/context7-mcp@4.6.0"
       ]
     },
     "microsoft-learn": {
@@ -37,7 +37,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@playwright/mcp@latest"
+        "@playwright/mcp@0.0.85"
       ]
     },
     "chrome-devtools": {
@@ -45,7 +45,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "chrome-devtools-mcp@latest"
+        "chrome-devtools-mcp@1.13.0"
       ]
     },
     "azure": {
@@ -53,7 +53,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@azure/mcp@latest",
+        "@azure/mcp@3.0.0",
         "server",
         "start"
       ]

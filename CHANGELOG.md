@@ -30,7 +30,13 @@ All notable changes to Godmode will be documented here. Format based on [Keep a 
 ### MCP servers
 
 - All ten bundled servers were checked on 2026-11-12 against the npm registry and with a live `initialize` and `tools/list` using no credentials. All ten still exist, still need no key and still use the documented launch command, so none was removed or replaced. Results and versions are in `docs/mcp-servers.md`.
-- Noted, not changed: the `latest` tag of `@azure/mcp` currently resolves to a prerelease (`4.0.0-beta.7`).
+- The four npm-based servers are pinned to exact stable versions, each checked on the npm registry on 2026-11-12 (package name, `repository` field, not deprecated) and started with `pnpm verify:mcps`:
+  - `@upstash/context7-mcp@4.6.0`
+  - `@playwright/mcp@0.0.85`
+  - `chrome-devtools-mcp@1.13.0`
+  - `@azure/mcp@3.0.0`. Its `latest` dist-tag pointed at a prerelease (`4.0.0-beta.7`), so the plugin was installing a beta. 3.0.0 is the newest stable release.
+- The six HTTPS servers have no version to pin; they are public endpoints.
+- `tests/catalog.test.ts` fails if a stdio server uses `@latest`, another dist-tag, a prerelease or a bare package name, in the sources or in any generated file.
 
 ### Fixed
 
