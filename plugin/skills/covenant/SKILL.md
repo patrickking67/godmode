@@ -1,63 +1,87 @@
 ---
 name: covenant
-description: "Craft and create a Conventional Commit from your current changes."
-allowed-tools: Bash, Read
+description: "Create one Conventional Commit from the current changes (inspect the diff, stage explicit paths, write the message, commit as the user, confirm). Use only when the user explicitly asks to commit. Never pushes, amends or skips hooks."
+allowed-tools: Read, Bash(git status *), Bash(git diff *), Bash(git log *), Bash(git branch *), Bash(git add *), Bash(git commit *)
+disable-model-invocation: true
 ---
 
-Turn the current changes into one clean, well-described commit. Running this command
-IS the user's explicit request to create a commit; proceed without asking again.
+Turn the current changes into one clean commit. This workflow runs only on an explicit
+request to commit, and that request is the approval to create the commit. It is not
+approval to push, amend or rewrite anything.
 
-## 1. Inspect state
+## When to use
 
-Run these in parallel to understand what changed and how this repo writes commits:
+- The user asks to commit the current work.
+- Not to review the changes first (use `judgment`) or to run the checks (use `sanctify`).
 
-- `git status`: what is staged, unstaged, and untracked.
-- `git diff` and `git diff --staged`: the actual content of the changes.
-- `git log`: recent messages, so you match the repo's existing style and prefixes.
+## Procedure
 
-Read enough of the diff to understand the intent, not just the surface edits.
+### 1. Inspect
 
-## 2. Analyze and group
+Run these and read the output:
 
-Decide what belongs in this commit. Group related edits together. If the changes are
-clearly unrelated (say, a bug fix plus an unrelated refactor), recommend splitting them
-into separate commits and propose how, rather than bundling everything into one.
+- `git status`: what is staged, unstaged and untracked.
+- `git diff` and `git diff --staged`: the content of the changes.
+- `git log --oneline -15`: how this repository writes commit subjects.
+- `git branch --show-current`: where the commit will land.
 
-## 3. Draft the message
+Read the repository's contributing or agent guide if it documents a commit convention;
+that convention wins over the defaults below.
 
-Write a Conventional Commit: `type(scope): subject`.
+### 2. Decide what belongs
 
-- **type**: one of `feat`, `fix`, `chore`, `docs`, `refactor`, `test` (match repo usage).
-- **subject**: concise, imperative, focused on the why (not a file list).
-- **body** (optional): a short paragraph only when the change needs context or rationale.
+Group related edits. If something is already staged, treat that as the user's selection
+and commit only that. If the changes are unrelated (a fix plus a separate refactor),
+propose a split and commit the first group only.
 
-Author the commit ONLY as the user's configured git identity. NEVER add a co-author,
-`Co-Authored-By`, `Signed-off-by`, a "Generated with" or "Created by" line, or any
-AI, assistant, or bot attribution or trailer of any kind.
+### 3. Draft the message
 
-## 4. Stage the right files
+Write `type(scope): subject`.
 
-Add the relevant files by name. Avoid `git add -A` and `git add .`; they sweep in
-noise and secrets. Never stage `.env`, credential files, keys, or other secrets; if the
-user explicitly asks to commit such a file, warn them clearly before doing so.
+- **type**: `feat`, `fix`, `docs`, `refactor`, `test`, `perf`, `build`, `ci` or `chore`,
+  matching how the repository already uses them.
+- **scope**: optional; use the ones the log already uses.
+- **subject**: imperative, lower case, no trailing period, about 50 characters, at most 72.
+- **body**: optional; say why the change was needed when the subject cannot.
+- Mark a breaking change with `!` after the type or scope and a `BREAKING CHANGE:` footer.
 
-## 5. Create the commit
+Author the commit only as the user's configured git identity. Do not add a co-author,
+a "generated with" line or any assistant or tool attribution. Add `Signed-off-by` (with
+`git commit -s`) only when the repository's history or guide shows it requires sign-off.
 
-Pass the message via a heredoc so formatting stays clean:
+### 4. Stage explicit paths
 
-```
+`git add <path>...` for the files in this commit. Do not use `git add -A` or `git add .`.
+Run `git diff --staged` again and read it: this is exactly what will be committed.
+
+### 5. Commit
+
+Pass the message on standard input so the formatting survives:
+
+```sh
 git commit -F - <<'EOF'
 fix(auth): reject expired tokens before refresh
 
-Refresh path skipped the expiry check, letting stale tokens through.
+The refresh path skipped the expiry check, so stale tokens were renewed.
 EOF
 ```
 
-Create a NEW commit. Never use `--amend` unless the user explicitly asks. Never push.
-Never use `--no-verify` or otherwise skip hooks; if a pre-commit hook fails, fix the
-underlying issue, re-stage, and make a new commit rather than bypassing it.
+Create a new commit. Do not use `--amend`, `--no-verify` or `--no-gpg-sign`, and do not
+change `user.name`, `user.email` or signing settings.
 
-## 6. Confirm
+## Stop conditions
 
-Run `git status` and `git log -1` to show the result. Report the commit subject and
-which files landed in one tight summary.
+- Nothing to commit: say so and stop.
+- The staged diff contains a secret, a credential file, a private key or an `.env` file:
+  do not commit. Name the file, not the value, and stop.
+- A merge, rebase or cherry-pick is in progress, or files are in conflict: stop and say so.
+- The current branch is the default branch and the repository's guide or history shows
+  work lands through branches: say so and ask before committing.
+- A pre-commit hook or commit signing fails: report the output and stop. Fix the cause
+  only if the user asks; never bypass it.
+
+## Verify
+
+Run `git log -1 --stat` and `git status`. Confirm the subject matches what you drafted,
+the files listed are the ones you staged, and nothing you meant to include is left
+unstaged. Report the commit hash, the subject and the files. Do not push.

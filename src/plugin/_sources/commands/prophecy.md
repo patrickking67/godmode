@@ -1,54 +1,67 @@
 ---
 name: prophecy
-description: Get step-by-step guidance for accomplishing a task in this repo.
-allowed-tools: Read, Grep, Glob, Task, WebFetch
+description: Write a step-by-step plan for doing a task in this repository without changing any files (the precedent to copy, the files to touch, the commands to run). Use when the user asks how to do something here or wants a plan before building. To make the change use genesis.
+allowed-tools: Read, Grep, Glob
 engines: both
 ---
 
-Produce a concrete, repo-grounded how-to for the task in `$ARGUMENTS`: the exact files,
-conventions, and commands someone needs to do it here, not generic advice.
+Produce a how-to for the task in the request that is specific to this repository: real
+files, real conventions, real commands. This workflow plans; it does not edit files or
+run builds.
 
-Unlike the `genesis` workflow, this one explains how the task would be done; it does
-not make the changes itself.
+## When to use
 
-## 1. Orient
+- The user asks how to do something in this codebase, or wants a plan to review first.
+- Not when they want the change made (use `genesis`) or code explained (use `gospel`).
 
-Inspect the repo before writing a word. Learn its actual structure and conventions, then
-find the closest thing that already exists and treat it as the template:
+## Procedure
 
-- **Locate a precedent**: if `$ARGUMENTS` is "add an API route", find an existing route;
-  if it's "wire up a test", find a passing test of the same kind. Read it in full.
-- **Extract the pattern**: naming, file placement, registration/wiring, error handling,
-  and how the example is tested.
-- **Find the commands**: the real build, test, lint, and run scripts from the package
-  manifest, Makefile, or task config.
+### 1. Find the precedent
 
-For a repo of any size, dispatch the `Explore` agent to find the precedent and conventions
-rather than reading from the root yourself.
+Find the closest thing that already exists and read it in full: an existing route for
+"add a route", a passing test of the same kind for "add a test". From it, extract
+naming, file placement, registration or wiring, error handling and how it is tested.
+If nothing similar exists, say so and base the plan on the nearest neighbor.
 
-## 2. Check current docs for library specifics
+### 2. Find the real commands
 
-If the task touches a library, framework, or tool, do not rely on memory (APIs drift). The
-bundled **Context7** MCP serves current docs for most libraries; the **Microsoft Learn**
-MCP covers Azure and Microsoft tooling. Consult them for exact syntax, config, and version
-details, and ground the steps in what they return.
+Read the build, test, lint and run commands from the package manifest, Makefile, task
+runner config or CI workflow. Never write a command the repository does not define.
 
-## 3. Write the how-to
+### 3. Check current docs for library specifics
 
-Produce an ordered, numbered procedure specific to THIS codebase. Each step must be
-actionable here:
+If the task depends on a library, framework or tool, confirm syntax and options against
+current documentation for the installed version. Use the bundled documentation servers
+when they are connected (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs).
+If none is connected, mark those details as from memory.
 
-- The real file to copy or modify, as a clickable `path:line` reference.
-- The concrete change to make, following the convention from the precedent in step 1.
-- Any wiring the example revealed: registration, exports, config entries, fixtures.
+### 4. Write the plan
 
-No filler steps and no boilerplate that would apply to any repo. If a step only matters
-in some cases, say when.
+Number the steps. Each step names:
 
-## 4. Commands and verification
+- the file to create or change, as a `path:line` reference to the precedent or the
+  insertion point;
+- the change, following the convention found in step 1;
+- any wiring the precedent revealed: registration, exports, config, fixtures, generated
+  files to rebuild.
 
-End with the exact commands to run, copy-paste ready and in order (generate, build, test,
-lint, run), using the project's real scripts from step 1. State how to confirm success:
-which test should pass, what output to expect, what the result should look like.
+Leave out steps that would apply to any repository. If a step applies only in some
+cases, say when.
 
-Hand back the guide. Do not edit files or run the build; the `genesis` workflow does that.
+### 5. End with commands and a success check
+
+List the commands to run, in order, copy-paste ready. State how to tell it worked: which
+test passes, what output appears, what the result looks like.
+
+## Stop conditions
+
+- The task is ambiguous in a way that changes the plan (two possible targets, an
+  unstated requirement): ask one question and wait.
+- The task conflicts with a documented repository rule (agent guide, contributing guide,
+  generated-file policy): say so and plan the compliant route.
+
+## Verify
+
+Check that every file path in the plan exists (or is marked as new), every command
+appears in a manifest or CI file, and no step says to edit a generated file. Do not run
+the build or edit anything; hand back the plan.
