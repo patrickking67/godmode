@@ -11,7 +11,8 @@ process.stdin.on("end", () => {
     "/godmode:prophecy how-to guidance · /godmode:genesis implement ·",
     "/godmode:summon dispatch subagents · /godmode:judgment review ·",
     "/godmode:sanctify run checks · /godmode:exorcise debug root cause · /godmode:covenant commit.",
-    "Bundled subagents (via /godmode:summon or Task): oracle, demiurge, inquisitor, arbiter, seer.",
+    "Bundled subagents (dispatch by name, or ask /godmode:summon): godmode:oracle, godmode:demiurge,",
+    "godmode:inquisitor, godmode:arbiter, godmode:seer.",
   ].join("\n");
   process.stdout.write(
     JSON.stringify({

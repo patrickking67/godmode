@@ -1,73 +1,286 @@
 {
+  "generated": "Built by scripts/build-plugin.ts from src/plugin/_sources. Do not hand-edit.",
+  "version": "1.3.0",
   "tagline": "Learn. Plan. Build. Optimize.",
-  "pitch": "One plugin for Claude Code and Codex. Battle-tested workflows and ten bundled no-auth MCP servers, installed once from a single source in both engines.",
+  "pitch": "One plugin for Claude Code and Codex. Nine coding workflows and ten no-auth MCP servers, authored once and built for both engines.",
+  "pillars": [
+    "Learn",
+    "Plan",
+    "Build",
+    "Review",
+    "Debug",
+    "Ship"
+  ],
   "commands": [
     {
-      "name": "revelation",
-      "pillar": "Learning",
-      "purpose": "Deeply explore a codebase and explain how it fits together."
-    },
-    { "name": "gospel", "pillar": "Learning", "purpose": "Explain how a piece of code works." },
-    {
-      "name": "prophecy",
-      "pillar": "Guiding",
-      "purpose": "How-to guidance grounded in this codebase."
-    },
-    {
-      "name": "genesis",
-      "pillar": "Building",
-      "purpose": "Implement a well-scoped feature or fix."
-    },
-    {
-      "name": "summon",
-      "pillar": "Building",
-      "purpose": "Dispatch the right subagent for a task."
-    },
-    {
-      "name": "judgment",
-      "pillar": "Reviewing",
-      "purpose": "Review code for bugs, security, and drift."
-    },
-    {
-      "name": "sanctify",
-      "pillar": "Reviewing",
-      "purpose": "Run the project's own checks and report pass or fail."
+      "name": "covenant",
+      "pillar": "Ship",
+      "purpose": "Create one Conventional Commit from the current changes (inspect the diff, stage explicit paths, write the message, commit as the user, confirm).",
+      "description": "Create one Conventional Commit from the current changes (inspect the diff, stage explicit paths, write the message, commit as the user, confirm). Use only when the user explicitly asks to commit. Never pushes, amends or skips hooks.",
+      "invocation": "manual",
+      "allowedTools": [
+        "Read",
+        "Bash(git status *)",
+        "Bash(git diff *)",
+        "Bash(git log *)",
+        "Bash(git branch *)",
+        "Bash(git add *)",
+        "Bash(git commit *)"
+      ],
+      "steps": [
+        "Inspect",
+        "Decide what belongs",
+        "Draft the message",
+        "Stage explicit paths",
+        "Commit"
+      ],
+      "source": "src/plugin/_sources/commands/covenant.md",
+      "body": "Turn the current changes into one clean commit. This workflow runs only on an explicit\nrequest to commit, and that request is the approval to create the commit. It is not\napproval to push, amend or rewrite anything.\n\n## When to use\n\n- The user asks to commit the current work.\n- Not to review the changes first (use `judgment`) or to run the checks (use `sanctify`).\n\n## Procedure\n\n### 1. Inspect\n\nRun these and read the output:\n\n- `git status`: what is staged, unstaged and untracked.\n- `git diff` and `git diff --staged`: the content of the changes.\n- `git log --oneline -15`: how this repository writes commit subjects.\n- `git branch --show-current`: where the commit will land.\n\nRead the repository's contributing or agent guide if it documents a commit convention;\nthat convention wins over the defaults below.\n\n### 2. Decide what belongs\n\nGroup related edits. If something is already staged, treat that as the user's selection\nand commit only that. If the changes are unrelated (a fix plus a separate refactor),\npropose a split and commit the first group only.\n\n### 3. Draft the message\n\nWrite `type(scope): subject`.\n\n- **type**: `feat`, `fix`, `docs`, `refactor`, `test`, `perf`, `build`, `ci` or `chore`,\n  matching how the repository already uses them.\n- **scope**: optional; use the ones the log already uses.\n- **subject**: imperative, lower case, no trailing period, about 50 characters, at most 72.\n- **body**: optional; say why the change was needed when the subject cannot.\n- Mark a breaking change with `!` after the type or scope and a `BREAKING CHANGE:` footer.\n\nAuthor the commit only as the user's configured git identity. Do not add a co-author,\na \"generated with\" line or any assistant or tool attribution. Add `Signed-off-by` (with\n`git commit -s`) only when the repository's history or guide shows it requires sign-off.\n\n### 4. Stage explicit paths\n\n`git add <path>...` for the files in this commit. Do not use `git add -A` or `git add .`.\nRun `git diff --staged` again and read it: this is exactly what will be committed.\n\n### 5. Commit\n\nPass the message on standard input so the formatting survives:\n\n```sh\ngit commit -F - <<'EOF'\nfix(auth): reject expired tokens before refresh\n\nThe refresh path skipped the expiry check, so stale tokens were renewed.\nEOF\n```\n\nCreate a new commit. Do not use `--amend`, `--no-verify` or `--no-gpg-sign`, and do not\nchange `user.name`, `user.email` or signing settings.\n\n## Stop conditions\n\n- Nothing to commit: say so and stop.\n- The staged diff contains a secret, a credential file, a private key or an `.env` file:\n  do not commit. Name the file, not the value, and stop.\n- A merge, rebase or cherry-pick is in progress, or files are in conflict: stop and say so.\n- The current branch is the default branch and the repository's guide or history shows\n  work lands through branches: say so and ask before committing.\n- A pre-commit hook or commit signing fails: report the output and stop. Fix the cause\n  only if the user asks; never bypass it.\n\n## Verify\n\nRun `git log -1 --stat` and `git status`. Confirm the subject matches what you drafted,\nthe files listed are the ones you staged, and nothing you meant to include is left\nunstaged. Report the commit hash, the subject and the files. Do not push."
     },
     {
       "name": "exorcise",
-      "pillar": "Debugging",
-      "purpose": "Find the true root cause of a bug or failing test."
+      "pillar": "Debug",
+      "purpose": "Find the root cause of a bug or failing test before fixing it (reproduce, rank hypotheses, isolate, explain, apply the smallest fix, re-run).",
+      "description": "Find the root cause of a bug or failing test before fixing it (reproduce, rank hypotheses, isolate, explain, apply the smallest fix, re-run). Use when something fails, crashes, flakes or behaves wrongly and the cause is unknown.",
+      "invocation": "auto",
+      "allowedTools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "steps": [
+        "Reproduce",
+        "List hypotheses",
+        "Isolate",
+        "State the root cause",
+        "Fix the cause",
+        "Report"
+      ],
+      "source": "src/plugin/_sources/commands/exorcise.md",
+      "body": "Track the failure in the request (a bug report, a failing test name or pasted error\noutput) to its cause, fix that cause and prove the fix. No patching symptoms.\n\n## When to use\n\n- A test fails, a command errors, a program crashes or misbehaves, and the cause is unknown.\n- Not to explain working code (use `gospel`) and not to build a feature (use `genesis`).\n\n## Procedure\n\n### 1. Reproduce\n\nEstablish the exact failing command, input or test and run it yourself. Confirm you see\nthe same failure: same error, same stack, same assertion. Keep the full output; it is the\nprimary evidence. For a flaky failure, run it enough times to measure how often it fails.\n\n### 2. List hypotheses\n\nBefore changing code, write down the two to four most likely causes, reasoned from the\nerror and the stack trace. Rank them by likelihood and by how cheap each is to check.\n\n### 3. Isolate\n\nTest the hypotheses in rank order, one variable at a time:\n\n- Read the code paths the trace implicates, with their callers and callees.\n- Add temporary instrumentation (logging, assertions) or inspect state to see what\n  happens, as opposed to what you assumed. Keep a list of everything you add.\n- Bisect: disable, stub or split inputs to halve the search space each step. If it\n  worked before, `git bisect` or the recent history of the implicated files narrows it.\n\nContinue until one line, one value or one condition is responsible.\n\n### 4. State the root cause\n\nSay what is wrong and why it produces this failure: the wrong value, the missing case,\nthe bad assumption, the ordering. The explanation must account for every detail of the\nobserved failure, including when it does not happen. If it does not, return to step 2.\n\n### 5. Fix the cause\n\nMake the smallest change that removes the cause. Add or extend a test that fails without\nthe fix and passes with it. Never disable a safety check, delete or skip a test, weaken\nan assertion, add a retry around a logic error or bypass a hook to make the error go away.\n\n### 6. Report\n\nGive the root cause, the fix (files and lines), the test that pins it, and the commands\nyou ran with their results. Say what remains uncertain.\n\n## Stop conditions\n\n- The failure cannot be reproduced: say so, list what you tried, and ask for versions,\n  environment, exact steps or a minimal example. Do not guess at a fix.\n- The fix needs a destructive or hard-to-reverse action, a dependency change or a\n  change to a public interface: describe it and ask before applying.\n- The cause is outside the repository (a dependency bug, a service, the environment):\n  report the evidence and the workaround options, and let the user choose.\n- Three hypotheses in a row are disproved: stop, summarize what is now known and ruled\n  out, and reconsider the assumptions before continuing.\n\n## Verify\n\nRe-run the reproduction from step 1; it must now pass. For a flaky failure, run it at\nleast as many times as it took to see the failure before. Run the related tests and the\nproject's checks to confirm nothing regressed. Remove every piece of temporary\ninstrumentation on your list and confirm with `git diff` that only the fix and its test\nremain."
     },
-    { "name": "covenant", "pillar": "Git", "purpose": "Commit your work cleanly." }
+    {
+      "name": "genesis",
+      "pillar": "Build",
+      "purpose": "Implement a feature or change end to end (restate the goal, match existing patterns, build in small tested steps, run the project's checks).",
+      "description": "Implement a feature or change end to end (restate the goal, match existing patterns, build in small tested steps, run the project's checks). Use when the user asks to build, add, change or refactor something concrete. For a plan only use prophecy; for a bug or failing test use exorcise.",
+      "invocation": "auto",
+      "allowedTools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "steps": [
+        "State the goal and the acceptance criteria",
+        "Survey the neighbors",
+        "Plan",
+        "Build in small steps",
+        "Delegate only when it pays",
+        "Report"
+      ],
+      "source": "src/plugin/_sources/commands/genesis.md",
+      "body": "Build the change the request describes so it reads like the code around it, then prove\nit works with the project's own checks. This workflow edits files and runs commands; it\ndoes not commit, push or open a pull request.\n\n## When to use\n\n- The user asks to build, add, change or refactor something specific.\n- Not for a plan without edits (use `prophecy`), not for a failure whose cause is unknown\n  (use `exorcise`), and not to commit the result (use `covenant`).\n\n## Procedure\n\n### 1. State the goal and the acceptance criteria\n\nWrite one sentence on what you are building and a short list of observable criteria that\nmean it is done. Derive both from the request.\n\n### 2. Survey the neighbors\n\nRead the code the change will sit beside and note what to match: naming and file layout,\nerror handling, test location, framework and style. Read the repository's agent guide or\ncontributing guide if it has one, and note generated files that must be rebuilt instead\nof edited.\n\n### 3. Plan\n\nList the edits in order, one item per file or logical change. Use the host's task list\nif it has one. Keep it to the work; this is a checklist, not a design document.\n\n### 4. Build in small steps\n\nWork one item at a time. Where a test suite exists, write or extend a failing test that\npins the new behavior, watch it fail, then make it pass. Build what was asked and nothing\nelse: no speculative abstraction, no unrequested refactor, no configuration for later, no\ncomment that only restates the code.\n\n### 5. Delegate only when it pays\n\nIf the plan has independent parts that touch separate files, give each to a subagent\nwith a self-contained brief and integrate the results. For a small or tightly coupled\nchange, do it inline.\n\n### 6. Report\n\nSay what changed, list the files, and give the commands you ran with their results. Name\nanything you could not verify.\n\n## Stop conditions\n\n- Requirements conflict, or a decision the request does not cover would change the\n  design: ask one question and wait.\n- The change turns out much larger than asked, or needs a new dependency, a schema\n  migration or a public API change: stop and confirm scope first.\n- Any destructive or hard-to-reverse action (deleting data, rewriting history, running\n  against production): ask first.\n- A check was already failing before your change: report it and do not fix it unasked.\n\n## Verify\n\nRun the project's own typecheck, lint, tests and build, as its manifest or CI defines\nthem, and read the output. Fix what you broke and re-run until they pass. Then walk the\nacceptance criteria from step 1 and confirm each one against real behavior (run the\ncommand, call the function, load the page), not only against a green test run. Never\nweaken a test, a lint rule or a type to get to green."
+    },
+    {
+      "name": "gospel",
+      "pillar": "Learn",
+      "purpose": "Explain how one file, symbol, function, flow or error works by tracing the real code path.",
+      "description": "Explain how one file, symbol, function, flow or error works by tracing the real code path. Use when the user asks what something does, why an error fires or how a value gets from one place to another. For a whole-repo overview use revelation; to fix a failure use exorcise.",
+      "invocation": "auto",
+      "allowedTools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "steps": [
+        "Identify the target",
+        "Trace the real path",
+        "Check current docs for third-party behavior",
+        "For an error, separate cause from symptom",
+        "Report"
+      ],
+      "source": "src/plugin/_sources/commands/gospel.md",
+      "body": "Explain what the target in the request does by reading the code that runs, then report\nthe gist first and the detail after. Read-only: this workflow changes nothing.\n\n## When to use\n\n- The user asks what a file, symbol, function, flow or error message does or means.\n- Not for a whole-repo overview (use `revelation`) and not to fix a failure (use `exorcise`).\n\n## Procedure\n\n### 1. Identify the target\n\nDecide which of these the request is, and act on it:\n\n- **Path**: read the file.\n- **Symbol or function**: search for its definition, not only its call sites.\n- **Concept or flow**: search for where it lives in this repository, then read.\n- **Error or stack trace**: find the frame in this codebase closest to the failure and\n  open that file and line.\n\nIf two readings are plausible, state the one you chose and continue.\n\n### 2. Trace the real path\n\nRead the definition, what it calls, what calls it and the data it touches, far enough to\nexplain the behavior and no further. Record the conditionals, error handling and edge\ncases you saw. Do not describe a branch you did not read.\n\n### 3. Check current docs for third-party behavior\n\nIf the answer depends on a library, framework, SDK, CLI or cloud service, look it up\nrather than trusting memory. Find the installed version in the lockfile or manifest, then\nquery the bundled documentation servers when they are connected: Context7 for general\nlibraries, Microsoft Learn for Microsoft and Azure, AWS Knowledge for AWS, Cloudflare Docs\nfor Cloudflare. If none is connected, say the claim comes from memory.\n\n### 4. For an error, separate cause from symptom\n\nName the state or input that triggers the error and where that state was created, which\nis often not where the error surfaced. Give the change that would fix it as a\n`path:line` and a one-line description. Do not apply it.\n\n### 5. Report\n\n- **What it is**: one or two plain sentences.\n- **How it works**: the flow, step by step, with a `path:line` at each step.\n- **Edge cases**: branches, failure modes and surprises you saw in the code.\n- **Fix** (errors only): root cause and the change to make.\n\nDescribe what the code does, not what its names suggest. If it looks wrong, say so.\n\n## Stop conditions\n\n- The target cannot be found: report what you searched for and the nearest matches, stop.\n- Part of the path lives outside the repository (a binary, a remote service, a\n  dependency without source): explain up to that boundary and name it.\n\n## Verify\n\nEvery step in \"How it works\" must cite a `path:line` you opened. Re-read the cited line\nfor the two or three claims the answer depends on most. Label anything you could not\ntrace as not verified instead of filling the gap."
+    },
+    {
+      "name": "judgment",
+      "pillar": "Review",
+      "purpose": "Review a diff for correctness bugs, security flaws, silent failures, convention drift and missing tests, and report findings by severity.",
+      "description": "Review a diff for correctness bugs, security flaws, silent failures, convention drift and missing tests, and report findings by severity. Use when the user asks for a code review of uncommitted changes, a commit, a range or named files. Read-only, it never edits.",
+      "invocation": "auto",
+      "allowedTools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash(git status *)",
+        "Bash(git diff *)",
+        "Bash(git show *)",
+        "Bash(git log *)"
+      ],
+      "steps": [
+        "Gather the diff",
+        "Read around the hunks",
+        "Review in priority order",
+        "Report by severity"
+      ],
+      "source": "src/plugin/_sources/commands/judgment.md",
+      "body": "Review changes the way a careful senior engineer would: real problems with evidence, no\nnitpicks, in the project's own idiom. Read-only: this workflow reports and changes nothing.\n\n## When to use\n\n- The user asks for a review of uncommitted work, a commit, a range, a branch or files.\n- Not to run the checks (use `sanctify`) and not to fix what the review finds unless the\n  user asks afterwards.\n\n## Procedure\n\n### 1. Gather the diff\n\n- If the request names files, a commit or a range, review that.\n- Otherwise review uncommitted work: `git status`, then `git diff` and `git diff --staged`.\n- If the tree is clean, review the latest commit with `git show HEAD`.\n\nState what you are reviewing in one line (for example \"3 files, staged and unstaged\").\n\n### 2. Read around the hunks\n\nFor each change, read enough of the surrounding file, its callers and its tests to know\nwhat the code did before and what depends on it. Read the repository's agent or\ncontributing guide for rules the change must follow.\n\n### 3. Review in priority order\n\n1. **Correctness**: wrong conditionals, off-by-one, unhandled cases, broken control\n   flow, races, changed behavior that callers rely on.\n2. **Security**: injection (shell, SQL, HTML), unvalidated input at a boundary, secrets\n   in code or logs, unsafe deserialization, missing authorization, path traversal.\n3. **Silent failures**: swallowed errors, empty catches, defaults that hide a bug.\n4. **Conventions**: does it match the patterns already here? Do not impose new ones.\n5. **Tests**: is the new behavior covered, including the edge cases the diff introduces?\n\n### 4. Report by severity\n\nGroup findings as **Must fix**, **Should fix** and **Consider**. For each one give the\n`path:line`, what is wrong, the input or state that triggers it, and a concrete fix.\nEnd with one verdict line: `ship`, `ship with fixes` or `needs work`.\n\n## Stop conditions\n\n- There is nothing to review (clean tree, no commits, or the named target does not\n  exist): say so and stop.\n- The diff is too large to review properly in one pass: review the highest-risk files\n  first, list what was not reviewed, and say so in the verdict.\n- A committed secret appears in the diff: report it first, do not print its value, and\n  do not attempt to rotate it or rewrite history.\n\n## Verify\n\nBefore reporting a finding, open the cited `path:line` and confirm the code says what\nyou claim and that the failing case is reachable. Drop any finding you cannot support.\nIf the change is clean, say that plainly instead of inventing concerns."
+    },
+    {
+      "name": "prophecy",
+      "pillar": "Plan",
+      "purpose": "Write a step-by-step plan for doing a task in this repository without changing any files (the precedent to copy, the files to touch, the commands to run).",
+      "description": "Write a step-by-step plan for doing a task in this repository without changing any files (the precedent to copy, the files to touch, the commands to run). Use when the user asks how to do something here or wants a plan before building. To make the change use genesis.",
+      "invocation": "auto",
+      "allowedTools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "steps": [
+        "Find the precedent",
+        "Find the real commands",
+        "Check current docs for library specifics",
+        "Write the plan",
+        "End with commands and a success check"
+      ],
+      "source": "src/plugin/_sources/commands/prophecy.md",
+      "body": "Produce a how-to for the task in the request that is specific to this repository: real\nfiles, real conventions, real commands. This workflow plans; it does not edit files or\nrun builds.\n\n## When to use\n\n- The user asks how to do something in this codebase, or wants a plan to review first.\n- Not when they want the change made (use `genesis`) or code explained (use `gospel`).\n\n## Procedure\n\n### 1. Find the precedent\n\nFind the closest thing that already exists and read it in full: an existing route for\n\"add a route\", a passing test of the same kind for \"add a test\". From it, extract\nnaming, file placement, registration or wiring, error handling and how it is tested.\nIf nothing similar exists, say so and base the plan on the nearest neighbor.\n\n### 2. Find the real commands\n\nRead the build, test, lint and run commands from the package manifest, Makefile, task\nrunner config or CI workflow. Never write a command the repository does not define.\n\n### 3. Check current docs for library specifics\n\nIf the task depends on a library, framework or tool, confirm syntax and options against\ncurrent documentation for the installed version. Use the bundled documentation servers\nwhen they are connected (Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs).\nIf none is connected, mark those details as from memory.\n\n### 4. Write the plan\n\nNumber the steps. Each step names:\n\n- the file to create or change, as a `path:line` reference to the precedent or the\n  insertion point;\n- the change, following the convention found in step 1;\n- any wiring the precedent revealed: registration, exports, config, fixtures, generated\n  files to rebuild.\n\nLeave out steps that would apply to any repository. If a step applies only in some\ncases, say when.\n\n### 5. End with commands and a success check\n\nList the commands to run, in order, copy-paste ready. State how to tell it worked: which\ntest passes, what output appears, what the result looks like.\n\n## Stop conditions\n\n- The task is ambiguous in a way that changes the plan (two possible targets, an\n  unstated requirement): ask one question and wait.\n- The task conflicts with a documented repository rule (agent guide, contributing guide,\n  generated-file policy): say so and plan the compliant route.\n\n## Verify\n\nCheck that every file path in the plan exists (or is marked as new), every command\nappears in a manifest or CI file, and no step says to edit a generated file. Do not run\nthe build or edit anything; hand back the plan."
+    },
+    {
+      "name": "revelation",
+      "pillar": "Learn",
+      "purpose": "Map an unfamiliar codebase or subsystem and explain how it fits together (layout, entry points, data flow, conventions, risks).",
+      "description": "Map an unfamiliar codebase or subsystem and explain how it fits together (layout, entry points, data flow, conventions, risks). Use when the user asks for an overview, an architecture tour or onboarding to a repo or area. For one file, symbol or error use gospel.",
+      "invocation": "auto",
+      "allowedTools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "steps": [
+        "Fix the scope",
+        "Read the map before the territory",
+        "Explore breadth first",
+        "Read the files that matter",
+        "Report"
+      ],
+      "source": "src/plugin/_sources/commands/revelation.md",
+      "body": "Build an accurate map of this codebase, or of the area the request names, and report it\nso a newcomer can find their way around. Read-only: this workflow changes nothing.\n\n## When to use\n\n- The user wants an overview, an architecture tour or onboarding to a repo or subsystem.\n- Not for one file, symbol or error (use `gospel`), and not for a how-to plan (use `prophecy`).\n\n## Procedure\n\n### 1. Fix the scope\n\nIf the request names a path, feature or subsystem, stay inside it. Otherwise cover the\nwhole repository. State the scope in one sentence before reading anything.\n\n### 2. Read the map before the territory\n\nRead, in this order, whichever of these exist: the README, the agent guide (`AGENTS.md`\nor `CLAUDE.md`), the package or build manifest and its scripts, the CI workflow, and the\ntop-level directory listing. They say what the project claims to be; the next step checks it.\n\n### 3. Explore breadth first\n\nAnswer four questions from the code itself:\n\n- **Shape**: top-level layout, entry points, build, test and lint commands.\n- **Architecture**: the main runtime pieces and how data or control moves between them.\n- **Conventions**: naming, error handling, module boundaries, test style.\n- **Risk**: generated files, oversized files, dead code, TODO or FIXME clusters,\n  security-sensitive paths, places where names and behavior disagree.\n\nIn a large repository, hand each question to a read-only exploration subagent if the host\noffers one (godmode ships `oracle` for Claude Code) and run them in parallel. Otherwise\nsearch first and open only the files the search points at.\n\n### 4. Read the files that matter\n\nPick the three to five files that carry the design (entry point, core module, main data\ntype, the test that shows intended use) and read them in full.\n\n### 5. Report\n\n- **Summary**: one paragraph on what the project is and does.\n- **Architecture map**: the major components and how they connect, as a short list or a\n  small diagram.\n- **Key files**: the handful to read first, each as `path:line` with one line on why.\n- **Conventions**: what a contributor must follow.\n- **Watch-outs**: risks and surprises, each with a `path:line`.\n- **Next steps**: two or three things the user can now do.\n\n## Stop conditions\n\n- The scope does not exist (wrong path or name): say so, list the closest matches, stop.\n- The area is too large to cover in one pass: report the top-level map, name what was\n  not read, and ask which part to go deeper on.\n\n## Verify\n\nBefore sending the report, check that every component in the architecture map and every\nkey file cites a `path:line` you opened, and that every command you list appears in a\nmanifest or CI file. Mark anything inferred from names alone as unverified."
+    },
+    {
+      "name": "sanctify",
+      "pillar": "Review",
+      "purpose": "Run the project's own checks (typecheck, lint, tests, build) and report pass or fail per check with the failing output.",
+      "description": "Run the project's own checks (typecheck, lint, tests, build) and report pass or fail per check with the failing output. Use when the user asks to verify, run the checks or confirm a change is green before committing. It reports and does not fix.",
+      "invocation": "auto",
+      "allowedTools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "steps": [
+        "Find the defined checks",
+        "Run them",
+        "Report"
+      ],
+      "source": "src/plugin/_sources/commands/sanctify.md",
+      "body": "Run the checks this project defines, or the subset the request names, and report what\npassed, what failed and the next action. It runs commands but edits nothing.\n\n## When to use\n\n- The user asks to verify, run the tests, run the checks or confirm things are green.\n- Not to find why a check fails (use `exorcise`) and not to review a diff (use `judgment`).\n\n## Procedure\n\n### 1. Find the defined checks\n\nUse what the repository defines and never invent a command:\n\n- A single check command, if one exists (`check`, `verify`, `ci`, `make check`, a script\n  the agent guide or CI workflow names). Prefer it: it is what CI runs.\n- **Node**: the `typecheck`, `lint`, `test` and `build` scripts in `package.json`. Pick\n  the runner from the lockfile: `pnpm-lock.yaml` means pnpm, `yarn.lock` yarn,\n  `bun.lock` or `bun.lockb` bun, `package-lock.json` npm.\n- **Other stacks**: `Makefile` targets, `cargo test` and `cargo clippy`, `go test ./...`\n  and `go vet ./...`, `pytest` with `ruff` or `mypy`, or whatever CI runs.\n\nIf the request names a subset (\"just lint\"), run only that. State the checks you found\nand the commands you will run in one line before running them.\n\n### 2. Run them\n\nRun cheapest first: typecheck, lint, tests, then build. Run every check even if an\nearlier one fails, so the report is complete. For each, record the command, the exit\ncode and the output. A non-zero exit or a runner's own failure summary is a FAIL. If a\ncheck is not defined, mark it SKIPPED; do not substitute your own.\n\n### 3. Report\n\nOne line per check, then detail for failures:\n\n```text\nPASS     typecheck   pnpm typecheck\nFAIL     tests       pnpm test (3 failed, 72 passed)\nSKIPPED  build       no build script\n```\n\nFor each failure, quote the failing output itself (the assertion, the error, the\noffending lines), not the whole log, and give the `path:line` it points at.\n\nEnd with one verdict line (`all green` or `N of M checks failing`) and the single most\nuseful next action.\n\n## Stop conditions\n\n- No checks are defined anywhere: say so, list where you looked, stop.\n- A check needs something missing (dependencies not installed, a service, credentials):\n  report it as BLOCKED with the exact error. Do not install or configure anything unasked.\n- A command would deploy, publish, migrate or write outside the repository: do not run\n  it, and say why.\n- A check hangs or starts a watch mode: stop it and report it as BLOCKED.\n\n## Verify\n\nEvery PASS or FAIL must come from an exit code you observed in this run, never from an\nearlier run or from reading the code. Counts in the report must match the runner's own\nsummary. Do not fix, edit or commit anything; report and stop."
+    },
+    {
+      "name": "summon",
+      "pillar": "Build",
+      "purpose": "List the subagents available in this session and pick the best one for a task, with the exact dispatch prompt.",
+      "description": "List the subagents available in this session and pick the best one for a task, with the exact dispatch prompt. Use when the user asks which agent to use, wants work delegated or run in parallel, or asks what agents exist.",
+      "invocation": "auto",
+      "allowedTools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "steps": [
+        "Enumerate",
+        "Summarize",
+        "Recommend, if a task was given",
+        "Otherwise, present the list"
+      ],
+      "source": "src/plugin/_sources/commands/summon.md",
+      "body": "Inventory the subagents this session can launch and, when the request names a task,\nrecommend which to dispatch and with what brief.\n\n## When to use\n\n- The user asks what agents exist, which one fits a task, or wants work delegated or\n  parallelized.\n- Not when the task is small or tightly coupled to the current conversation: do that\n  in the main thread and say why.\n\n## Procedure\n\n### 1. Enumerate\n\nCollect agents from every source and note where each comes from:\n\n- **Host**: the agent types your agent-launch tool already offers.\n- **Project**: agent definitions checked into the repository (for example\n  `.claude/agents/*.md` or `.codex/agents/*.toml`).\n- **Personal**: the same folders under the user's home directory.\n- **Plugins**: agents contributed by installed plugins. In Claude Code, godmode adds\n  `oracle` (read-only reconnaissance), `demiurge` (implementation), `inquisitor`\n  (review), `arbiter` (runs the checks) and `seer` (root-cause debugging).\n\nRead each definition's name and description. If the host has no subagent support, say\nso and stop at step 2 with an empty list.\n\n### 2. Summarize\n\nGive one line per agent on what it is for, taken from its own description. Group by\nsource so the user can see what is built in and what the project or a plugin adds.\n\n### 3. Recommend, if a task was given\n\n- Name the agent and the reason it fits the shape of the task.\n- Write the dispatch: the agent name and a brief that states the goal, the scope, what\n  is already known and what to return. The agent sees only that brief.\n- If the task splits into independent parts, propose one agent per part, launched\n  together, and spell out the split.\n- If no agent fits, say so and recommend the main thread.\n\n### 4. Otherwise, present the list\n\nWith no task, show the grouped list and offer to recommend once the user describes one.\n\n## Stop conditions\n\n- The task writes to shared state (commits, deploys, database changes): recommend an\n  agent only for the read-only or isolated part and leave the rest to the main thread.\n- Two agents would edit the same files in parallel: do not propose that split.\n\n## Verify\n\nEvery agent you list must come from a definition you read or a type the host reports,\nnever from memory. Check that each recommended agent has the tools its brief needs (a\nread-only agent cannot be asked to edit)."
+    }
   ],
   "agents": [
     {
-      "name": "oracle",
-      "role": "Read-only codebase reconnaissance: maps structure, traces flows."
+      "name": "arbiter",
+      "role": "Runs the project's own quality checks (typecheck, tests, lint, build) and reports exactly what passed, what failed, and the next action.",
+      "tools": [
+        "Bash",
+        "Read",
+        "Grep",
+        "Glob"
+      ]
     },
-    { "name": "demiurge", "role": "Implements a well-scoped feature or fix end to end." },
+    {
+      "name": "demiurge",
+      "role": "Implements a well-scoped feature or fix end-to-end: plans, writes code that matches existing conventions, and verifies it.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Edit",
+        "Write",
+        "Bash"
+      ]
+    },
     {
       "name": "inquisitor",
-      "role": "Rigorous code review: bugs, security, silent failures, drift."
+      "role": "Rigorous code reviewer.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash"
+      ]
     },
-    { "name": "arbiter", "role": "Runs the project's own checks and reports pass or fail." },
-    { "name": "seer", "role": "Roots out the true cause of a bug or failing test." }
+    {
+      "name": "oracle",
+      "role": "Read-only codebase reconnaissance.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash"
+      ]
+    },
+    {
+      "name": "seer",
+      "role": "Divines the true root cause of a bug or failing test (reproduce, hypothesize, isolate, fix) and never papers over the symptom.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash",
+        "Edit"
+      ]
+    }
   ],
   "hooks": [
     {
-      "name": "Session invocation",
+      "name": "Session context",
       "event": "SessionStart",
-      "detail": "Surfaces the command and subagent surface as context."
+      "script": "session-start.mjs",
+      "detail": "Adds a short list of the workflows and subagents to the session context."
     },
     {
-      "name": "Forbidden-act guard",
+      "name": "Destructive command guard",
       "event": "PreToolUse",
-      "detail": "Asks for confirmation before destructive Bash commands. Warns and confirms, never hard-blocks."
+      "script": "guard-bash.mjs",
+      "detail": "Asks for confirmation before destructive shell commands such as rm -rf or git push --force. It asks; it never blocks."
     },
     {
-      "name": "Auto-sanctify edits",
+      "name": "Format on edit",
       "event": "PostToolUse",
-      "detail": "Runs prettier on the changed file, but only when the project already uses prettier."
+      "script": "format-edit.mjs",
+      "detail": "Runs prettier on the edited file, only when the project already has a prettier config and prettier installed."
     }
   ],
   "connectors": [
@@ -75,84 +288,116 @@
       "slug": "context7",
       "title": "Context7",
       "category": "Docs",
-      "blurb": "Up-to-date, version-aware docs for libraries, frameworks, SDKs, and CLIs."
+      "blurb": "Up-to-date library & framework documentation, version-aware.",
+      "transport": "stdio",
+      "endpoint": "npx -y @upstash/context7-mcp",
+      "homepage": "https://github.com/upstash/context7"
     },
     {
       "slug": "microsoft-learn",
       "title": "Microsoft Learn",
       "category": "Docs",
-      "blurb": "Search and fetch Microsoft and Azure documentation and code samples."
+      "blurb": "Official Microsoft & Azure documentation search and fetch.",
+      "transport": "http",
+      "endpoint": "https://learn.microsoft.com/api/mcp",
+      "homepage": "https://github.com/MicrosoftDocs/mcp"
     },
     {
       "slug": "aws-knowledge",
       "title": "AWS Knowledge",
       "category": "Docs",
-      "blurb": "AWS documentation, code samples, and regional availability."
+      "blurb": "Official AWS documentation, code samples, and regional availability.",
+      "transport": "http",
+      "endpoint": "https://knowledge-mcp.global.api.aws",
+      "homepage": "https://awslabs.github.io/mcp/servers/aws-knowledge-mcp-server"
     },
     {
       "slug": "cloudflare-docs",
       "title": "Cloudflare Docs",
       "category": "Docs",
-      "blurb": "Search the Cloudflare developer platform documentation."
+      "blurb": "Cloudflare developer platform documentation.",
+      "transport": "http",
+      "endpoint": "https://docs.mcp.cloudflare.com/mcp",
+      "homepage": "https://github.com/cloudflare/mcp-server-cloudflare"
     },
     {
       "slug": "keeper-docs",
       "title": "Keeper Docs",
       "category": "Docs",
-      "blurb": "Search Keeper Security documentation."
+      "blurb": "Keeper Security documentation.",
+      "transport": "http",
+      "endpoint": "https://docs.keeper.io/~gitbook/mcp",
+      "homepage": "https://docs.keeper.io/"
     },
     {
       "slug": "deepwiki",
       "title": "DeepWiki",
       "category": "Code intelligence",
-      "blurb": "Ask questions about any public GitHub repo's architecture and docs."
+      "blurb": "Ask questions about any public GitHub repo's architecture and docs.",
+      "transport": "http",
+      "endpoint": "https://mcp.deepwiki.com/mcp",
+      "homepage": "https://docs.devin.ai/work-with-devin/deepwiki-mcp"
     },
     {
       "slug": "grep",
       "title": "grep.app",
       "category": "Code intelligence",
-      "blurb": "Regex code search across a million public GitHub repositories."
+      "blurb": "Regex code search across a million public GitHub repositories.",
+      "transport": "http",
+      "endpoint": "https://mcp.grep.app",
+      "homepage": "https://vercel.com/blog/grep-a-million-github-repositories-via-mcp"
     },
     {
       "slug": "playwright",
       "title": "Playwright",
       "category": "Browser",
-      "blurb": "Drive a real browser for testing, screenshots, and verification."
+      "blurb": "Drive a real browser for testing and verification.",
+      "transport": "stdio",
+      "endpoint": "npx -y @playwright/mcp@latest",
+      "homepage": "https://github.com/microsoft/playwright-mcp"
     },
     {
       "slug": "chrome-devtools",
       "title": "Chrome DevTools",
       "category": "Browser",
-      "blurb": "Inspect the DOM, network, console, and performance traces in Chrome."
+      "blurb": "Inspect the DOM, network, console, and performance traces in Chrome.",
+      "transport": "stdio",
+      "endpoint": "npx -y chrome-devtools-mcp@latest",
+      "homepage": "https://github.com/ChromeDevTools/chrome-devtools-mcp"
     },
     {
       "slug": "azure",
       "title": "Azure",
       "category": "Cloud",
-      "blurb": "Manage Azure resources and deployments using your local az login."
+      "blurb": "Manage Azure resources, deployments, and services (uses local az login).",
+      "transport": "stdio",
+      "endpoint": "npx -y @azure/mcp@latest server start",
+      "homepage": "https://github.com/microsoft/mcp"
     }
   ],
   "roadmap": [
     {
       "phase": "Now",
-      "label": "Shipped in v1.3.0",
+      "label": "Shipped",
       "items": [
-        "9 deific commands",
+        "9 workflow skills, both engines",
         "5 subagents and 3 hooks (Claude Code)",
         "10 bundled no-auth MCP servers",
-        "Dual-engine, one source"
+        "One source, one build, drift-checked in CI"
       ]
     },
     {
       "phase": "Next",
-      "items": ["Persistent hybrid memory: global and per-project SQLite, session injection"]
+      "items": [
+        "Persistent memory: global and per-project, injected at session start"
+      ]
     },
     {
       "phase": "Later",
       "items": [
-        "Token economics: meter, optimizer, router, budgets",
-        "Live local dashboard",
-        "godmode CLI and doctor"
+        "Token and cost tracking",
+        "A local dashboard",
+        "A godmode CLI with a doctor command"
       ]
     }
   ]

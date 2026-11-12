@@ -1,62 +1,76 @@
 ---
 name: exorcise
-description: Systematically find the root cause of a bug or failing test.
-allowed-tools: Bash, Read, Grep, Glob, Edit, Task, TodoWrite
+description: Find the root cause of a bug or failing test before fixing it (reproduce, rank hypotheses, isolate, explain, apply the smallest fix, re-run). Use when something fails, crashes, flakes or behaves wrongly and the cause is unknown.
+allowed-tools: Read, Grep, Glob
+pillar: Debug
 engines: both
 ---
 
-Track down the true root cause of the problem described in `$ARGUMENTS` (a bug report,
-a failing test name, or pasted error output) and fix it without papering over it.
+Track the failure in the request (a bug report, a failing test name or pasted error
+output) to its cause, fix that cause and prove the fix. No patching symptoms.
 
-## 1. Reproduce
+## When to use
 
-You cannot fix what you cannot trigger. Establish the exact failing command, input, or
-test from `$ARGUMENTS` and run it yourself:
+- A test fails, a command errors, a program crashes or misbehaves, and the cause is unknown.
+- Not to explain working code (use `gospel`) and not to build a feature (use `genesis`).
 
-- Pin down the precise repro: the command, the environment, the inputs.
-- Run it and confirm you see the same failure (same error, same stack, same assertion).
-- Capture the full output. The exact message and stack trace are your primary evidence.
+## Procedure
 
-If you cannot reproduce it, say so plainly and gather more: ask for versions, environment,
-exact steps, or a minimal example. Do not guess at a fix for a failure you have not seen.
+### 1. Reproduce
 
-## 2. Form hypotheses
+Establish the exact failing command, input or test and run it yourself. Confirm you see
+the same failure: same error, same stack, same assertion. Keep the full output; it is the
+primary evidence. For a flaky failure, run it enough times to measure how often it fails.
 
-Before touching code, list the few most likely causes (usually two to four). Reason from
-the error and the stack trace, not from a hunch. Rank them by likelihood and by how cheap
-they are to check. This list is what keeps you from flailing.
+### 2. List hypotheses
 
-## 3. Narrow it down
+Before changing code, write down the two to four most likely causes, reasoned from the
+error and the stack trace. Rank them by likelihood and by how cheap each is to check.
 
-Work top-down through your hypotheses to isolate the smallest failing unit:
+### 3. Isolate
 
-- Read the relevant code paths the trace implicates, along with their callers and callee context.
-- Add temporary instrumentation (logging, prints, assertions) or inspect state to confirm
-  what is actually happening versus what you assumed.
-- Bisect: disable, stub, or split inputs to halve the search space each step. Narrow until
-  one line, one value, or one condition is unambiguously responsible.
+Test the hypotheses in rank order, one variable at a time:
 
-## 4. Identify the root cause
+- Read the code paths the trace implicates, with their callers and callees.
+- Add temporary instrumentation (logging, assertions) or inspect state to see what
+  happens, as opposed to what you assumed. Keep a list of everything you add.
+- Bisect: disable, stub or split inputs to halve the search space each step. If it
+  worked before, `git bisect` or the recent history of the implicated files narrows it.
 
-State the actual root cause (not the symptom) and explain **why** it fails: the wrong
-value, the missing case, the bad assumption, the order of operations. If your explanation
-does not account for every detail of the observed failure, you are not done. A symptom
-patched is a bug that returns.
+Continue until one line, one value or one condition is responsible.
 
-## 5. Propose the minimal fix
+### 4. State the root cause
 
-Describe the smallest change that addresses the root cause. Find the real fix rather than
-bypassing it: never disable a safety check, delete a test, weaken an assertion, or skip a
-hook to make the error "go away". Apply the fix only if the user wants it. Confirm first
-before any destructive or hard-to-reverse action.
+Say what is wrong and why it produces this failure: the wrong value, the missing case,
+the bad assumption, the ordering. The explanation must account for every detail of the
+observed failure, including when it does not happen. If it does not, return to step 2.
 
-## 6. Verify
+### 5. Fix the cause
 
-Prove it is actually fixed:
+Make the smallest change that removes the cause. Add or extend a test that fails without
+the fix and passes with it. Never disable a safety check, delete or skip a test, weaken
+an assertion, add a retry around a logic error or bypass a hook to make the error go away.
 
-- Re-run the original repro from step 1; it must now pass.
-- Re-run related tests and adjacent code paths to confirm you did not regress anything.
-- Remove every piece of temporary instrumentation you added in step 3.
+### 6. Report
 
-Report the root cause, the fix, and exactly what you ran to verify. If anything remains
-uncertain, say so rather than declaring victory.
+Give the root cause, the fix (files and lines), the test that pins it, and the commands
+you ran with their results. Say what remains uncertain.
+
+## Stop conditions
+
+- The failure cannot be reproduced: say so, list what you tried, and ask for versions,
+  environment, exact steps or a minimal example. Do not guess at a fix.
+- The fix needs a destructive or hard-to-reverse action, a dependency change or a
+  change to a public interface: describe it and ask before applying.
+- The cause is outside the repository (a dependency bug, a service, the environment):
+  report the evidence and the workaround options, and let the user choose.
+- Three hypotheses in a row are disproved: stop, summarize what is now known and ruled
+  out, and reconsider the assumptions before continuing.
+
+## Verify
+
+Re-run the reproduction from step 1; it must now pass. For a flaky failure, run it at
+least as many times as it took to see the failure before. Run the related tests and the
+project's checks to confirm nothing regressed. Remove every piece of temporary
+instrumentation on your list and confirm with `git diff` that only the fix and its test
+remain.

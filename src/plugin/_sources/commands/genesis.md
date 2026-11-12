@@ -1,59 +1,72 @@
 ---
 name: genesis
-description: Implement a feature or change with a tight plan, build, and verify loop.
-allowed-tools: Read, Grep, Glob, Edit, Write, Bash, Task, TodoWrite
+description: Implement a feature or change end to end (restate the goal, match existing patterns, build in small tested steps, run the project's checks). Use when the user asks to build, add, change or refactor something concrete. For a plan only use prophecy; for a bug or failing test use exorcise.
+allowed-tools: Read, Grep, Glob
+pillar: Build
 engines: both
 ---
 
-Build the feature or change described in `$ARGUMENTS` cleanly and correctly: plan it,
-match the codebase, ship it in small steps, and verify it works.
+Build the change the request describes so it reads like the code around it, then prove
+it works with the project's own checks. This workflow edits files and runs commands; it
+does not commit, push or open a pull request.
 
-## 1. Clarify the goal
+## When to use
 
-State in one sentence what you're building and what "done" looks like (the acceptance
-criteria). Derive both from `$ARGUMENTS`. Only ask the user if the request is genuinely
-ambiguous (conflicting requirements, missing a critical decision); otherwise proceed.
+- The user asks to build, add, change or refactor something specific.
+- Not for a plan without edits (use `prophecy`), not for a failure whose cause is unknown
+  (use `exorcise`), and not to commit the result (use `covenant`).
 
-## 2. Survey existing patterns
+## Procedure
 
-Before writing anything, read the neighboring code your change will live among. You're
-looking for the conventions to match, not inventing your own:
+### 1. State the goal and the acceptance criteria
 
-- **Naming and structure**: how files, functions, and modules are named and laid out.
-- **Error handling**: how this codebase reports and recovers from failures.
-- **Tests**: where tests live, the framework, and the style of existing cases.
+Write one sentence on what you are building and a short list of observable criteria that
+mean it is done. Derive both from the request.
 
-New code should look like it was always there.
+### 2. Survey the neighbors
 
-## 3. Plan
+Read the code the change will sit beside and note what to match: naming and file layout,
+error handling, test location, framework and style. Read the repository's agent guide or
+contributing guide if it has one, and note generated files that must be rebuilt instead
+of edited.
 
-Write a short checklist of the concrete edits using the todo tooling, one item per file
-or logical change, in the order you'll make them. Keep it to the actual work; this is a
-plan, not a design doc.
+### 3. Plan
 
-## 4. Build in small steps
+List the edits in order, one item per file or logical change. Use the host's task list
+if it has one. Keep it to the work; this is a checklist, not a design document.
 
-Work through the checklist one item at a time. Follow the patterns from step 2. Where a
-test suite exists, prefer test-driven: write or extend a failing test that pins the new
-behavior, then make it pass. Keep each change focused and self-contained.
+### 4. Build in small steps
 
-Build exactly what was asked: no speculative abstractions, no unrequested refactors, no
-extra config "for later" (YAGNI). Do not add comments that merely restate what the code
-does.
+Work one item at a time. Where a test suite exists, write or extend a failing test that
+pins the new behavior, watch it fail, then make it pass. Build what was asked and nothing
+else: no speculative abstraction, no unrequested refactor, no configuration for later, no
+comment that only restates the code.
 
-## 5. Dispatch gate
+### 5. Delegate only when it pays
 
-Decide how to execute before charging ahead:
+If the plan has independent parts that touch separate files, give each to a subagent
+with a self-contained brief and integrate the results. For a small or tightly coupled
+change, do it inline.
 
-- **Large or parallelizable**: fan out `Task` subagents, one bounded task each (e.g. one
-  per independent module), and integrate the results. Give each a clear, self-contained brief.
-- **Small or tightly coupled**: just do it inline. Don't add coordination overhead a
-  one-file change doesn't need.
+### 6. Report
 
-## 6. Verify
+Say what changed, list the files, and give the commands you ran with their results. Name
+anything you could not verify.
 
-Run the project's own checks (typecheck, tests, lint) and read the output. Fix anything
-you broke until they pass. Confirm the acceptance criteria from step 1 are actually met.
+## Stop conditions
 
-Report what changed, which files, and how you verified it. Do not commit, push, or open a
-PR unless the user explicitly asks; this command implements and verifies, nothing more.
+- Requirements conflict, or a decision the request does not cover would change the
+  design: ask one question and wait.
+- The change turns out much larger than asked, or needs a new dependency, a schema
+  migration or a public API change: stop and confirm scope first.
+- Any destructive or hard-to-reverse action (deleting data, rewriting history, running
+  against production): ask first.
+- A check was already failing before your change: report it and do not fix it unasked.
+
+## Verify
+
+Run the project's own typecheck, lint, tests and build, as its manifest or CI defines
+them, and read the output. Fix what you broke and re-run until they pass. Then walk the
+acceptance criteria from step 1 and confirm each one against real behavior (run the
+command, call the function, load the page), not only against a green test run. Never
+weaken a test, a lint rule or a type to get to green.

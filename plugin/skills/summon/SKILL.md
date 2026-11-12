@@ -1,47 +1,62 @@
 ---
 name: summon
-description: "Summon the right subagent for a task: survey those available and dispatch the best fit."
-allowed-tools: Read, Glob, Grep, Task
+description: "List the subagents available in this session and pick the best one for a task, with the exact dispatch prompt. Use when the user asks which agent to use, wants work delegated or run in parallel, or asks what agents exist."
+allowed-tools: Read, Grep, Glob
 ---
 
-Map the specialized subagents available in this environment and, if `$ARGUMENTS`
-describes a task, recommend the best-fit agent(s) and show exactly how to dispatch them.
+Inventory the subagents this session can launch and, when the request names a task,
+recommend which to dispatch and with what brief.
 
-## 1. Enumerate what's available
+## When to use
 
-Gather every agent on hand from all sources:
+- The user asks what agents exist, which one fits a task, or wants work delegated or
+  parallelized.
+- Not when the task is small or tightly coupled to the current conversation: do that
+  in the main thread and say why.
 
-- **Host-exposed types**: the agent types your environment already lets you launch
-  (e.g. `Explore`, or whatever the `Task` tool offers).
-- **Project agents**: definitions on disk at `.claude/agents/*.md`.
-- **Personal agents**: definitions at `~/.claude/agents/*.md`.
-- **Plugin agents**: any agents contributed by installed plugins. Godmode ships five:
-  `oracle` (read-only code recon), `demiurge` (implementation), `inquisitor` (review),
-  `arbiter` (test/verify judgment), and `seer` (debugging / root-cause).
+## Procedure
 
-Glob those paths and read each definition's frontmatter for its name and description.
-De-duplicate by name; note where each one comes from.
+### 1. Enumerate
 
-## 2. Summarize each
+Collect agents from every source and note where each comes from:
 
-For every agent, give a one-line summary of what it's best at, pulled from its
-description, not invented. Group them by source (host, project, personal, plugin) so the
-user can see what's built in versus what this repo adds.
+- **Host**: the agent types your agent-launch tool already offers.
+- **Project**: agent definitions checked into the repository (for example
+  `.claude/agents/*.md` or `.codex/agents/*.toml`).
+- **Personal**: the same folders under the user's home directory.
+- **Plugins**: agents contributed by installed plugins. In Claude Code, godmode adds
+  `oracle` (read-only reconnaissance), `demiurge` (implementation), `inquisitor`
+  (review), `arbiter` (runs the checks) and `seer` (root-cause debugging).
 
-## 3. Recommend for the task
+Read each definition's name and description. If the host has no subagent support, say
+so and stop at step 2 with an empty list.
 
-If `$ARGUMENTS` names a task, pick the best-fit agent(s):
+### 2. Summarize
 
-- State which agent and why it fits; match the task's shape to the agent's strength.
-- Show the exact dispatch: the agent type and a tight prompt describing the goal.
-- If the work splits into **independent** pieces, recommend launching multiple agents in
-  a single batch so they run in parallel. Spell out the split.
-- If nothing fits well, say so and suggest handling it in the main thread instead.
+Give one line per agent on what it is for, taken from its own description. Group by
+source so the user can see what is built in and what the project or a plugin adds.
 
-## 4. Otherwise, just present the list
+### 3. Recommend, if a task was given
 
-If no task is given, present the categorized list from steps 1–2 so the user knows what's
-on hand, and invite them to re-run with a task description for a recommendation.
+- Name the agent and the reason it fits the shape of the task.
+- Write the dispatch: the agent name and a brief that states the goal, the scope, what
+  is already known and what to return. The agent sees only that brief.
+- If the task splits into independent parts, propose one agent per part, launched
+  together, and spell out the split.
+- If no agent fits, say so and recommend the main thread.
 
-The principle: delegate broad exploration and parallelizable, well-bounded work to
-subagents; keep tightly-coupled reasoning that needs full context in the main thread.
+### 4. Otherwise, present the list
+
+With no task, show the grouped list and offer to recommend once the user describes one.
+
+## Stop conditions
+
+- The task writes to shared state (commits, deploys, database changes): recommend an
+  agent only for the read-only or isolated part and leave the rest to the main thread.
+- Two agents would edit the same files in parallel: do not propose that split.
+
+## Verify
+
+Every agent you list must come from a definition you read or a type the host reports,
+never from memory. Check that each recommended agent has the tools its brief needs (a
+read-only agent cannot be asked to edit).

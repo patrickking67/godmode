@@ -1,0 +1,6 @@
+# Generated from src/plugin/_sources/commands; do not hand-edit.
+interface:
+  display_name: "covenant"
+  short_description: "Create one Conventional Commit from the current changes (inspect the diff, stage explicit paths, write the message, commit as the user, confirm)."
+policy:
+  allow_implicit_invocation: false

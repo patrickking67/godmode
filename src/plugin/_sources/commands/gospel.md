@@ -1,57 +1,70 @@
 ---
 name: gospel
-description: Explain how a file, symbol, function, flow, or error works.
-allowed-tools: Read, Grep, Glob, Task, WebFetch
+description: Explain how one file, symbol, function, flow or error works by tracing the real code path. Use when the user asks what something does, why an error fires or how a value gets from one place to another. For a whole-repo overview use revelation; to fix a failure use exorcise.
+allowed-tools: Read, Grep, Glob
+pillar: Learn
 engines: both
 ---
 
-Explain what `$ARGUMENTS` actually does by reading the real code paths, not by guessing,
-and report it back at the right altitude: the gist first, then the detail that matters.
+Explain what the target in the request does by reading the code that runs, then report
+the gist first and the detail after. Read-only: this workflow changes nothing.
 
-## 1. Identify what you were asked about
+## When to use
 
-`$ARGUMENTS` is one of: a file path, a symbol or function name, a concept, or a pasted
-error or stack trace. Figure out which before doing anything else:
+- The user asks what a file, symbol, function, flow or error message does or means.
+- Not for a whole-repo overview (use `revelation`) and not to fix a failure (use `exorcise`).
 
-- **Path**: read it directly.
-- **Symbol or function**: `Grep` for its definition (not just call sites) and locate it.
-- **Concept**: find where it lives in this repo via `Grep`/`Glob`, then read.
-- **Error or stack trace**: read top-to-bottom, find the originating frame, and open
-  the file and line it points at.
+## Procedure
 
-If the target is genuinely ambiguous, state your best interpretation and proceed.
+### 1. Identify the target
 
-## 2. Trace how it actually works
+Decide which of these the request is, and act on it:
 
-Follow the real code, not what the names imply. Read the definition, then follow what it
-calls, what calls it, and the data it touches, far enough to explain the behavior, no
-further. For a large or cross-cutting flow, dispatch the `Explore` agent to map the path
-rather than reading every file yourself. Note the actual conditionals, error handling, and
-edge cases; do not paper over branches you did not read.
+- **Path**: read the file.
+- **Symbol or function**: search for its definition, not only its call sites.
+- **Concept or flow**: search for where it lives in this repository, then read.
+- **Error or stack trace**: find the frame in this codebase closest to the failure and
+  open that file and line.
 
-## 3. For library, framework, or API questions, check current docs
+If two readings are plausible, state the one you chose and continue.
 
-If the question is about a third-party library, framework, SDK, CLI, or cloud service,
-your training data may be stale. Use the bundled documentation tools instead of relying on
-memory: **Context7** for general libraries and frameworks, **Microsoft Learn** for
-Microsoft/Azure topics. Ground the explanation in what the docs say for the version in use.
+### 2. Trace the real path
 
-## 4. For an error, find the root cause
+Read the definition, what it calls, what calls it and the data it touches, far enough to
+explain the behavior and no further. Record the conditionals, error handling and edge
+cases you saw. Do not describe a branch you did not read.
 
-Do not stop at the symptom. Identify the originating frame, explain *why* it fires (the
-specific state or input that triggers it), and distinguish the root cause from where it
-surfaced. Then give the concrete fix: the exact change, at the exact `path:line`.
+### 3. Check current docs for third-party behavior
 
-## 5. Report at the right altitude
+If the answer depends on a library, framework, SDK, CLI or cloud service, look it up
+rather than trusting memory. Find the installed version in the lockfile or manifest, then
+query the bundled documentation servers when they are connected: Context7 for general
+libraries, Microsoft Learn for Microsoft and Azure, AWS Knowledge for AWS, Cloudflare Docs
+for Cloudflare. If none is connected, say the claim comes from memory.
 
-Lead with a one- or two-sentence plain-English summary, then the detail:
+### 4. For an error, separate cause from symptom
 
-- **What it is and does**: the summary, first.
-- **How it works**: the real flow, step by step, with clickable `path:line` references at
-  each point that matters.
-- **Edge cases and gotchas**: branches, failure modes, or surprises you saw in the code.
-- **The fix** (errors only): root cause plus the concrete change to make.
+Name the state or input that triggers the error and where that state was created, which
+is often not where the error surfaced. Give the change that would fix it as a
+`path:line` and a one-line description. Do not apply it.
 
-Explain what the code *does*, not what it is probably *supposed* to do. If the code looks
-buggy or contradicts its own naming, say so. If you could not trace part of it, say that
-plainly rather than filling the gap with a guess.
+### 5. Report
+
+- **What it is**: one or two plain sentences.
+- **How it works**: the flow, step by step, with a `path:line` at each step.
+- **Edge cases**: branches, failure modes and surprises you saw in the code.
+- **Fix** (errors only): root cause and the change to make.
+
+Describe what the code does, not what its names suggest. If it looks wrong, say so.
+
+## Stop conditions
+
+- The target cannot be found: report what you searched for and the nearest matches, stop.
+- Part of the path lives outside the repository (a binary, a remote service, a
+  dependency without source): explain up to that boundary and name it.
+
+## Verify
+
+Every step in "How it works" must cite a `path:line` you opened. Re-read the cited line
+for the two or three claims the answer depends on most. Label anything you could not
+trace as not verified instead of filling the gap.

@@ -4,13 +4,13 @@
     "name": "Patrick King",
     "url": "https://github.com/patrickking67"
   },
-  "description": "Learn, plan, build, and optimize: one super-plugin for Claude Code and Codex, with hero workflows and bundled no-auth MCP servers.",
+  "description": "One plugin for Claude Code and Codex, built from a single source: nine coding workflow skills and ten no-auth MCP servers.",
   "plugins": [
     {
       "name": "godmode",
       "version": "1.3.0",
       "source": "./plugin",
-      "description": "Learn, plan, build, and optimize: one super-plugin for Claude Code and Codex, with hero workflows and bundled no-auth MCP servers."
+      "description": "One plugin for Claude Code and Codex, built from a single source: nine coding workflow skills and ten no-auth MCP servers."
     }
   ]
 }

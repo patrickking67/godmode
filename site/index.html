@@ -6,22 +6,21 @@
     <title>Godmode: one plugin for Claude Code and Codex</title>
     <meta
       name="description"
-      content="Learn. Plan. Build. Optimize. One plugin for Claude Code and Codex with battle-tested workflows and ten bundled no-auth MCP servers, installed once from a single source."
+      content="Nine coding workflows and ten no-auth MCP servers for Claude Code and Codex, written once and built for both from a single source."
     />
-    <meta name="theme-color" content="#7C3AED" />
+    <meta name="theme-color" content="#0a0a0f" />
     <meta name="color-scheme" content="dark" />
     <script>
       document.documentElement.classList.add("js");
     </script>
     <link rel="canonical" href="https://patrickking67.github.io/godmode/" />
 
-    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Godmode" />
     <meta property="og:title" content="Godmode: one plugin for Claude Code and Codex" />
     <meta
       property="og:description"
-      content="Learn. Plan. Build. Optimize. Battle-tested workflows and ten bundled no-auth MCP servers, installed once from a single source in both engines."
+      content="Nine coding workflows and ten no-auth MCP servers, written once and built for both engines from a single source."
     />
     <meta property="og:url" content="https://patrickking67.github.io/godmode/" />
     <meta
@@ -32,28 +31,22 @@
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content="Godmode wordmark with the line Learn. Plan. Build. Optimize. and Claude Code and Codex badges."
+      content="Godmode flame icon beside the line: nine workflows and ten MCP servers, one source, built for Claude Code and Codex."
     />
-
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Godmode: one plugin for Claude Code and Codex" />
     <meta
       name="twitter:description"
-      content="Learn. Plan. Build. Optimize. Battle-tested workflows and ten bundled no-auth MCP servers, installed once from a single source."
+      content="Nine coding workflows and ten no-auth MCP servers, written once and built for both engines."
     />
     <meta
       name="twitter:image"
       content="https://patrickking67.github.io/godmode/assets/og-image.png"
     />
 
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Cdefs%3E%3ClinearGradient%20id='f'%20x1='32'%20y1='6'%20x2='32'%20y2='58'%20gradientUnits='userSpaceOnUse'%3E%3Cstop%20offset='0'%20stop-color='%23a855f7'/%3E%3Cstop%20offset='0.55'%20stop-color='%237C3AED'/%3E%3Cstop%20offset='1'%20stop-color='%2310B981'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%2312121a'/%3E%3Cpath%20fill='url(%23f)'%20d='M33.6%206.2c.6%206.7-2.1%2010.6-5.7%2013.9-3.9%203.6-8.9%207.4-9%2014.7-.1%208%205.6%2014.4%2013.4%2015%209%20.7%2015.5-5.6%2015.7-13.7.1-4.7-1.9-8.2-3.9-10.2.2%202.4-.6%204.6-2.4%205.6-.2-4.9-2-9-5.2-12.4-3-3.2-4-7.6-2.9-12.9z'/%3E%3C/svg%3E"
-    />
     <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
     <link rel="alternate" type="text/plain" href="./llms.txt" title="llms.txt" />
-
     <link
       rel="preload"
       href="./data/godmode.json"
@@ -67,33 +60,31 @@
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header" id="top">
-      <nav class="nav" aria-label="Primary">
+      <nav class="nav shell" aria-label="Primary">
         <a class="brand" href="#top" aria-label="Godmode home">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 64 64" width="28" height="28" focusable="false">
-              <defs>
-                <linearGradient
-                  id="navflame"
-                  x1="32"
-                  y1="6"
-                  x2="32"
-                  y2="58"
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop offset="0" stop-color="#a855f7" />
-                  <stop offset="0.55" stop-color="#7C3AED" />
-                  <stop offset="1" stop-color="#10B981" />
-                </linearGradient>
-              </defs>
-              <path
-                fill="url(#navflame)"
-                d="M33.6 6.2c.6 6.7-2.1 10.6-5.7 13.9-3.9 3.6-8.9 7.4-9 14.7-.1 8 5.6 14.4 13.4 15 9 .7 15.5-5.6 15.7-13.7.1-4.7-1.9-8.2-3.9-10.2.2 2.4-.6 4.6-2.4 5.6-.2-4.9-2-9-5.2-12.4-3-3.2-4-7.6-2.9-12.9z"
-              />
-            </svg>
-          </span>
+          <svg class="brand-mark" viewBox="0 0 64 64" width="26" height="26" aria-hidden="true">
+            <defs>
+              <linearGradient
+                id="nav-flame"
+                x1="32"
+                y1="8"
+                x2="32"
+                y2="54"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop offset="0" stop-color="#c084fc" />
+                <stop offset="0.5" stop-color="#7c3aed" />
+                <stop offset="1" stop-color="#10b981" />
+              </linearGradient>
+            </defs>
+            <path
+              fill="url(#nav-flame)"
+              fill-rule="evenodd"
+              d="M32.6 8c1.6 8.4 11.6 12.6 13.3 25.1C47.4 44 41.2 54 32 54s-15.4-10-13.9-20.9c.8-5.6 4-9.2 6.5-12.6.5 4.5 2.4 7.1 4.9 8.3C28 21.8 29.2 13.9 32.6 8zM32 31.5c-2.6 4.3-5.8 7.1-5.8 11.4 0 3.8 2.6 6.3 5.8 6.3s5.8-2.5 5.8-6.3c0-4.3-3.2-7.1-5.8-11.4z"
+            />
+          </svg>
           <span class="brand-word">godmode</span>
         </a>
-
         <button
           class="nav-toggle"
           type="button"
@@ -105,12 +96,12 @@
           <span class="nav-toggle-bar" aria-hidden="true"></span>
           <span class="nav-toggle-bar" aria-hidden="true"></span>
         </button>
-
         <div class="nav-links" id="nav-links">
-          <a href="#why">Why</a>
-          <a href="#commands">Commands</a>
-          <a href="#connectors">Connectors</a>
-          <a href="#install">Install</a>
+          <a href="#workflows">Workflows</a>
+          <a href="#servers">Servers</a>
+          <a href="#how">How it works</a>
+          <a href="#demo">Demo</a>
+          <a href="#proof">Proof</a>
           <a class="nav-cta" href="https://github.com/patrickking67/godmode" rel="noopener"
             >GitHub</a
           >
@@ -119,303 +110,28 @@
     </header>
 
     <main id="main">
-      <!-- 1. HERO -->
       <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-aura" aria-hidden="true"></div>
         <div class="shell hero-grid">
           <div class="hero-copy reveal">
-            <p class="eyebrow">
-              <span class="eyebrow-dot" aria-hidden="true"></span>Dual-engine super-plugin
-            </p>
-            <h1 id="hero-title" class="hero-title">Learn. Plan. Build. Optimize.</h1>
+            <h1 id="hero-title" class="hero-title">
+              Nine coding workflows, written once, built for Claude Code and Codex.
+            </h1>
             <p class="hero-pitch">
-              One plugin for Claude Code and Codex. Battle-tested workflows and ten bundled no-auth
-              MCP servers, installed once from a single source in both engines.
+              Godmode is one plugin: nine workflow skills and ten MCP servers that need no API key.
+              A single build turns one set of Markdown and TypeScript sources into the plugin both
+              engines install.
             </p>
-
-            <ul class="engine-badges" aria-label="Supported engines">
-              <li class="engine-badge engine-badge--claude">
-                <span class="dot" aria-hidden="true"></span>Claude Code
-              </li>
-              <li class="engine-badge engine-badge--codex">
-                <span class="dot" aria-hidden="true"></span>Codex
-              </li>
-            </ul>
-
-            <div class="hero-actions">
-              <a class="btn btn-primary" href="#install">Install Godmode</a>
-              <a
-                class="btn btn-ghost"
-                href="https://github.com/patrickking67/godmode"
-                rel="noopener"
-              >
-                View on GitHub
-                <svg
-                  viewBox="0 0 24 24"
-                  width="16"
-                  height="16"
-                  aria-hidden="true"
-                  focusable="false"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M7 17 17 7M9 7h8v8"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </a>
-            </div>
-          </div>
-
-          <!-- Animated slash-command menu mock (no screenshot) -->
-          <div class="hero-mock reveal" aria-hidden="true">
-            <div class="mock-window">
-              <div class="mock-titlebar">
-                <span class="mock-dot"></span><span class="mock-dot"></span
-                ><span class="mock-dot"></span>
-                <span class="mock-title">godmode</span>
-              </div>
-              <div class="mock-body">
-                <div class="mock-prompt">
-                  <span class="mock-caret">/</span><span class="mock-typed"></span
-                  ><span class="mock-cursor"></span>
-                </div>
-                <ul class="mock-menu">
-                  <li>
-                    <span class="mock-cmd">/revelation</span
-                    ><span class="mock-desc">Explore a codebase</span>
-                  </li>
-                  <li>
-                    <span class="mock-cmd">/genesis</span
-                    ><span class="mock-desc">Implement a feature</span>
-                  </li>
-                  <li>
-                    <span class="mock-cmd">/judgment</span
-                    ><span class="mock-desc">Review for bugs and drift</span>
-                  </li>
-                  <li>
-                    <span class="mock-cmd">/exorcise</span
-                    ><span class="mock-desc">Find the root cause</span>
-                  </li>
-                  <li>
-                    <span class="mock-cmd">/covenant</span
-                    ><span class="mock-desc">Commit cleanly</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 2. WHY -->
-      <section class="section" id="why" aria-labelledby="why-title">
-        <div class="shell">
-          <header class="section-head reveal">
-            <p class="kicker">Why Godmode</p>
-            <h2 id="why-title">One coherent surface, not twelve overlapping ones.</h2>
-            <p class="section-lead">
-              Godmode fuses the best ideas across the ecosystem into a single opinionated plugin you
-              install once, in either engine, with no per-repo setup grind.
-            </p>
-          </header>
-          <ul class="why-grid">
-            <li class="why-card reveal">
-              <p class="why-problem">Many plugins, overlapping commands</p>
-              <p class="why-answer">
-                One plugin, one command surface, one mental model across both engines.
-              </p>
-            </li>
-            <li class="why-card reveal">
-              <p class="why-problem">Memory that disappears each session</p>
-              <p class="why-answer">
-                Hybrid global and per-project memory is on the roadmap, auto-injected on session
-                start.
-              </p>
-            </li>
-            <li class="why-card reveal">
-              <p class="why-problem">The same setup grind every new repo</p>
-              <p class="why-answer">
-                One marketplace install wires the same commands and servers into every repo.
-              </p>
-            </li>
-            <li class="why-card reveal">
-              <p class="why-problem">MCP servers configured one at a time</p>
-              <p class="why-answer">
-                A curated ten-server no-auth bundle, pre-wired and opt-out, not opt-in.
-              </p>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <!-- 3. COMMANDS -->
-      <section class="section section--alt" id="commands" aria-labelledby="commands-title">
-        <div class="shell">
-          <header class="section-head reveal">
-            <p class="kicker">Commands</p>
-            <h2 id="commands-title">Nine deific commands, identical in both engines.</h2>
-            <p class="section-lead">
-              Authored once in a single source and emitted as one skill that Claude Code and Codex
-              both load.
-            </p>
-          </header>
-          <div class="commands-groups" id="commands-root" data-fallback>
-            <div class="cmd-group">
-              <div class="cmd-grid">
-                <article class="cmd-card card-surface">
-                  <p class="cmd-name"><span class="slash">/</span>revelation</p>
-                  <p class="cmd-purpose">
-                    Deeply explore a codebase and explain how it fits together.
-                  </p>
-                </article>
-                <article class="cmd-card card-surface">
-                  <p class="cmd-name"><span class="slash">/</span>gospel</p>
-                  <p class="cmd-purpose">Explain how a piece of code works.</p>
-                </article>
-                <article class="cmd-card card-surface">
-                  <p class="cmd-name"><span class="slash">/</span>prophecy</p>
-                  <p class="cmd-purpose">How-to guidance grounded in this codebase.</p>
-                </article>
-                <article class="cmd-card card-surface">
-                  <p class="cmd-name"><span class="slash">/</span>genesis</p>
-                  <p class="cmd-purpose">Implement a well-scoped feature or fix.</p>
-                </article>
-                <article class="cmd-card card-surface">
-                  <p class="cmd-name"><span class="slash">/</span>summon</p>
-                  <p class="cmd-purpose">Dispatch the right subagent for a task.</p>
-                </article>
-                <article class="cmd-card card-surface">
-                  <p class="cmd-name"><span class="slash">/</span>judgment</p>
-                  <p class="cmd-purpose">Review code for bugs, security, and drift.</p>
-                </article>
-                <article class="cmd-card card-surface">
-                  <p class="cmd-name"><span class="slash">/</span>sanctify</p>
-                  <p class="cmd-purpose">Run the project's own checks and report pass or fail.</p>
-                </article>
-                <article class="cmd-card card-surface">
-                  <p class="cmd-name"><span class="slash">/</span>exorcise</p>
-                  <p class="cmd-purpose">Find the true root cause of a bug or failing test.</p>
-                </article>
-                <article class="cmd-card card-surface">
-                  <p class="cmd-name"><span class="slash">/</span>covenant</p>
-                  <p class="cmd-purpose">Commit your work cleanly.</p>
-                </article>
-              </div>
-            </div>
-          </div>
-          <noscript>
-            <p class="loading-note">
-              JavaScript is off, so commands show without pillar grouping. Everything else on this
-              page works without it.
-            </p>
-          </noscript>
-        </div>
-      </section>
-
-      <!-- 5. SUBAGENTS & HOOKS -->
-      <section class="section" id="agents" aria-labelledby="agents-title">
-        <div class="shell">
-          <header class="section-head reveal">
-            <p class="kicker">
-              Subagents and hooks <span class="tag tag--claude">Claude Code only</span>
-            </p>
-            <h2 id="agents-title">Five subagents and three automatic hooks.</h2>
-            <p class="section-lead">
-              Auto-discovered on install. Codex has no equivalent surface, so it gets the nine
-              skills and ten servers.
-            </p>
-          </header>
-          <div class="agents-layout">
-            <div class="agents-block">
-              <h3 class="block-title">Subagents</h3>
-              <ul class="agents-list" id="agents-root" data-fallback>
-                <li class="loading-note">
-                  Subagents: oracle, demiurge, inquisitor, arbiter, seer.
-                </li>
-              </ul>
-            </div>
-            <div class="agents-block">
-              <h3 class="block-title">Hooks</h3>
-              <ul class="hooks-list" id="hooks-root" data-fallback>
-                <li class="loading-note">
-                  Hooks: session invocation, forbidden-act guard, auto-sanctify edits.
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 6. CONNECTORS -->
-      <section class="section section--alt" id="connectors" aria-labelledby="connectors-title">
-        <div class="shell">
-          <header class="section-head reveal">
-            <p class="kicker">Connectors</p>
-            <h2 id="connectors-title">Ten bundled no-auth MCP servers.</h2>
-            <p class="section-lead">
-              Docs, code intelligence, browser automation, and cloud. No API keys: HTTP endpoints
-              are public and stdio servers run through npx.
-            </p>
-          </header>
-          <div class="connectors-groups" id="connectors-root" data-fallback>
-            <p class="loading-note">
-              The bundle: Context7, Microsoft Learn, AWS Knowledge, Cloudflare Docs, Keeper Docs,
-              DeepWiki, grep.app, Playwright, Chrome DevTools, and Azure.
+            <p class="hero-meta">
+              Apache-2.0. No server, no database, no telemetry.
+              <a href="https://github.com/patrickking67/godmode" rel="noopener">Source on GitHub</a>
             </p>
           </div>
-        </div>
-      </section>
 
-      <!-- 7. INSTALL -->
-      <section class="section" id="install" aria-labelledby="install-title">
-        <div class="shell shell--narrow">
-          <header class="section-head reveal">
-            <p class="kicker">Install</p>
-            <h2 id="install-title">One marketplace install, either engine.</h2>
-            <p class="section-lead">
-              Requires Node 22 or newer and the Claude Code or Codex CLI. No daemon, database, or
-              build step.
-            </p>
-          </header>
-
-          <div class="install reveal">
-            <div class="tabs" role="tablist" aria-label="Install instructions by engine">
-              <button
-                id="tab-claude"
-                class="tab"
-                type="button"
-                role="tab"
-                aria-selected="true"
-                aria-controls="panel-claude"
-              >
-                Claude Code
-              </button>
-              <button
-                id="tab-codex"
-                class="tab"
-                type="button"
-                role="tab"
-                aria-selected="false"
-                aria-controls="panel-codex"
-                tabindex="-1"
-              >
-                Codex
-              </button>
-            </div>
-
-            <div
-              id="panel-claude"
-              class="tabpanel"
-              role="tabpanel"
-              tabindex="0"
-              aria-labelledby="tab-claude"
-            >
-              <p class="panel-note">The nine skills and all ten MCP servers come wired in.</p>
+          <div class="hero-install reveal" aria-label="Install">
+            <div class="install-card">
+              <h2 class="install-engine">
+                <span class="dot dot--claude" aria-hidden="true"></span>Claude Code
+              </h2>
               <div class="code-block">
                 <pre><code>/plugin marketplace add patrickking67/godmode
 /plugin install godmode@godmode</code></pre>
@@ -424,25 +140,16 @@
                   type="button"
                   data-copy="/plugin marketplace add patrickking67/godmode&#10;/plugin install godmode@godmode"
                 >
-                  <span class="copy-label">Copy</span>
+                  <span class="copy-label" aria-live="polite">Copy</span>
+                  <span class="visually-hidden"> the Claude Code install commands</span>
                 </button>
               </div>
-              <p class="panel-foot">
-                The skills appear in your slash menu and the bundled servers load automatically from
-                the plugin's
-                <code>.mcp.json</code>. No separate MCP setup on Claude Code.
-              </p>
+              <p class="install-note">Then run a workflow as <code>/godmode:revelation</code>.</p>
             </div>
-
-            <div
-              id="panel-codex"
-              class="tabpanel"
-              role="tabpanel"
-              tabindex="0"
-              aria-labelledby="tab-codex"
-              hidden
-            >
-              <p class="panel-note">The nine skills and all ten MCP servers come wired in.</p>
+            <div class="install-card">
+              <h2 class="install-engine">
+                <span class="dot dot--codex" aria-hidden="true"></span>Codex
+              </h2>
               <div class="code-block">
                 <pre><code>codex plugin marketplace add patrickking67/godmode
 codex plugin add godmode@godmode</code></pre>
@@ -451,52 +158,546 @@ codex plugin add godmode@godmode</code></pre>
                   type="button"
                   data-copy="codex plugin marketplace add patrickking67/godmode&#10;codex plugin add godmode@godmode"
                 >
-                  <span class="copy-label">Copy</span>
+                  <span class="copy-label" aria-live="polite">Copy</span>
+                  <span class="visually-hidden"> the Codex install commands</span>
                 </button>
               </div>
-              <p class="panel-foot">
-                The plugin points Codex at the same <code>.mcp.json</code>, so
-                <code>codex mcp list</code> shows the servers after install. Want the servers
-                without the plugin? A clone includes <code>plugin/codex-mcp-setup.sh</code>.
+              <p class="install-note">
+                Then name a skill in your prompt: <code>godmode:revelation</code>.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 8. ROADMAP -->
-      <section class="section section--alt" id="roadmap" aria-labelledby="roadmap-title">
+      <section class="section" id="workflows" aria-labelledby="workflows-title">
         <div class="shell">
-          <header class="section-head reveal">
-            <p class="kicker">Roadmap</p>
-            <h2 id="roadmap-title">Shipped now. Memory next. Economics later.</h2>
+          <header class="section-head">
+            <h2 id="workflows-title">The nine workflows</h2>
+            <p class="section-lead">
+              Each one is a Markdown file with the same four parts: when to use it, a numbered
+              procedure, stop conditions and a verification step. Pick one to read what the agent is
+              told to do.
+            </p>
+          </header>
+          <div class="wf" id="commands-root" data-fallback>
+            <div class="wf-static-list">
+              <article class="wf-static">
+                <p class="cmd-name"><span class="slash">/</span>gospel</p>
+                <p class="cmd-purpose">
+                  Explain how one file, symbol, function, flow or error works by tracing the real
+                  code path.
+                </p>
+              </article>
+              <article class="wf-static">
+                <p class="cmd-name"><span class="slash">/</span>revelation</p>
+                <p class="cmd-purpose">
+                  Map an unfamiliar codebase or subsystem and explain how it fits together (layout,
+                  entry points, data flow, conventions, risks).
+                </p>
+              </article>
+              <article class="wf-static">
+                <p class="cmd-name"><span class="slash">/</span>prophecy</p>
+                <p class="cmd-purpose">
+                  Write a step-by-step plan for doing a task in this repository without changing any
+                  files (the precedent to copy, the files to touch, the commands to run).
+                </p>
+              </article>
+              <article class="wf-static">
+                <p class="cmd-name"><span class="slash">/</span>genesis</p>
+                <p class="cmd-purpose">
+                  Implement a feature or change end to end (restate the goal, match existing
+                  patterns, build in small tested steps, run the project&#x27;s checks).
+                </p>
+              </article>
+              <article class="wf-static">
+                <p class="cmd-name"><span class="slash">/</span>summon</p>
+                <p class="cmd-purpose">
+                  List the subagents available in this session and pick the best one for a task,
+                  with the exact dispatch prompt.
+                </p>
+              </article>
+              <article class="wf-static">
+                <p class="cmd-name"><span class="slash">/</span>judgment</p>
+                <p class="cmd-purpose">
+                  Review a diff for correctness bugs, security flaws, silent failures, convention
+                  drift and missing tests, and report findings by severity.
+                </p>
+              </article>
+              <article class="wf-static">
+                <p class="cmd-name"><span class="slash">/</span>sanctify</p>
+                <p class="cmd-purpose">
+                  Run the project&#x27;s own checks (typecheck, lint, tests, build) and report pass
+                  or fail per check with the failing output.
+                </p>
+              </article>
+              <article class="wf-static">
+                <p class="cmd-name"><span class="slash">/</span>exorcise</p>
+                <p class="cmd-purpose">
+                  Find the root cause of a bug or failing test before fixing it (reproduce, rank
+                  hypotheses, isolate, explain, apply the smallest fix, re-run).
+                </p>
+              </article>
+              <article class="wf-static">
+                <p class="cmd-name"><span class="slash">/</span>covenant</p>
+                <p class="cmd-purpose">
+                  Create one Conventional Commit from the current changes (inspect the diff, stage
+                  explicit paths, write the message, commit as the user, confirm).
+                </p>
+              </article>
+            </div>
+          </div>
+          <noscript>
+            <p class="note">
+              JavaScript is off, so the workflows show as a plain list. The full text of each is in
+              the repository under <code>plugin/skills</code>.
+            </p>
+          </noscript>
+        </div>
+      </section>
+
+      <section class="section section--alt" id="servers" aria-labelledby="servers-title">
+        <div class="shell">
+          <header class="section-head">
+            <h2 id="servers-title">Ten MCP servers, no keys</h2>
+            <p class="section-lead">
+              Six are public HTTPS endpoints. Four are npm packages that npx starts on your machine.
+              None needs an API key or a token in config; Azure uses the
+              <code>az login</code> you already have.
+            </p>
+          </header>
+          <div
+            class="table-wrap"
+            id="connectors-root"
+            data-fallback
+            tabindex="0"
+            role="region"
+            aria-labelledby="servers-title"
+          >
+            <table class="servers">
+              <thead>
+                <tr>
+                  <th scope="col">Server</th>
+                  <th scope="col">Kind</th>
+                  <th scope="col">Endpoint or launch command</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Context7</th>
+                  <td>Docs</td>
+                  <td><code>npx -y @upstash/context7-mcp</code></td>
+                </tr>
+                <tr>
+                  <th scope="row">Microsoft Learn</th>
+                  <td>Docs</td>
+                  <td><code>https://learn.microsoft.com/api/mcp</code></td>
+                </tr>
+                <tr>
+                  <th scope="row">AWS Knowledge</th>
+                  <td>Docs</td>
+                  <td><code>https://knowledge-mcp.global.api.aws</code></td>
+                </tr>
+                <tr>
+                  <th scope="row">Cloudflare Docs</th>
+                  <td>Docs</td>
+                  <td><code>https://docs.mcp.cloudflare.com/mcp</code></td>
+                </tr>
+                <tr>
+                  <th scope="row">Keeper Docs</th>
+                  <td>Docs</td>
+                  <td><code>https://docs.keeper.io/~gitbook/mcp</code></td>
+                </tr>
+                <tr>
+                  <th scope="row">DeepWiki</th>
+                  <td>Code intelligence</td>
+                  <td><code>https://mcp.deepwiki.com/mcp</code></td>
+                </tr>
+                <tr>
+                  <th scope="row">grep.app</th>
+                  <td>Code intelligence</td>
+                  <td><code>https://mcp.grep.app</code></td>
+                </tr>
+                <tr>
+                  <th scope="row">Playwright</th>
+                  <td>Browser</td>
+                  <td><code>npx -y @playwright/mcp@latest</code></td>
+                </tr>
+                <tr>
+                  <th scope="row">Chrome DevTools</th>
+                  <td>Browser</td>
+                  <td><code>npx -y chrome-devtools-mcp@latest</code></td>
+                </tr>
+                <tr>
+                  <th scope="row">Azure</th>
+                  <td>Cloud</td>
+                  <td><code>npx -y @azure/mcp@latest server start</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">
+            Every server was started or called with no credentials on 2026-11-12 and listed its
+            tools.
+            <a
+              href="https://github.com/patrickking67/godmode/blob/main/docs/mcp-servers.md"
+              rel="noopener"
+              >Read the verification record</a
+            >
+          </p>
+        </div>
+      </section>
+
+      <section class="section" id="how" aria-labelledby="how-title">
+        <div class="shell">
+          <header class="section-head">
+            <h2 id="how-title">One source, two engines</h2>
+            <p class="section-lead">
+              Claude Code and Codex read different manifests but the same skill files. Godmode keeps
+              one copy of everything and lets a build script write the rest. Nothing in the
+              installable plugin is edited by hand.
+            </p>
+          </header>
+
+          <figure class="diagram">
+            <svg viewBox="0 0 960 430" role="img" aria-labelledby="diagram-title diagram-desc">
+              <title id="diagram-title">How the Godmode build works</title>
+              <desc id="diagram-desc">
+                Sources flow into one build script, which validates them and writes a Claude Code
+                manifest, a Codex manifest, shared skills and server config, and the site catalog.
+                Three gates check the result: schema validation, a drift check and the Claude plugin
+                validator.
+              </desc>
+              <defs>
+                <marker
+                  id="arrow"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="7"
+                  markerHeight="7"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0 0 10 5 0 10z" fill="#9a9ab0" />
+                </marker>
+              </defs>
+
+              <g class="d-col-label">
+                <text x="20" y="26">Sources, edited by hand</text>
+                <text x="392" y="26">Build</text>
+                <text x="640" y="26">Generated, committed</text>
+              </g>
+
+              <g class="d-node d-node--src">
+                <rect x="20" y="44" width="250" height="52" rx="8" />
+                <text x="36" y="66" class="d-name">commands/*.md</text>
+                <text x="36" y="84" class="d-sub">9 workflows</text>
+                <rect x="20" y="108" width="250" height="52" rx="8" />
+                <text x="36" y="130" class="d-name">agents/*.md, hooks/</text>
+                <text x="36" y="148" class="d-sub">5 subagents, 3 hooks</text>
+                <rect x="20" y="172" width="250" height="52" rx="8" />
+                <text x="36" y="194" class="d-name">mcps.ts</text>
+                <text x="36" y="212" class="d-sub">10 server definitions</text>
+                <rect x="20" y="236" width="250" height="52" rx="8" />
+                <text x="36" y="258" class="d-name">manifest.ts, assets/</text>
+                <text x="36" y="276" class="d-sub">identity, icon, Codex interface</text>
+              </g>
+
+              <g class="d-edge">
+                <path d="M270 70 H330 V166 H384" marker-end="url(#arrow)" />
+                <path d="M270 134 H330" />
+                <path d="M270 198 H330 V166" />
+                <path d="M270 262 H330 V166" />
+              </g>
+
+              <g class="d-node d-node--build">
+                <rect x="392" y="96" width="190" height="140" rx="10" />
+                <text x="408" y="122" class="d-name">build-plugin.ts</text>
+                <text x="408" y="146" class="d-sub">checks names are kebab-case</text>
+                <text x="408" y="164" class="d-sub">and unique</text>
+                <text x="408" y="188" class="d-sub">validates both manifests</text>
+                <text x="408" y="206" class="d-sub">against a JSON schema</text>
+                <text x="408" y="226" class="d-sub">then writes every file</text>
+              </g>
+
+              <g class="d-edge">
+                <path d="M582 166 H612 V70 H632" marker-end="url(#arrow)" />
+                <path d="M612 134 H632" marker-end="url(#arrow)" />
+                <path d="M612 166 V198 H632" marker-end="url(#arrow)" />
+                <path d="M612 198 V262 H632" marker-end="url(#arrow)" />
+              </g>
+
+              <g class="d-node d-node--claude">
+                <rect x="640" y="44" width="300" height="52" rx="8" />
+                <text x="656" y="66" class="d-name">.claude-plugin/plugin.json</text>
+                <text x="656" y="84" class="d-sub">
+                  Claude Code manifest, plus agents and hooks
+                </text>
+              </g>
+              <g class="d-node d-node--codex">
+                <rect x="640" y="108" width="300" height="52" rx="8" />
+                <text x="656" y="130" class="d-name">.codex-plugin/plugin.json</text>
+                <text x="656" y="148" class="d-sub">Codex manifest, plus per-skill policy</text>
+              </g>
+              <g class="d-node d-node--shared">
+                <rect x="640" y="172" width="300" height="52" rx="8" />
+                <text x="656" y="194" class="d-name">skills/*/SKILL.md, .mcp.json</text>
+                <text x="656" y="212" class="d-sub">one copy, read by both engines</text>
+              </g>
+              <g class="d-node d-node--src">
+                <rect x="640" y="236" width="300" height="52" rx="8" />
+                <text x="656" y="258" class="d-name">site/data/godmode.json</text>
+                <text x="656" y="276" class="d-sub">the catalog this page renders</text>
+              </g>
+
+              <g class="d-gates">
+                <line x1="20" y1="320" x2="940" y2="320" />
+                <text x="20" y="346" class="d-col">Gates</text>
+                <g class="d-gate">
+                  <rect x="20" y="360" width="290" height="52" rx="8" />
+                  <text x="36" y="382" class="d-name">Schema and name checks</text>
+                  <text x="36" y="400" class="d-sub">the build refuses to write bad output</text>
+                </g>
+                <g class="d-gate">
+                  <rect x="335" y="360" width="290" height="52" rx="8" />
+                  <text x="351" y="382" class="d-name">Drift check</text>
+                  <text x="351" y="400" class="d-sub">CI rebuilds and fails on any diff</text>
+                </g>
+                <g class="d-gate">
+                  <rect x="650" y="360" width="290" height="52" rx="8" />
+                  <text x="666" y="382" class="d-name">claude plugin validate --strict</text>
+                  <text x="666" y="400" class="d-sub">the engine's own validator</text>
+                </g>
+              </g>
+            </svg>
+            <figcaption>
+              The same sources produce both manifests, the shared skills and this page's catalog. A
+              source file that says a workflow is manual-only becomes one frontmatter line for
+              Claude Code and one policy file for Codex.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section section--alt" id="demo" aria-labelledby="demo-title">
+        <div class="shell">
+          <header class="section-head">
+            <h2 id="demo-title">One workflow, start to finish</h2>
+            <p class="section-lead">
+              <code>sanctify</code> runs a project's own checks and reports what passed. On the left
+              is its procedure, taken from the skill file. On the right is what those checks print
+              in this repository.
+            </p>
+          </header>
+          <div class="demo-grid">
+            <div class="demo-pane">
+              <p class="pane-label">The skill: <code>plugin/skills/sanctify/SKILL.md</code></p>
+              <ol class="demo-steps" id="demo-steps">
+                <li>Find the defined checks</li>
+                <li>Run them</li>
+                <li>Report</li>
+              </ol>
+              <p class="note">
+                It stops and reports instead of guessing when no checks are defined, when a check
+                needs something that is missing, or when a command would deploy or publish.
+                <a
+                  href="https://github.com/patrickking67/godmode/blob/main/plugin/skills/sanctify/SKILL.md"
+                  rel="noopener"
+                  >Read the whole file</a
+                >
+              </p>
+            </div>
+            <div class="demo-pane">
+              <p class="pane-label">
+                Example output: <code>pnpm check</code> in this repository, captured 2026-11-12
+              </p>
+              <pre
+                class="transcript"
+                tabindex="0"
+                aria-label="Captured terminal output of pnpm check"
+              ><code id="transcript"><span class="t-cmd">$ pnpm check</span>
+<span class="t-cmd">$ tsx scripts/build-plugin.ts</span>
+godmode plugin built to <span class="t-dim">[path trimmed]</span>/plugin
+  9 workflows, 9 skills, 5 agents, 3 hooks, 10 MCP servers
+<span class="t-cmd">$ tsc --noEmit</span>
+<span class="t-cmd">$ eslint .</span>
+<span class="t-cmd">$ prettier --check .</span>
+Checking formatting...
+All matched files use Prettier code style!
+<span class="t-cmd">$ vitest run --reporter=default --reporter=json --outputFile=coverage/test-results.json</span>
+
+ RUN  v4.1.7 <span class="t-dim">[path trimmed]</span>
+
+ ✓ tests/site/site-data.test.ts (10 tests) 12ms
+ ✓ tests/catalog.test.ts (23 tests) 16ms
+ ✓ tests/plugin/skills.test.ts (89 tests) 39ms
+ ✓ tests/plugin/build.test.ts (10 tests) 62ms
+ ✓ tests/plugin/emitters.test.ts (38 tests) 94ms
+ ✓ tests/plugin/packaging.test.ts (11 tests) 114ms
+ ✓ tests/plugin/hooks.test.ts (31 tests) 1370ms
+
+ Test Files  7 passed (7)
+      Tests  212 passed (212)
+   Start at  00:24:01
+   Duration  1.64s (transform 440ms, setup 0ms, import 828ms, tests 1.71s, environment 0ms)
+
+<span class="t-dim">[one line naming a local path trimmed]</span>
+check-claims: 212 tests, and every published count agrees.</code></pre>
+              <p class="note">
+                Real output, trimmed where marked. It was run by hand, not by an agent: a recording
+                of an agent session would show the same commands with the report format on the left.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="agents" aria-labelledby="agents-title">
+        <div class="shell">
+          <header class="section-head">
+            <h2 id="agents-title">Subagents and hooks for Claude Code</h2>
+            <p class="section-lead">
+              Five subagents and three hooks ship in the same plugin. Codex ignores the subagents
+              and loads plugin hooks only after you review and trust them.
+            </p>
+          </header>
+          <div class="pair">
+            <div>
+              <h3 class="block-title">Subagents</h3>
+              <ul class="plain-list" id="agents-root" data-fallback>
+                <li><strong>oracle</strong> <span>Read-only codebase reconnaissance.</span></li>
+                <li>
+                  <strong>demiurge</strong> <span>Implements a well-scoped feature or fix.</span>
+                </li>
+                <li><strong>inquisitor</strong> <span>Code review, read-only.</span></li>
+                <li><strong>arbiter</strong> <span>Runs the project's own checks.</span></li>
+                <li><strong>seer</strong> <span>Finds the root cause of a failure.</span></li>
+              </ul>
+            </div>
+            <div>
+              <h3 class="block-title">Hooks</h3>
+              <ul class="plain-list" id="hooks-root" data-fallback>
+                <li>
+                  <strong>SessionStart</strong>
+                  <span>Lists the workflows and subagents in context.</span>
+                </li>
+                <li>
+                  <strong>PreToolUse</strong> <span>Asks before destructive shell commands.</span>
+                </li>
+                <li>
+                  <strong>PostToolUse</strong>
+                  <span>Formats edited files where prettier is set up.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--alt" id="proof" aria-labelledby="proof-title">
+        <div class="shell">
+          <header class="section-head">
+            <h2 id="proof-title">What keeps it honest</h2>
+            <p class="section-lead">
+              Every claim on this page is checked by something that runs in CI or by a command you
+              can run yourself.
+            </p>
+          </header>
+          <dl class="proof">
+            <div>
+              <dt><span id="test-count">212</span> tests</dt>
+              <dd>
+                Emitter golden output, manifest schemas, name safety, hook behavior, a lint for
+                every skill, and this page's data.
+              </dd>
+            </div>
+            <div>
+              <dt>Byte-for-byte drift check</dt>
+              <dd>
+                CI rebuilds the plugin and fails if any committed file differs from what the sources
+                produce.
+              </dd>
+            </div>
+            <div>
+              <dt>Scoped permissions</dt>
+              <dd>
+                Workflows pre-approve read-only tools and named git commands only. A test rejects a
+                bare shell or edit grant.
+              </dd>
+            </div>
+            <div>
+              <dt>No secrets by design</dt>
+              <dd>
+                A test fails if any server definition carries an env block, a header or a key. The
+                live check runs all ten with no credentials.
+              </dd>
+            </div>
+          </dl>
+          <p class="note">
+            <a
+              href="https://github.com/patrickking67/godmode/actions/workflows/ci.yml"
+              rel="noopener"
+              >CI runs</a
+            >
+            <a href="https://github.com/patrickking67/godmode/tree/main/tests" rel="noopener"
+              >Tests</a
+            >
+            <a
+              href="https://github.com/patrickking67/godmode/blob/main/docs/architecture.md"
+              rel="noopener"
+              >Architecture notes</a
+            >
+            <a href="https://github.com/patrickking67/godmode/blob/main/SECURITY.md" rel="noopener"
+              >Security policy</a
+            >
+          </p>
+        </div>
+      </section>
+
+      <section class="section" id="roadmap" aria-labelledby="roadmap-title">
+        <div class="shell">
+          <header class="section-head">
+            <h2 id="roadmap-title">Roadmap</h2>
+            <p class="section-lead">What ships today, and what is designed but not built.</p>
           </header>
           <ol class="roadmap" id="roadmap-root" data-fallback>
-            <li class="loading-note">
-              Now: the v1.3.0 surface. Next: persistent hybrid memory. Later: token economics, a
-              live dashboard, and a godmode CLI.
+            <li>
+              <strong>Now</strong>
+              <span
+                >Nine workflows, five subagents, three hooks, ten MCP servers, both engines.</span
+              >
+            </li>
+            <li><strong>Next</strong> <span>Persistent memory, global and per-project.</span></li>
+            <li>
+              <strong>Later</strong>
+              <span>Token and cost tracking, a local dashboard, a godmode CLI.</span>
             </li>
           </ol>
         </div>
       </section>
     </main>
 
-    <!-- 9. FOOTER -->
-    <footer class="site-footer" aria-labelledby="footer-title">
+    <footer class="site-footer">
       <div class="shell footer-grid">
-        <div class="footer-brand">
-          <span class="brand-word" id="footer-title">godmode</span>
-          <p class="footer-tag">Learn. Plan. Build. Optimize.</p>
-        </div>
+        <p class="footer-brand">
+          <span class="brand-word">godmode</span>
+          <span class="footer-tag">Learn. Plan. Build. Optimize.</span>
+        </p>
         <nav class="footer-links" aria-label="Footer">
-          <a href="https://github.com/patrickking67/godmode" rel="noopener">Repository</a>
-          <a href="https://github.com/patrickking67/godmode/security" rel="noopener">Security</a>
+          <a href="https://github.com/patrickking67/godmode" rel="noopener">Source</a>
+          <a href="https://github.com/patrickking67/godmode#readme" rel="noopener">Docs</a>
+          <a href="https://github.com/patrickking67/godmode/blob/main/CHANGELOG.md" rel="noopener"
+            >Changelog</a
+          >
+          <a href="https://github.com/patrickking67/godmode/blob/main/SECURITY.md" rel="noopener"
+            >Security</a
+          >
           <a href="https://github.com/patrickking67/godmode/blob/main/LICENSE" rel="noopener"
             >Apache-2.0</a
           >
+          <a href="https://github.com/patrickking67" rel="noopener">Patrick King on GitHub</a>
         </nav>
       </div>
-      <p class="footer-fine">Licensed under the Apache License, Version 2.0.</p>
     </footer>
 
     <script src="./main.js" defer></script>

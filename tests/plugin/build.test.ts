@@ -21,7 +21,11 @@ describe("build-plugin emitter", () => {
     TMP = mkdtempSync(join(tmpdir(), "gm-build-"));
     PLUGIN = join(TMP, "plugin");
     MARKETPLACE = join(TMP, ".claude-plugin");
-    result = build({ outDir: PLUGIN, marketplaceDir: MARKETPLACE });
+    result = build({
+      outDir: PLUGIN,
+      marketplaceDir: MARKETPLACE,
+      siteDataPath: join(TMP, "site", "godmode.json"),
+    });
   });
 
   afterAll(() => {
@@ -48,7 +52,7 @@ describe("build-plugin emitter", () => {
     const iface = codex.interface as Record<string, unknown>;
     expect(iface.displayName).toBe("Godmode");
     expect(iface.brandColor).toMatch(/^#[0-9A-Fa-f]{6}$/);
-    for (const key of ["longDescription", "developerName", "category", "websiteURL"]) {
+    for (const key of ["longDescription", "developerName", "category", "websiteURL", "logo"]) {
       expect(typeof iface[key]).toBe("string");
       expect((iface[key] as string).length).toBeGreaterThan(0);
     }
@@ -90,6 +94,13 @@ describe("build-plugin emitter", () => {
       expect(existsSync(join(PLUGIN, "hooks", script))).toBe(true);
     }
     expect(result.hooks).toBe(3);
+  });
+
+  it("copies the brand assets into the plugin", () => {
+    for (const file of ["icon.svg", "icon.png", "logo.png"]) {
+      expect(existsSync(join(PLUGIN, "assets", file))).toBe(true);
+    }
+    expect(result.assets).toBe(3);
   });
 
   it("emits Claude MCP json (typed) and a Codex TOML snippet", () => {

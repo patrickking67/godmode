@@ -1,51 +1,102 @@
+<p align="center">
+  <img src="plugin/assets/logo.png" alt="Godmode flame icon" width="96" height="96" />
+</p>
+
 # Godmode
 
-**Learn. Plan. Build. Optimize.** One plugin that gives Claude Code and Codex the same nine coding workflows and ten documentation and tooling MCP servers, built from a single source.
+One plugin for Claude Code and Codex: nine coding workflow skills and ten no-auth MCP servers, written once and emitted for both engines by a single build that CI checks byte for byte.
 
 [![CI](https://github.com/patrickking67/godmode/actions/workflows/ci.yml/badge.svg)](https://github.com/patrickking67/godmode/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/tests-212%20passing-brightgreen.svg)](tests/)
+[![Live site](https://img.shields.io/badge/site-live-7c3aed.svg)](https://patrickking67.github.io/godmode/)
 
-Site: **https://patrickking67.github.io/godmode/**
+[![The Godmode site: the headline, and install commands for Claude Code and Codex with copy buttons.](docs/assets/site-desktop.png)](https://patrickking67.github.io/godmode/)
 
-[![Godmode: Learn. Plan. Build. Optimize. One plugin for Claude Code and Codex.](site/assets/og-image.png)](https://patrickking67.github.io/godmode/)
+## Try it
 
-Most agent setups grow one plugin at a time: a review prompt here, a docs server there, a different copy for each engine. Godmode packages that surface once. You author a workflow as a Markdown file, run one build, and get a plugin that installs from a marketplace in either engine with no per-repo setup, no server and no API keys.
+Live site with the full catalog: **https://patrickking67.github.io/godmode/**
 
-## What you get
+```sh
+# Claude Code
+claude plugin marketplace add patrickking67/godmode
+claude plugin install godmode@godmode
 
-| Surface         | Count | Engines            | Where it lives                      |
+# Codex
+codex plugin marketplace add patrickking67/godmode
+codex plugin add godmode@godmode
+```
+
+In Claude Code, run a workflow as `/godmode:revelation`. In Codex, name it in your prompt: `godmode:revelation`. Inside either app the same install is `/plugin marketplace add patrickking67/godmode` then `/plugin install godmode@godmode`.
+
+## What is technically interesting here
+
+- **One source, three outputs.** Workflows, subagents, hooks and servers are defined once in [`src/plugin/_sources/`](src/plugin/_sources/). [`scripts/build-plugin.ts`](scripts/build-plugin.ts) emits the Claude Code manifest, the Codex manifest, the shared skills and the site's catalog from them. Golden-output tests pin each emitter: [`tests/plugin/emitters.test.ts`](tests/plugin/emitters.test.ts).
+- **Generated output is committed and proven current.** Both engines install `plugin/` straight from the repository, so it has to be in git. CI rebuilds and fails on any diff, and [`tests/plugin/packaging.test.ts`](tests/plugin/packaging.test.ts) does the same comparison locally, as bytes, including the icons.
+- **Engine differences live in the emitter, not in the workflows.** A source marked `invocation: manual` becomes `disable-model-invocation: true` for Claude Code and an `agents/openai.yaml` policy file for Codex. The commit workflow uses it so neither engine commits on its own initiative.
+- **Skills are linted like code.** [`tests/plugin/skills.test.ts`](tests/plugin/skills.test.ts) requires a trigger in every description, four fixed sections, numbered steps, and no reference to a workflow, subagent or server that does not ship. It also rejects a skill that pre-approves a bare shell or edit tool.
+- **Names are treated as untrusted input.** A workflow name becomes a path, a TOML key and a shell word. The build rejects anything that is not kebab-case before writing a file, and shell-quotes arguments in the generated Codex script: see `validateSourceNames` and `shQuote`.
+- **Claims are tested.** [`tests/catalog.test.ts`](tests/catalog.test.ts) fails if the README, the docs, the site or a manifest lists a different server or states a different count than the sources produce. [`scripts/check-claims.mjs`](scripts/check-claims.mjs) does the same for the test count in the badge above.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  subgraph SRC["src/plugin/_sources (edited by hand)"]
+    C["commands/*.md<br/>9 workflows"]
+    A["agents/*.md, hooks/<br/>5 subagents, 3 hooks"]
+    M["mcps.ts<br/>10 servers"]
+    I["manifest.ts, assets/"]
+  end
+  B{{"build-plugin.ts<br/>name and schema checks"}}
+  C --> B
+  A --> B
+  M --> B
+  I --> B
+  B -->|"Claude manifest"| CL[".claude-plugin/plugin.json"]
+  B -->|"Codex manifest"| CX[".codex-plugin/plugin.json"]
+  B -->|"one shared copy"| SK["skills/, .mcp.json"]
+  B -->|"catalog"| SD["site/data/godmode.json"]
+  CL --> CC(["Claude Code"])
+  SK --> CC
+  SK --> CO(["Codex"])
+  CX --> CO
+  SD --> PG(["Pages site"])
+  CI["CI: rebuild, git diff, tests"] -.->|"fails on drift"| B
+```
+
+Both engines scan `skills/`, and both also read a plugin's `commands/` folder, so a workflow emitted to both would register twice. The build writes each workflow once. Deeper diagrams, including the build's validation order and the manual-invocation fan-out, are in [`docs/architecture.md`](docs/architecture.md).
+
+## What ships
+
+| Surface         | Count | Engines            | Generated at                        |
 | --------------- | ----- | ------------------ | ----------------------------------- |
 | Workflow skills | 9     | Claude Code, Codex | `plugin/skills/<name>/SKILL.md`     |
+| MCP servers     | 10    | Claude Code, Codex | `plugin/.mcp.json`                  |
 | Subagents       | 5     | Claude Code        | `plugin/agents/<name>.md`           |
 | Hooks           | 3     | Claude Code        | `plugin/hooks/hooks.json` + scripts |
-| MCP servers     | 10    | Claude Code, Codex | `plugin/.mcp.json`                  |
 
-### Workflow skills
+### Workflows
 
-| Skill        | Pillar | What it does                                                               |
-| ------------ | ------ | -------------------------------------------------------------------------- |
-| `revelation` | Learn  | Explores a codebase and explains how it fits together.                     |
-| `gospel`     | Learn  | Explains how a file, symbol, function, flow or error works.                |
-| `prophecy`   | Plan   | Step-by-step guidance for a task, grounded in this repo.                   |
-| `genesis`    | Build  | Implements a change with a tight plan, build and verify loop.              |
-| `summon`     | Build  | Picks the right subagent for a task and dispatches it.                     |
-| `judgment`   | Review | Reviews uncommitted (or named) changes for bugs, security and drift.       |
-| `sanctify`   | Review | Runs the project's own checks (typecheck, tests, lint, build) and reports. |
-| `exorcise`   | Debug  | Finds the root cause of a bug or failing test before fixing it.            |
-| `covenant`   | Ship   | Turns the current changes into one Conventional Commit.                    |
+Each skill has the same shape: when to use it, a numbered procedure, stop conditions, and a verification step.
 
-### Subagents and hooks (Claude Code)
+| Skill        | Group  | What it does                                                                |
+| ------------ | ------ | --------------------------------------------------------------------------- |
+| `revelation` | Learn  | Maps a codebase or subsystem and explains how it fits together.             |
+| `gospel`     | Learn  | Explains one file, symbol, flow or error by tracing the real code path.     |
+| `prophecy`   | Plan   | Writes a repo-specific plan for a task without changing files.              |
+| `genesis`    | Build  | Implements a change in small tested steps and runs the project's checks.    |
+| `summon`     | Build  | Lists the available subagents and picks one for a task.                     |
+| `judgment`   | Review | Reviews a diff for bugs, security flaws and drift. Read-only.               |
+| `sanctify`   | Review | Runs the project's own checks and reports pass or fail per check.           |
+| `exorcise`   | Debug  | Finds the root cause of a failure before fixing it.                         |
+| `covenant`   | Ship   | Creates one Conventional Commit. Manual only: it runs when you ask by name. |
 
-- **Subagents:** `oracle` (read-only reconnaissance), `demiurge` (implements a scoped change), `inquisitor` (code review), `arbiter` (runs the checks), `seer` (root-cause analysis). `summon` routes work to them.
-- **SessionStart** adds a short summary of the workflows and subagents to the session context.
-- **PreToolUse on Bash** asks for confirmation before destructive commands such as `rm -rf`, `git push --force`, `git reset --hard` or piping a download into a shell. It asks; it never blocks.
-- **PostToolUse on Edit/Write** runs `prettier --write` on the edited file, only when the project already has a prettier config and prettier installed. Everywhere else it does nothing.
-
-Codex ignores the subagents. It can load plugin hooks, but only after you review and trust them.
+In Claude Code the skills pre-approve read-only tools and a few named git commands. Edits and other shell commands still go through your permission settings.
 
 ### MCP servers
 
-None of them need an API key. Six are remote HTTPS endpoints; four run locally through `npx`.
+No server needs an API key or a token in config. Six are public HTTPS endpoints; four are npm packages started through `npx` (Node 22.12 or later).
 
 | Server            | Type          | Category          | Gives you                                                    |
 | ----------------- | ------------- | ----------------- | ------------------------------------------------------------ |
@@ -60,127 +111,65 @@ None of them need an API key. Six are remote HTTPS endpoints; four run locally t
 | `chrome-devtools` | stdio (`npx`) | Browser           | DOM, network, console and performance traces in Chrome       |
 | `azure`           | stdio (`npx`) | Cloud             | Azure resources and deployments, using your local `az login` |
 
-The `npx` servers need Node 22 or later and download their package on first use.
+Endpoints, upstream repositories and the last live check are in [`docs/mcp-servers.md`](docs/mcp-servers.md).
 
-## Install
+### Subagents and hooks (Claude Code)
 
-### Claude Code
+- **Subagents:** `oracle` (read-only reconnaissance), `demiurge` (implements a scoped change), `inquisitor` (review), `arbiter` (runs the checks), `seer` (root-cause analysis).
+- **SessionStart** adds a short list of the workflows and subagents to the session context.
+- **PreToolUse on Bash** asks before destructive commands such as `rm -rf` or `git push --force`. It asks; it never blocks.
+- **PostToolUse on Edit and Write** runs `prettier --write` on the edited file, only where the project already uses prettier.
 
-```text
-/plugin marketplace add patrickking67/godmode
-/plugin install godmode@godmode
-```
+Codex ignores the subagents and loads plugin hooks only after you review and trust them.
 
-Or from your shell:
+## Quality signals
 
-```sh
-claude plugin marketplace add patrickking67/godmode
-claude plugin install godmode@godmode
-```
+| Signal        | What is true today                                                                                     |
+| ------------- | ------------------------------------------------------------------------------------------------------ |
+| Tests         | 212 vitest tests in 7 files: emitters, packaging, hooks, skill lint, catalog parity, site              |
+| Drift check   | CI rebuilds, then `git diff --exit-code`; a test compares `plugin/` to a fresh build byte for byte     |
+| Static checks | TypeScript strict, ESLint, Prettier, all in `pnpm check`                                               |
+| Engine checks | `claude plugin validate --strict` passes on the catalog and the plugin (`pnpm validate:plugin`)        |
+| Server checks | `pnpm verify:mcps` started all ten servers with no credentials on 2026-11-12                           |
+| Security      | No secrets in any definition (tested); skills cannot pre-approve a bare shell (tested)                 |
+| Accessibility | Site checked at 1280 and 375 px: keyboard tab pattern, visible focus, reduced motion, works without JS |
+| CI            | One job, Node 22, pnpm 9, read-only token                                                              |
 
-The skills, subagents, hooks and MCP servers load from the plugin. Run `claude plugin details godmode` to see the inventory.
+Coverage is not measured.
 
-### Codex
+## Develop
 
-```sh
-codex plugin marketplace add patrickking67/godmode
-codex plugin add godmode@godmode
-```
-
-The nine skills install with the plugin, and the plugin points Codex at the same `.mcp.json`, so `codex mcp list` shows the ten servers afterward. To add the servers without the plugin, run `bash plugin/codex-mcp-setup.sh` from a clone, or append `plugin/codex-config.toml` to `~/.codex/config.toml`.
-
-### From a local clone
-
-```sh
-git clone https://github.com/patrickking67/godmode.git
-claude plugin marketplace add /absolute/path/to/godmode   # or: codex plugin marketplace add ...
-```
-
-Then install `godmode@godmode` as above.
-
-## Example workflow
-
-Claude Code namespaces plugin skills, so each workflow runs as `/godmode:<name>`. In Codex the same skills are listed as `godmode:<name>`; name one in your prompt to use it.
-
-```text
-/godmode:revelation map the auth flow in this service
-/godmode:prophecy add rate limiting to the login endpoint
-/godmode:genesis add rate limiting to the login endpoint, following that plan
-/godmode:judgment
-/godmode:sanctify
-/godmode:covenant
-```
-
-That is learn, plan, build, review, verify and commit, each step with its own instructions, and the same steps in either engine. When a test starts failing along the way, `/godmode:exorcise` traces it to the cause before anything gets patched.
-
-## How it works
-
-```text
-src/plugin/_sources/            one source of truth
-  commands/<name>.md            workflow: frontmatter + Markdown body
-  agents/<name>.md              Claude Code subagents
-  hooks/                        hooks.json + Node scripts
-  mcps.ts                       the ten MCP server definitions
-  manifest.ts                   plugin identity and the Codex interface block
-        |
-        |  pnpm build:plugin  (scripts/build-plugin.ts)
-        v
-plugin/                         generated, committed, installable
-  .claude-plugin/plugin.json    Claude Code manifest
-  .codex-plugin/plugin.json     Codex manifest
-  skills/<name>/SKILL.md        one copy of each workflow, loaded by both engines
-  agents/  hooks/  .mcp.json
-  codex-config.toml             manual Codex fallback
-  codex-mcp-setup.sh            manual Codex fallback
-.claude-plugin/marketplace.json marketplace catalog read by both engines
-```
-
-A few decisions worth knowing about:
-
-- **One skill per workflow.** Both engines load `skills/`, and both also read a plugin's `commands/` folder (Codex converts those files into skills). Emitting a workflow to both folders would register it twice, so the build writes `skills/` only.
-- **Schema checks at build time.** The emitter validates both manifests with ajv and fails on a bad name, an npm-style `repository` object, a missing MCP pointer or an incomplete Codex `interface` block. It also rejects a source name that is not kebab-case or that two sources share, before it writes anything.
-- **Generated output is committed and checked.** CI rebuilds the plugin and fails if `plugin/` differs from what the sources produce. A test does the same comparison locally.
-- **No secrets anywhere.** Every bundled server is public or uses ambient credentials (`az login`).
-
-Design notes live in [`docs/specs/`](docs/specs/) and [`docs/plans/`](docs/plans/). Agents working in the repo should start with [`AGENTS.md`](AGENTS.md); [`llms.txt`](llms.txt) indexes the docs for LLM tools.
-
-## Development
-
-Requires Node 22+ and pnpm.
+Requires Node 22 or later and pnpm.
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm check             # build:plugin, typecheck, lint, fmt:check, test
+pnpm check             # build, typecheck, lint, format check, tests, published-count check
+pnpm validate:plugin   # claude plugin validate --strict (needs the claude CLI)
+pnpm verify:mcps       # live check of the ten servers (needs the network)
+python3 -m http.server 4103 --directory site   # preview the site at http://localhost:4103/
 ```
 
-`pnpm check` is what CI runs, followed by a `git diff` that fails if the build changed any committed file. The single steps are `pnpm build:plugin`, `pnpm typecheck`, `pnpm lint`, `pnpm fmt:check` and `pnpm test`.
-
-To check the packaging against the installed Claude Code:
-
-```sh
-pnpm validate:plugin   # claude plugin validate --strict on the catalog and ./plugin
+```text
+src/plugin/_sources/   the single source: commands/, agents/, hooks/, assets/, mcps.ts, manifest.ts, site.ts
+scripts/               build-plugin.ts (emitter), verify-mcps.mjs, check-claims.mjs
+plugin/                generated, committed, installable (do not hand-edit)
+site/                  static landing page; data/godmode.json is generated
+tests/                 vitest suites
+docs/                  architecture.md, mcp-servers.md, design notes
 ```
 
-### Tests
+To add a workflow, create `src/plugin/_sources/commands/<name>.md`, run `pnpm build:plugin` and commit the regenerated output with it. Pushing to `main` deploys `site/` to GitHub Pages; the plugin has no deploy step because both engines install the committed `plugin/`.
 
-The vitest suite covers the frontmatter parser, the three MCP emitters, manifest schema validation, source name checks, a byte-for-byte drift check of `plugin/` against a fresh build, skill frontmatter, hook wiring, version sync across manifests, the behavior of all three hook scripts, and the site: data parity with the plugin, the no-JavaScript fallback and `llms.txt`.
+More: [`AGENTS.md`](AGENTS.md) for the full agent guide, [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CHANGELOG.md`](CHANGELOG.md), [`SECURITY.md`](SECURITY.md), [Privacy](#privacy).
 
-### Site and deploy
+## Privacy
 
-The landing page in `site/` is static HTML, CSS and one script with no build step. Preview it with:
-
-```sh
-python3 -m http.server 4103 --directory site   # http://localhost:4103/
-```
-
-Pushing to `main` deploys `site/` to GitHub Pages through `.github/workflows/pages.yml`. The plugin itself has no deploy step: both engines install the committed `plugin/` from the repository.
-
-To add a workflow, create `src/plugin/_sources/commands/<name>.md` with `name`, `description` and optional `allowed-tools` frontmatter, then run `pnpm build:plugin` and commit the regenerated `plugin/` with it. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+Godmode runs no server and collects nothing. The bundled MCP servers are third-party services: a request reaches one only when the agent calls its tools, and each operator's own terms and privacy policy apply. Links to every operator are in [`docs/mcp-servers.md`](docs/mcp-servers.md).
 
 ## Roadmap
 
-Shipped in 1.3.0: the nine workflows, five subagents, three hooks, ten MCP servers, both engines and the site. Designed but not built yet: persistent project and global memory, token and cost tracking, and a local dashboard. See [`docs/specs/2026-05-27-godmode-design.md`](docs/specs/2026-05-27-godmode-design.md).
+Designed but not built: persistent memory, token and cost tracking, and a local dashboard. See [`docs/specs/2026-05-27-godmode-design.md`](docs/specs/2026-05-27-godmode-design.md).
 
-## Security and license
+## License
 
-Report vulnerabilities privately as described in [`SECURITY.md`](SECURITY.md). Licensed under the [Apache License, Version 2.0](LICENSE).
+[Apache License 2.0](LICENSE).

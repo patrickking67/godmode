@@ -19,12 +19,18 @@ It runs no server and stores no data. Apache-2.0.
 ## Layout
 
 ```text
-src/plugin/_sources/    Single source of truth: commands/, agents/, hooks/, mcps.ts, manifest.ts
-scripts/build-plugin.ts Emitter: writes plugin/ and .claude-plugin/marketplace.json
+src/plugin/_sources/    Single source of truth: commands/, agents/, hooks/, assets/, mcps.ts,
+                        manifest.ts, site.ts. Its README documents every frontmatter field
+scripts/build-plugin.ts Emitter: writes plugin/, the marketplace catalog and the site catalog
+scripts/verify-mcps.mjs Live check of the bundled servers (network; not in pnpm check)
+scripts/check-claims.mjs Fails pnpm check when a published test count is stale
 plugin/                 GENERATED installable plugin tree (do not hand-edit)
 .claude-plugin/         GENERATED marketplace catalog (do not hand-edit)
-site/                   GitHub Pages site: index.html, styles.css, main.js, data/, assets/, llms.txt
-tests/                  vitest: plugin/ (emitter, packaging, hooks), site/ (data parity, no-JS)
+site/                   GitHub Pages site: index.html, styles.css, main.js, assets/, llms.txt
+site/data/godmode.json  GENERATED catalog the site renders (do not hand-edit)
+tests/                  vitest: plugin/ (emitters, packaging, hooks, skill lint), catalog parity,
+                        site/ (static fallback, no-JS, llms.txt)
+docs/                   architecture.md, mcp-servers.md, assets/ (screenshots, og-image source)
 docs/specs, docs/plans  Design notes. Memory, token tracking and a dashboard are roadmap only
 llms.txt                Copy of site/llms.txt (a test keeps them identical)
 .claude/launch.json     Preview config: static site on port 4103
@@ -34,8 +40,9 @@ llms.txt                Copy of site/llms.txt (a test keeps them identical)
 
 ```bash
 pnpm install --frozen-lockfile   # setup (Node 22+, pnpm)
-pnpm check                       # build:plugin, typecheck, lint, fmt:check, test: run before every commit
+pnpm check                       # build:plugin, typecheck, lint, fmt:check, tests, check-claims: run before every commit
 pnpm validate:plugin             # claude plugin validate --strict on catalog and plugin (needs the claude CLI)
+pnpm verify:mcps                 # starts all ten servers with no credentials (needs the network)
 python3 -m http.server 4103 --directory site   # preview the site at http://localhost:4103/
 ```
 
@@ -51,8 +58,9 @@ committed `plugin/` straight from the default branch; there is no publish step.
 
 ## Generated files
 
-`plugin/` and `.claude-plugin/marketplace.json` come from `pnpm build:plugin`. Edit
-`src/plugin/_sources/` and commit the regenerated output in the same commit. CI rebuilds
+`plugin/`, `.claude-plugin/marketplace.json` and `site/data/godmode.json` come from
+`pnpm build:plugin`. Edit `src/plugin/_sources/` and commit the regenerated output in the
+same commit. CI rebuilds
 and fails on any drift. The emitter validates both manifests with ajv and rejects
 non-kebab-case or duplicate source names before it writes anything.
 
@@ -67,15 +75,28 @@ non-kebab-case or duplicate source names before it writes anything.
   only after the user trusts them.
 - MCP servers are defined once in `mcps.ts` and emitted three ways: `plugin/.mcp.json`
   (both manifests point at it), `codex-config.toml` and `codex-mcp-setup.sh`.
-- `site/data/godmode.json` must list exactly the shipped commands and connectors, and the
-  static command cards in `site/index.html` must match it. Tests enforce both.
+- Every workflow has a description with a "Use when" trigger and four sections in order:
+  When to use, Procedure (numbered steps), Stop conditions, Verify. Do not use `$ARGUMENTS`
+  or engine-specific tool names in a workflow body. `tests/plugin/skills.test.ts` enforces it.
+- `allowed-tools` pre-approves tools in Claude Code; it does not restrict them. List only
+  `Read`, `Grep`, `Glob` and scoped git commands such as `Bash(git diff *)`. A workflow with
+  side effects sets `invocation: manual`.
+- The static fallback markup in `site/index.html` (workflow list, server table, demo steps)
+  must match the generated catalog, and the README and docs must list the same servers and
+  counts as the sources. `tests/site/` and `tests/catalog.test.ts` enforce both.
+- The README badge, the README quality table and the site state the test count. When it
+  changes, `pnpm check` fails and names the places to update.
+- Icons: edit `src/plugin/_sources/assets/icon.svg`, then regenerate the PNGs with
+  `rsvg-convert` (icon.png 128, logo.png 512, site/assets/apple-touch-icon.png 180) and copy
+  the SVG to `site/assets/favicon.svg`.
 - Conventional Commits, one logical change per commit.
 
 ## Safety
 
 - Bundled MCP servers need no API key or secret in config. Prefer a public HTTPS endpoint.
   The four stdio servers run a published npm package through `npx`; Azure uses the local
-  `az login`. Do not add a server that needs a token, a localhost endpoint or Docker.
+  `az login`. Take a package name or URL from the server's own repository, then run
+  `pnpm verify:mcps`. Do not add a server that needs a token, a localhost endpoint or Docker.
 - Hooks must never hard-block: the Bash guard returns `ask`, the formatter is a no-op
   outside projects that already use Prettier.
 - Never commit secrets, `.env` files, `CLAUDE.local.md` or `.claude/settings.local.json`.
