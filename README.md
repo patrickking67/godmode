@@ -8,10 +8,25 @@ One plugin for Claude Code and Codex: nine coding workflow skills and ten no-aut
 
 [![CI](https://github.com/patrickking67/godmode/actions/workflows/ci.yml/badge.svg)](https://github.com/patrickking67/godmode/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-238%20passing-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-242%20passing-brightgreen.svg)](tests/)
 [![Live site](https://img.shields.io/badge/site-live-7c3aed.svg)](https://patrickking67.github.io/godmode/)
 
-[![The Godmode site: the headline, and install commands for Claude Code and Codex with copy buttons.](docs/assets/site-desktop.png)](https://patrickking67.github.io/godmode/)
+<p align="center">
+  <a href="https://patrickking67.github.io/godmode/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/site-desktop-dark.png" />
+      <img src="docs/assets/site-desktop-light.png" alt="The Godmode site on a desktop: the headline, and install commands for Claude Code and Codex with copy buttons." width="600" />
+    </picture>
+  </a>
+  <a href="https://patrickking67.github.io/godmode/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/site-mobile-dark.png" />
+      <img src="docs/assets/site-mobile-light.png" alt="The same page on a phone: the headline above the Claude Code install commands." width="173" />
+    </picture>
+  </a>
+</p>
+
+Browser captures of the page at 1280x800 and 390x844. GitHub shows the light or the dark one to match your theme; the site itself follows your system setting and has a toggle.
 
 ## Try it
 
@@ -126,7 +141,7 @@ Codex ignores the subagents and loads plugin hooks only after you review and tru
 
 | Signal        | What is true today                                                                                     |
 | ------------- | ------------------------------------------------------------------------------------------------------ |
-| Tests         | 238 vitest tests in 9 files: emitters, packaging, hooks, skill lint, catalog parity, site              |
+| Tests         | 242 vitest tests in 9 files: emitters, packaging, hooks, skill lint, catalog parity, site              |
 | Drift check   | CI rebuilds, then `git diff --exit-code`; a test compares `plugin/` to a fresh build byte for byte     |
 | Static checks | TypeScript strict, ESLint, Prettier, all in `pnpm check`                                               |
 | Engine checks | `claude plugin validate --strict` passes on the catalog and the plugin (`pnpm validate:plugin`)        |

@@ -20,6 +20,7 @@ All notable changes to Godmode will be documented here. Format based on [Keep a 
 
 - The site has a light theme. It follows the system setting, a toggle in the header switches it, and the choice is kept in `localStorage`. A stored choice is applied by an inline script before the stylesheet loads, so the page never paints in the wrong theme. Code blocks stay dark in both themes.
 - `tests/site/theme.test.ts`: the light tokens must be declared identically for the system setting and the stored choice, every text token must meet WCAG AA on the surfaces it is used on in both themes, colors must live in tokens, and every `localStorage` call must sit inside a `try`.
+- README screenshots of the site in both themes, desktop (1280x800) and mobile (390x844), shown with `<picture>` and `prefers-color-scheme`. A test checks each file's size and dimensions.
 - `tests/site/behavior.test.ts` runs the real `site/main.js` against a small fake DOM (`tests/site/fake-dom.ts`, no new dependency) and drives the copy buttons, the workflow tabs, the theme toggle and the mobile menu.
 - A new icon (SVG plus 128 and 512 px PNG) shipped in `plugin/assets/` and referenced by the Claude Code `icon` field and the Codex `composerIcon` and `logo` fields. The site favicon, touch icon and social card use it too.
 - Both manifests declare a privacy statement URL (the README's Privacy section), which clears the last `claude plugin validate --strict` directory warning.
