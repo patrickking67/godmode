@@ -256,6 +256,59 @@
     });
   }
 
+  /* ---------- Theme toggle ----------
+     The inline script in index.html applies a stored choice before the first paint. With
+     no stored choice the page follows the system setting through CSS alone. */
+
+  var THEME_KEY = "godmode-theme";
+  var THEME_COLOR = { dark: "#0a0a0f", light: "#f7f6fb" };
+
+  function systemTheme() {
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches
+      ? "light"
+      : "dark";
+  }
+
+  function activeTheme() {
+    var chosen = document.documentElement.getAttribute("data-theme");
+    return chosen === "light" || chosen === "dark" ? chosen : systemTheme();
+  }
+
+  function initTheme() {
+    var toggle = document.querySelector(".theme-toggle");
+    if (!toggle) return;
+
+    function describe() {
+      var label = "Switch to " + (activeTheme() === "light" ? "dark" : "light") + " theme";
+      toggle.setAttribute("aria-label", label);
+      toggle.title = label;
+    }
+
+    toggle.addEventListener("click", function () {
+      var next = activeTheme() === "light" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", next);
+      Array.prototype.forEach.call(
+        document.querySelectorAll('meta[name="theme-color"]'),
+        function (meta) {
+          meta.setAttribute("content", THEME_COLOR[next]);
+        },
+      );
+      try {
+        window.localStorage.setItem(THEME_KEY, next);
+      } catch (e) {
+        /* Storage is blocked: the choice lasts for this page view only. */
+      }
+      describe();
+    });
+
+    if (window.matchMedia) {
+      var query = window.matchMedia("(prefers-color-scheme: light)");
+      if (query.addEventListener) query.addEventListener("change", describe);
+      else if (query.addListener) query.addListener(describe);
+    }
+    describe();
+  }
+
   /* ---------- Copy buttons ---------- */
 
   function initCopy() {
@@ -308,6 +361,7 @@
 
   function init() {
     initNav();
+    initTheme();
     initCopy();
     revealHero();
     loadData();

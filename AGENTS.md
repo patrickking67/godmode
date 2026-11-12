@@ -29,7 +29,7 @@ plugin/                 GENERATED installable plugin tree (do not hand-edit)
 site/                   GitHub Pages site: index.html, styles.css, main.js, assets/, llms.txt
 site/data/godmode.json  GENERATED catalog the site renders (do not hand-edit)
 tests/                  vitest: plugin/ (emitters, packaging, hooks, skill lint), catalog parity,
-                        site/ (static fallback, no-JS, llms.txt)
+                        site/ (static fallback, no-JS, llms.txt, theme tokens and contrast)
 docs/                   architecture.md, mcp-servers.md, assets/ (screenshots, og-image source)
 docs/specs, docs/plans  Design notes. Memory, token tracking and a dashboard are roadmap only
 llms.txt                Copy of site/llms.txt (a test keeps them identical)
@@ -84,6 +84,10 @@ non-kebab-case or duplicate source names before it writes anything.
 - The static fallback markup in `site/index.html` (workflow list, server table, demo steps)
   must match the generated catalog, and the README and docs must list the same servers and
   counts as the sources. `tests/site/` and `tests/catalog.test.ts` enforce both.
+- The site has a dark and a light theme, both driven by the tokens at the top of
+  `site/styles.css`. Put colors in tokens, never in rules, and give a new token a light
+  value in both light blocks. `tests/site/theme.test.ts` checks the two blocks match and
+  that text tokens meet WCAG AA on their surfaces. Code blocks stay dark in both themes.
 - The README badge, the README quality table and the site state the test count. When it
   changes, `pnpm check` fails and names the places to update.
 - Icons: edit `src/plugin/_sources/assets/icon.svg`, then regenerate the PNGs with

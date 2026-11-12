@@ -1,8 +1,17 @@
 /* Godmode landing site.
    Buildless static page, deployed under /godmode/ with relative paths only.
-   Dark only: the brand is a violet-to-green flame on near-black. */
+   Two themes. The brand is a violet-to-green flame: on near-black in the dark theme, on a
+   cool violet-tinted paper in the light one. Code blocks stay dark in both, like a terminal.
+
+   Which theme applies:
+   1. data-theme on <html>, set by the inline script in index.html from a stored choice
+      before the first paint, and by the toggle in main.js;
+   2. otherwise the system setting, through prefers-color-scheme.
+   The light tokens therefore appear twice below. tests/site/theme.test.ts keeps the two
+   blocks identical and checks every text token against its surface for WCAG AA. */
 
 :root {
+  color-scheme: dark;
   --bg: #0a0a0f;
   --bg-2: #101018;
   --panel: #16161f;
@@ -10,18 +19,95 @@
   --line: rgba(255, 255, 255, 0.1);
   --line-strong: rgba(168, 85, 247, 0.4);
   --text: #ececf1;
+  --text-soft: #d0d0dc;
+  --text-dim: #c9c9d6;
   --muted: #a3a3b8;
   --violet: #7c3aed;
-  --violet-2: #c084fc;
-  --green: #10b981;
-  --green-2: #34d399;
+  --accent: #c084fc;
+  --accent-soft: rgba(124, 58, 237, 0.22);
+  --accent-line: rgba(192, 132, 252, 0.45);
+  --ok: #34d399;
+  --hover: rgba(255, 255, 255, 0.06);
+  --chip: rgba(255, 255, 255, 0.07);
+  --header-bg: rgba(10, 10, 15, 0.88);
+  --glow-violet: rgba(124, 58, 237, 0.22);
+  --glow-green: rgba(16, 185, 129, 0.12);
+  --node-line: rgba(255, 255, 255, 0.18);
+  --diagram-sub: #b4b4c6;
+  --edge: #9a9ab0;
   --code-bg: #0c0c13;
+  --code-line: rgba(255, 255, 255, 0.1);
+  --code-text: #e4e4ee;
+  --code-text-soft: #d8d8e4;
+  --code-dim: #8f8fa6;
+  --code-ok: #34d399;
+  --code-btn: #1c1c28;
+  --code-btn-text: #ececf1;
   --radius: 12px;
   --maxw: 1120px;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono:
     ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #f7f6fb;
+    --bg-2: #efedf6;
+    --panel: #ffffff;
+    --panel-2: #f3f1f9;
+    --line: rgba(23, 20, 31, 0.14);
+    --line-strong: rgba(109, 40, 217, 0.5);
+    --text: #17141f;
+    --text-soft: #2e2a3a;
+    --text-dim: #3d394b;
+    --muted: #5b576c;
+    --violet: #6d28d9;
+    --accent: #6d28d9;
+    --accent-soft: rgba(109, 40, 217, 0.13);
+    --accent-line: rgba(109, 40, 217, 0.45);
+    --ok: #047857;
+    --hover: rgba(23, 20, 31, 0.06);
+    --chip: rgba(23, 20, 31, 0.07);
+    --header-bg: rgba(247, 246, 251, 0.9);
+    --glow-violet: rgba(124, 58, 237, 0.13);
+    --glow-green: rgba(16, 185, 129, 0.1);
+    --node-line: rgba(23, 20, 31, 0.28);
+    --diagram-sub: #4d495e;
+    --edge: #6f6b82;
+    --code-bg: #16131f;
+    --code-line: rgba(23, 20, 31, 0.14);
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f7f6fb;
+  --bg-2: #efedf6;
+  --panel: #ffffff;
+  --panel-2: #f3f1f9;
+  --line: rgba(23, 20, 31, 0.14);
+  --line-strong: rgba(109, 40, 217, 0.5);
+  --text: #17141f;
+  --text-soft: #2e2a3a;
+  --text-dim: #3d394b;
+  --muted: #5b576c;
+  --violet: #6d28d9;
+  --accent: #6d28d9;
+  --accent-soft: rgba(109, 40, 217, 0.13);
+  --accent-line: rgba(109, 40, 217, 0.45);
+  --ok: #047857;
+  --hover: rgba(23, 20, 31, 0.06);
+  --chip: rgba(23, 20, 31, 0.07);
+  --header-bg: rgba(247, 246, 251, 0.9);
+  --glow-violet: rgba(124, 58, 237, 0.13);
+  --glow-green: rgba(16, 185, 129, 0.1);
+  --node-line: rgba(23, 20, 31, 0.28);
+  --diagram-sub: #4d495e;
+  --edge: #6f6b82;
+  --code-bg: #16131f;
+  --code-line: rgba(23, 20, 31, 0.14);
 }
 
 *,
@@ -74,9 +160,9 @@ h3 {
 }
 
 a {
-  color: var(--violet-2);
+  color: var(--accent);
   text-decoration: underline;
-  text-decoration-color: rgba(192, 132, 252, 0.45);
+  text-decoration-color: var(--accent-line);
   text-underline-offset: 3px;
 }
 a:hover {
@@ -91,12 +177,12 @@ pre {
 :not(pre) > code {
   padding: 0.1em 0.35em;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--chip);
   overflow-wrap: anywhere;
 }
 
 :focus-visible {
-  outline: 2px solid var(--violet-2);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -138,7 +224,7 @@ pre {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(10, 10, 15, 0.88);
+  background: var(--header-bg);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
@@ -176,12 +262,48 @@ pre {
 }
 .nav-links a:hover {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--hover);
 }
 .nav-links .nav-cta {
   color: var(--text);
   border: 1px solid var(--line);
   margin-left: 8px;
+}
+.brand {
+  margin-right: auto;
+}
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: none;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.theme-toggle:hover {
+  color: var(--text);
+  background: var(--hover);
+}
+.theme-toggle svg {
+  transition: transform 0.35s ease;
+}
+/* The filled half of the disc turns over when the light theme is showing. */
+:root[data-theme="light"] .theme-toggle svg {
+  transform: rotate(180deg);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .theme-toggle svg {
+    transform: rotate(180deg);
+  }
+}
+html:not(.js) .theme-toggle {
+  display: none;
 }
 .nav-toggle {
   display: none;
@@ -209,8 +331,8 @@ pre {
 .hero {
   padding: 72px 0 64px;
   background:
-    radial-gradient(720px 420px at 85% -10%, rgba(124, 58, 237, 0.22), transparent 65%),
-    radial-gradient(620px 420px at 0% 110%, rgba(16, 185, 129, 0.12), transparent 60%);
+    radial-gradient(720px 420px at 85% -10%, var(--glow-violet), transparent 65%),
+    radial-gradient(620px 420px at 0% 110%, var(--glow-green), transparent 60%);
   border-bottom: 1px solid var(--line);
 }
 .hero-grid {
@@ -227,7 +349,7 @@ pre {
   margin-top: 20px;
   max-width: 34em;
   font-size: 1.15rem;
-  color: #d0d0dc;
+  color: var(--text-soft);
 }
 .hero-meta {
   margin-top: 20px;
@@ -261,10 +383,10 @@ pre {
   border-radius: 50%;
 }
 .dot--claude {
-  background: var(--violet-2);
+  background: var(--accent);
 }
 .dot--codex {
-  background: var(--green-2);
+  background: var(--ok);
 }
 .install-note {
   margin-top: 10px;
@@ -275,14 +397,14 @@ pre {
 .code-block {
   position: relative;
   background: var(--code-bg);
-  border: 1px solid var(--line);
+  border: 1px solid var(--code-line);
   border-radius: 8px;
 }
 .code-block pre {
   padding: 14px 84px 14px 14px;
   overflow-x: auto;
   line-height: 1.7;
-  color: #e4e4ee;
+  color: var(--code-text);
 }
 .copy-btn {
   position: absolute;
@@ -290,19 +412,19 @@ pre {
   right: 8px;
   min-height: 32px;
   padding: 4px 12px;
-  background: var(--panel-2);
-  color: var(--text);
-  border: 1px solid var(--line);
+  background: var(--code-btn);
+  color: var(--code-btn-text);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   font: inherit;
   font-size: 0.85rem;
   cursor: pointer;
 }
 .copy-btn:hover {
-  border-color: var(--line-strong);
+  border-color: rgba(168, 85, 247, 0.4);
 }
 .copy-btn.is-copied {
-  color: var(--green-2);
+  color: var(--code-ok);
   border-color: rgba(52, 211, 153, 0.5);
 }
 
@@ -324,7 +446,7 @@ pre {
 }
 .section-lead {
   margin-top: 14px;
-  color: #c9c9d6;
+  color: var(--text-dim);
 }
 .note {
   margin-top: 18px;
@@ -355,7 +477,7 @@ pre {
   font-weight: 700;
 }
 .cmd-name .slash {
-  color: var(--violet-2);
+  color: var(--accent);
 }
 .cmd-purpose {
   margin-top: 4px;
@@ -401,10 +523,10 @@ pre {
   cursor: pointer;
 }
 .wf-tab:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--hover);
 }
 .wf-tab[aria-selected="true"] {
-  background: rgba(124, 58, 237, 0.22);
+  background: var(--accent-soft);
   border-color: var(--line-strong);
 }
 .wf-detail {
@@ -416,12 +538,12 @@ pre {
   font-size: 1.4rem;
 }
 .wf-detail h3 .slash {
-  color: var(--violet-2);
+  color: var(--accent);
 }
 .wf-desc {
   margin-top: 12px;
   max-width: 44em;
-  color: #d0d0dc;
+  color: var(--text-soft);
 }
 .wf-facts {
   display: grid;
@@ -453,7 +575,7 @@ pre {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: rgba(124, 58, 237, 0.3);
+  background: var(--accent-soft);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   line-height: 22px;
@@ -477,7 +599,7 @@ pre {
 }
 .wf-body summary {
   cursor: pointer;
-  color: var(--violet-2);
+  color: var(--accent);
   width: fit-content;
   padding: 6px 0;
 }
@@ -488,10 +610,10 @@ pre {
   max-height: 420px;
   overflow: auto;
   background: var(--code-bg);
-  border: 1px solid var(--line);
+  border: 1px solid var(--code-line);
   border-radius: 8px;
   line-height: 1.6;
-  color: #d8d8e4;
+  color: var(--code-text-soft);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -501,10 +623,10 @@ pre {
   font-size: 0.8rem;
 }
 .transcript .t-cmd {
-  color: var(--green-2);
+  color: var(--code-ok);
 }
 .transcript .t-dim {
-  color: #8f8fa6;
+  color: var(--code-dim);
 }
 
 /* ---------- Servers table ---------- */
@@ -554,7 +676,7 @@ pre {
 }
 .kind {
   white-space: nowrap;
-  color: #c9c9d6;
+  color: var(--text-dim);
 }
 
 /* ---------- Diagram ---------- */
@@ -588,21 +710,21 @@ pre {
 .d-node rect,
 .d-gate rect {
   fill: var(--bg-2);
-  stroke: rgba(255, 255, 255, 0.18);
+  stroke: var(--node-line);
   stroke-width: 1;
 }
 .d-node--build rect {
-  fill: rgba(124, 58, 237, 0.2);
-  stroke: var(--violet-2);
+  fill: var(--accent-soft);
+  stroke: var(--accent);
 }
 .d-node--claude rect {
-  stroke: var(--violet-2);
+  stroke: var(--accent);
 }
 .d-node--codex rect {
-  stroke: var(--green-2);
+  stroke: var(--ok);
 }
 .d-node--shared rect {
-  stroke: #e4e4ee;
+  stroke: var(--text-soft);
 }
 .d-gate rect {
   stroke-dasharray: 4 4;
@@ -614,16 +736,19 @@ pre {
   font-weight: 600;
 }
 .d-sub {
-  fill: #b4b4c6;
+  fill: var(--diagram-sub);
   font-size: 12.5px;
 }
 .d-edge path {
   fill: none;
-  stroke: #9a9ab0;
+  stroke: var(--edge);
   stroke-width: 1.5;
 }
+.d-arrow {
+  fill: var(--edge);
+}
 .d-gates line {
-  stroke: var(--line);
+  stroke: var(--node-line);
 }
 
 /* ---------- Demo ---------- */
@@ -659,7 +784,7 @@ pre {
   gap: 2px 16px;
   padding: 12px 0;
   border-top: 1px solid var(--line);
-  color: #c9c9d6;
+  color: var(--text-dim);
 }
 .plain-list strong,
 .roadmap strong {
@@ -690,7 +815,7 @@ pre {
 }
 .proof dd {
   margin-top: 6px;
-  color: #c9c9d6;
+  color: var(--text-dim);
 }
 
 .roadmap {
@@ -726,7 +851,7 @@ pre {
   align-items: center;
 }
 .footer-links a {
-  color: #c9c9d6;
+  color: var(--text-dim);
   font-size: 0.95rem;
   padding: 6px 0;
 }
@@ -863,6 +988,9 @@ html:not(.js) .nav-toggle {
   .js .hero .reveal {
     opacity: 1;
     transform: none;
+    transition: none;
+  }
+  .theme-toggle svg {
     transition: none;
   }
 }
