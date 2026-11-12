@@ -41,7 +41,8 @@
     "lint": "eslint .",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
-    "check": "pnpm build:plugin && pnpm typecheck && pnpm lint && pnpm fmt:check && pnpm test",
+    "test:report": "vitest run --reporter=default --reporter=json --outputFile=coverage/test-results.json",
+    "check": "pnpm build:plugin && pnpm typecheck && pnpm lint && pnpm fmt:check && pnpm test:report && node scripts/check-claims.mjs",
     "validate:plugin": "claude plugin validate --strict . && claude plugin validate --strict ./plugin",
     "verify:mcps": "node scripts/verify-mcps.mjs"
   },

@@ -139,8 +139,8 @@ describe("skill lint", () => {
     });
 
     it("uses plain punctuation", () => {
-      expect(body).not.toMatch(/—/);
-      expect(description).not.toMatch(/—/);
+      expect(body).not.toMatch(/\u2014/);
+      expect(description).not.toMatch(/\u2014/);
     });
   });
 
