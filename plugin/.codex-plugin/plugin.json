@@ -18,6 +18,7 @@
     "subagents"
   ],
   "mcpServers": "./.mcp.json",
+  "icon": "./assets/logo.png",
   "skills": "./skills/",
   "interface": {
     "displayName": "Godmode",
@@ -38,6 +39,8 @@
       "Use godmode:exorcise to find why the failing test in this file fails"
     ],
     "brandColor": "#7C3AED",
-    "websiteURL": "https://github.com/patrickking67/godmode"
+    "websiteURL": "https://patrickking67.github.io/godmode/",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/logo.png"
   }
 }

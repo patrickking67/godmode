@@ -48,9 +48,11 @@ describe("plugin packaging", () => {
     const fresh = listFiles(PLUGIN);
     expect(listFiles(COMMITTED_PLUGIN)).toEqual(fresh);
     for (const file of fresh) {
-      expect(readFileSync(join(COMMITTED_PLUGIN, file), "utf8"), file).toBe(
-        readFileSync(join(PLUGIN, file), "utf8"),
+      // Compared as bytes so the icon and logo are covered too.
+      const same = readFileSync(join(COMMITTED_PLUGIN, file)).equals(
+        readFileSync(join(PLUGIN, file)),
       );
+      expect(same, `${file} differs from a fresh build`).toBe(true);
     }
     expect(readFileSync(COMMITTED_MARKETPLACE, "utf8")).toBe(
       readFileSync(join(MARKETPLACE_DIR, "marketplace.json"), "utf8"),
@@ -123,13 +125,38 @@ describe("plugin packaging", () => {
   it("points both manifests at paths that exist in the plugin", () => {
     for (const engine of [".claude-plugin", ".codex-plugin"]) {
       const manifest = readJson<Record<string, unknown>>(join(PLUGIN, engine, "plugin.json"));
-      for (const key of ["mcpServers", "skills"]) {
-        const value = manifest[key];
+      const iface = (manifest.interface ?? {}) as Record<string, unknown>;
+      const paths = {
+        mcpServers: manifest.mcpServers,
+        skills: manifest.skills,
+        icon: manifest.icon,
+        composerIcon: iface.composerIcon,
+        logo: iface.logo,
+      };
+      for (const [key, value] of Object.entries(paths)) {
         if (typeof value !== "string") continue;
         expect(value.startsWith("./"), `${engine} ${key}`).toBe(true);
         expect(existsSync(join(PLUGIN, value)), `${engine} ${key}`).toBe(true);
       }
     }
+  });
+
+  it("ships square PNG icons at the sizes the manifests reference", () => {
+    // PNG stores width and height as big-endian 32-bit integers at bytes 16 and 20.
+    const size = (file: string): [number, number] => {
+      const png = readFileSync(join(PLUGIN, "assets", file));
+      expect(png.subarray(1, 4).toString("latin1"), file).toBe("PNG");
+      return [png.readUInt32BE(16), png.readUInt32BE(20)];
+    };
+    expect(size("icon.png")).toEqual([128, 128]);
+    expect(size("logo.png")).toEqual([512, 512]);
+    expect(readFileSync(join(PLUGIN, "assets", "icon.svg"), "utf8")).toContain('viewBox="0 0 64 64"');
+  });
+
+  it("uses the same icon for the plugin and the site favicon", () => {
+    expect(readFileSync(join(ROOT, "site", "assets", "favicon.svg"), "utf8")).toBe(
+      readFileSync(join(PLUGIN, "assets", "icon.svg"), "utf8"),
+    );
   });
 });
 

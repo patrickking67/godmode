@@ -19,6 +19,10 @@ export interface CodexInterface {
   defaultPrompt: string[];
   brandColor: string;
   websiteURL: string;
+  /** Small square icon Codex shows in the composer. Path inside the plugin, under ./assets/. */
+  composerIcon: string;
+  /** Square listing icon. Also emitted as the Claude Code manifest `icon`. */
+  logo: string;
 }
 
 export interface ManifestSource {
@@ -57,6 +61,8 @@ export const MANIFEST: ManifestSource = {
       "Use godmode:exorcise to find why the failing test in this file fails",
     ],
     brandColor: "#7C3AED",
-    websiteURL: "https://github.com/patrickking67/godmode",
+    websiteURL: "https://patrickking67.github.io/godmode/",
+    composerIcon: "./assets/icon.png",
+    logo: "./assets/logo.png",
   },
 };

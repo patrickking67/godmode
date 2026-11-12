@@ -17,5 +17,6 @@
     "mcp",
     "subagents"
   ],
-  "mcpServers": "./.mcp.json"
+  "mcpServers": "./.mcp.json",
+  "icon": "./assets/logo.png"
 }

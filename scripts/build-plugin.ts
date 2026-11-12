@@ -9,6 +9,8 @@
  *   plugin/.claude-plugin/plugin.json   Claude Code manifest
  *   plugin/.codex-plugin/plugin.json    Codex manifest (+ interface block)
  *   plugin/skills/<name>/SKILL.md        Shared workflow skills, loaded by both engines
+ *   plugin/skills/<name>/agents/openai.yaml  Codex invocation policy (manual-only skills)
+ *   plugin/assets/*                      Icon and logo both manifests point at
  *   plugin/commands/<name>.md           Claude-only commands (`engines: claude`; none today)
  *   plugin/agents/<name>.md             Claude subagents (Claude-only; auto-discovered)
  *   plugin/hooks/*                       Claude hooks: hooks.json + scripts (Claude-only)
@@ -35,11 +37,14 @@ const PKG = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")) as { ve
 const VERSION = PKG.version;
 
 type Engines = "both" | "claude" | "codex";
-interface CommandSource {
+/** `auto`: the model may pick the skill from its description. `manual`: only the user starts it. */
+type Invocation = "auto" | "manual";
+export interface CommandSource {
   name: string;
   description: string;
   allowedTools: string | null;
   engines: Engines;
+  invocation: Invocation;
   body: string;
 }
 
@@ -79,11 +84,16 @@ function readCommands(): CommandSource[] {
       if (!["both", "claude", "codex"].includes(engines)) {
         throw new Error(`Command "${name}" has invalid engines: "${engines}"`);
       }
+      const invocation = (data.invocation as Invocation) ?? "auto";
+      if (!["auto", "manual"].includes(invocation)) {
+        throw new Error(`Command "${name}" has invalid invocation: "${invocation}"`);
+      }
       return {
         name,
         description,
         allowedTools: data["allowed-tools"] ?? null,
         engines,
+        invocation,
         body: body.trim(),
       };
     });
@@ -152,6 +162,16 @@ function readHooks(): { files: { file: string; raw: string }[]; events: number }
   };
 }
 
+/** Brand assets (icon, logo). Copied byte for byte; both manifests reference them. */
+function readAssets(): { file: string; bytes: Buffer }[] {
+  const dir = join(SOURCES, "assets");
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => !f.startsWith("_") && !f.startsWith("."))
+    .sort()
+    .map((file) => ({ file, bytes: readFileSync(join(dir, file)) }));
+}
+
 // ---------------------------------------------------------------------------
 // Serialization helpers
 // ---------------------------------------------------------------------------
@@ -170,22 +190,42 @@ function json(value: unknown): string {
   return JSON.stringify(value, null, 2) + "\n";
 }
 
-function claudeCommand(cmd: CommandSource): string {
+/**
+ * One workflow as Markdown with frontmatter. Both engines scan `skills/`, so a shared
+ * workflow is this one file; a Claude-only workflow is the same text under `commands/`.
+ *
+ * `name` and `description` are the Agent Skills standard. `allowed-tools` pre-approves
+ * tools in Claude Code for the turn that runs the skill. `disable-model-invocation` is a
+ * Claude Code extension; Codex reads the same policy from `agents/openai.yaml` instead.
+ */
+export function skillFromCommand(cmd: CommandSource): string {
   const lines = ["---", `name: ${cmd.name}`, `description: ${yamlStr(cmd.description)}`];
   if (cmd.allowedTools) lines.push(`allowed-tools: ${cmd.allowedTools}`);
+  if (cmd.invocation === "manual") lines.push("disable-model-invocation: true");
   lines.push("---", "", cmd.body, "");
   return lines.join("\n");
 }
 
+/** First sentence of a description, for short UI labels. */
+export function firstSentence(text: string): string {
+  const m = text.match(/^(.*?[.!?])(\s|$)/);
+  return (m?.[1] ?? text).trim();
+}
+
 /**
- * Shared skill. Both engines scan `skills/`, so this is the one copy of each workflow.
- * `allowed-tools` is Claude skill frontmatter; Codex ignores fields it does not use.
+ * Codex per-skill metadata. Only emitted for manual-only workflows: it tells Codex not
+ * to pick the skill implicitly, the counterpart of `disable-model-invocation` above.
  */
-function skillFromCommand(cmd: CommandSource): string {
-  const lines = ["---", `name: ${cmd.name}`, `description: ${yamlStr(cmd.description)}`];
-  if (cmd.allowedTools) lines.push(`allowed-tools: ${cmd.allowedTools}`);
-  lines.push("---", "", cmd.body, "");
-  return lines.join("\n");
+export function codexSkillPolicy(cmd: CommandSource): string {
+  return [
+    "# Generated from src/plugin/_sources/commands; do not hand-edit.",
+    "interface:",
+    `  display_name: ${yamlStr(cmd.name)}`,
+    `  short_description: ${yamlStr(firstSentence(cmd.description))}`,
+    "policy:",
+    "  allow_implicit_invocation: false",
+    "",
+  ].join("\n");
 }
 
 /** Claude `.mcp.json`: wrapped `mcpServers` map with a `type` discriminator. */
@@ -222,6 +262,12 @@ export function codexMcpToml(servers: McpServerDef[]): string {
   return out.join("\n");
 }
 
+/** Quote one shell word unless it is made only of characters the shell leaves alone. */
+export function shQuote(word: string): string {
+  if (/^[A-Za-z0-9_@%+=:,./-]+$/.test(word)) return word;
+  return `'${word.replace(/'/g, `'\\''`)}'`;
+}
+
 /** Codex setup script: native `codex mcp add` calls, drift-free from MCPS. */
 export function codexMcpSetupScript(servers: McpServerDef[]): string {
   const out: string[] = [
@@ -237,7 +283,8 @@ export function codexMcpSetupScript(servers: McpServerDef[]): string {
     if (s.transport === "http") {
       out.push(`codex mcp add ${s.name} --url ${JSON.stringify(s.url)}`);
     } else {
-      out.push(`codex mcp add ${s.name} -- ${[s.command, ...(s.args ?? [])].join(" ")}`);
+      const words = [s.command ?? "", ...(s.args ?? [])].map(shQuote);
+      out.push(`codex mcp add ${s.name} -- ${words.join(" ")}`);
     }
     out.push("");
   }
@@ -248,7 +295,7 @@ export function codexMcpSetupScript(servers: McpServerDef[]): string {
 // Manifests
 // ---------------------------------------------------------------------------
 
-function claudeManifest(): Record<string, unknown> {
+export function claudeManifest(): Record<string, unknown> {
   return {
     name: MANIFEST.name,
     version: VERSION,
@@ -260,16 +307,18 @@ function claudeManifest(): Record<string, unknown> {
     keywords: MANIFEST.keywords,
     // Points Claude Code at the bundled MCP config so the documentation servers load on install.
     mcpServers: "./.mcp.json",
+    // Listing icon. Claude Code itself does not read it; plugin directories do.
+    icon: MANIFEST.interface.logo,
   };
 }
 
-function codexManifest(): Record<string, unknown> {
+export function codexManifest(): Record<string, unknown> {
   // Codex's plugin format takes the same `mcpServers` pointer, so a plugin install wires the
   // bundled servers. codex-config.toml and codex-mcp-setup.sh stay as manual fallbacks.
   return { ...claudeManifest(), skills: "./skills/", interface: MANIFEST.interface };
 }
 
-function marketplaceCatalog(): Record<string, unknown> {
+export function marketplaceCatalog(): Record<string, unknown> {
   // Only fields Claude Code reads: `claude plugin validate --strict` warns on anything else.
   return {
     name: MANIFEST.name,
@@ -302,6 +351,7 @@ export function validateManifests(claude: unknown, codex: unknown): void {
     author: { type: "object" },
     keywords: { type: "array", items: { type: "string" } },
     mcpServers: { type: "string", minLength: 1 },
+    icon: { type: "string", pattern: "^\\./assets/[a-z0-9.-]+$" },
   } as const;
 
   const claudeSchema = {
@@ -327,6 +377,8 @@ export function validateManifests(claude: unknown, codex: unknown): void {
           "defaultPrompt",
           "brandColor",
           "websiteURL",
+          "composerIcon",
+          "logo",
         ],
         properties: {
           displayName: { type: "string", minLength: 1 },
@@ -338,6 +390,8 @@ export function validateManifests(claude: unknown, codex: unknown): void {
           defaultPrompt: { type: "array", items: { type: "string" } },
           brandColor: { type: "string", pattern: "^#[0-9A-Fa-f]{6}$" },
           websiteURL: { type: "string", minLength: 1 },
+          composerIcon: { type: "string", pattern: "^\\./assets/[a-z0-9.-]+$" },
+          logo: { type: "string", pattern: "^\\./assets/[a-z0-9.-]+$" },
         },
       },
     },
@@ -400,6 +454,7 @@ export interface BuildResult {
   mcps: number;
   agents: number;
   hooks: number;
+  assets: number;
 }
 
 export interface BuildOptions {
@@ -417,6 +472,7 @@ export function build(opts: BuildOptions = {}): BuildResult {
   const standaloneSkills = readStandaloneSkills();
   const agents = readAgents();
   const hooks = readHooks();
+  const assets = readAssets();
   validateSourceNames({
     skills: [
       ...commands.filter((c) => c.engines !== "claude").map((c) => c.name),
@@ -434,6 +490,12 @@ export function build(opts: BuildOptions = {}): BuildResult {
   const claude = claudeManifest();
   const codex = codexManifest();
   validateManifests(claude, codex);
+  // A manifest must never point at an image the plugin does not ship.
+  for (const ref of [MANIFEST.interface.composerIcon, MANIFEST.interface.logo]) {
+    if (!assets.some((a) => `./assets/${a.file}` === ref)) {
+      throw new Error(`Manifest references ${ref}, which is not in _sources/assets/`);
+    }
+  }
 
   write(join(pluginDir, ".claude-plugin", "plugin.json"), json(claude));
   write(join(pluginDir, ".codex-plugin", "plugin.json"), json(codex));
@@ -449,9 +511,12 @@ export function build(opts: BuildOptions = {}): BuildResult {
   let skillCount = standaloneSkills.length;
   for (const cmd of commands) {
     if (cmd.engines === "claude") {
-      write(join(pluginDir, "commands", `${cmd.name}.md`), claudeCommand(cmd));
+      write(join(pluginDir, "commands", `${cmd.name}.md`), skillFromCommand(cmd));
     } else {
       write(join(pluginDir, "skills", cmd.name, "SKILL.md"), skillFromCommand(cmd));
+      if (cmd.invocation === "manual") {
+        write(join(pluginDir, "skills", cmd.name, "agents", "openai.yaml"), codexSkillPolicy(cmd));
+      }
       skillCount++;
     }
   }
@@ -466,6 +531,10 @@ export function build(opts: BuildOptions = {}): BuildResult {
   for (const h of hooks.files) {
     write(join(pluginDir, "hooks", h.file), h.raw);
   }
+  for (const a of assets) {
+    mkdirSync(join(pluginDir, "assets"), { recursive: true });
+    writeFileSync(join(pluginDir, "assets", a.file), a.bytes);
+  }
 
   return {
     commands: commands.length,
@@ -473,6 +542,7 @@ export function build(opts: BuildOptions = {}): BuildResult {
     mcps: MCPS.length,
     agents: agents.length,
     hooks: hooks.events,
+    assets: assets.length,
   };
 }
 
