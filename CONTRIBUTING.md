@@ -15,8 +15,8 @@ pnpm install --frozen-lockfile
 pnpm check
 ```
 
-`pnpm check` regenerates `plugin/`, then runs the typecheck, ESLint, the Prettier check and
-the vitest suite. CI runs the same command and then fails if the build changed any
+`pnpm check` regenerates `plugin/` and the site catalog, then runs the typecheck, ESLint,
+the Prettier check, the vitest suite and a check that the published test count is current. CI runs the same command and then fails if the build changed any
 committed file.
 
 To preview the site: `python3 -m http.server 4103 --directory site` and open
@@ -28,13 +28,18 @@ Everything ships from `src/plugin/_sources/`. `plugin/` and `.claude-plugin/mark
 are generated: never edit them by hand. After changing a source, run `pnpm build:plugin`
 and commit the regenerated output in the same commit.
 
-To add a workflow, create `src/plugin/_sources/commands/<name>.md` with `name`,
-`description` and optional `allowed-tools` frontmatter. Names are lowercase kebab-case.
-Add it to `site/data/godmode.json` and the static cards in `site/index.html` too; a test
-checks both.
+To add a workflow, create `src/plugin/_sources/commands/<name>.md`. The frontmatter needs
+`name` (lowercase kebab-case), `description` (what it does, then "Use when ..."),
+`allowed-tools` (read-only tools and scoped git commands only) and `pillar`. The body
+needs four sections in order: `## When to use`, `## Procedure` with numbered `### 1.`
+steps, `## Stop conditions` and `## Verify`. `tests/plugin/skills.test.ts` enforces all
+of it. Then add the static fallback entry in `site/index.html` and a row to the README
+table; the site catalog `site/data/godmode.json` is generated, so do not edit it.
+[`src/plugin/_sources/README.md`](src/plugin/_sources/README.md) documents every field.
 
 To propose a bundled MCP server, open an issue first with its URL, transport and auth
-model. Bundled servers must need no API key or secret in config.
+model. Bundled servers must need no API key or secret in config. The steps for adding one
+are in [`docs/mcp-servers.md`](docs/mcp-servers.md).
 
 ## Branches and commits
 
