@@ -170,12 +170,12 @@ scripts/               build-plugin.ts (emitter), verify-mcps.mjs, check-claims.
 plugin/                generated, committed, installable (do not hand-edit)
 site/                  static landing page; data/godmode.json is generated
 tests/                 vitest suites
-docs/                  architecture.md, mcp-servers.md, design notes
+docs/                  architecture.md, usage.md, troubleshooting.md, mcp-servers.md, design notes
 ```
 
 To add a workflow, create `src/plugin/_sources/commands/<name>.md`, run `pnpm build:plugin` and commit the regenerated output with it. Pushing to `main` deploys `site/` to GitHub Pages; the plugin has no deploy step because both engines install the committed `plugin/`.
 
-More: [`AGENTS.md`](AGENTS.md) for the full agent guide, [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CHANGELOG.md`](CHANGELOG.md), [`SECURITY.md`](SECURITY.md), [Privacy](#privacy).
+More: [usage](docs/usage.md), [troubleshooting](docs/troubleshooting.md), [`AGENTS.md`](AGENTS.md) for the full agent guide, [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CHANGELOG.md`](CHANGELOG.md), [`SECURITY.md`](SECURITY.md), [Privacy](#privacy).
 
 ## Privacy
 

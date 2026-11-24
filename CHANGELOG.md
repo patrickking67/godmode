@@ -22,6 +22,7 @@ All notable changes to Godmode will be documented here. Format based on [Keep a 
 
 ### Added
 
+- `docs/usage.md` (which workflow for which job, example sessions, subagents, hooks) and `docs/troubleshooting.md`, linked from the README.
 - CI reports coverage on Node 24 in the job summary and uploads the HTML report. `pnpm test:coverage` enforces thresholds (80% statements, lines and functions, 65% branches) on the build script and `src/`; hooks, `site/main.js` and the `.mjs` scripts run out of process and are covered by their own tests.
 - The Pages deploy retries once after 30 seconds, because the artifact can be reported missing right after upload.
 - The site has a light theme. It follows the system setting, a toggle in the header switches it, and the choice is kept in `localStorage`. A stored choice is applied by an inline script before the stylesheet loads, so the page never paints in the wrong theme. Code blocks stay dark in both themes.
