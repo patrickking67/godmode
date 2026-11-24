@@ -5,6 +5,8 @@
 ## Docs
 
 - [README](https://github.com/patrickking67/godmode/blob/main/README.md): what ships, install steps for both engines, the engineering decisions and where each is tested
+- [Usage](https://github.com/patrickking67/godmode/blob/main/docs/usage.md): which workflow for which job, example sessions, subagents and hooks
+- [Troubleshooting](https://github.com/patrickking67/godmode/blob/main/docs/troubleshooting.md): install, namespacing, hooks, MCP servers and CI failures
 - [Architecture](https://github.com/patrickking67/godmode/blob/main/docs/architecture.md): component view, the build's validation order, how one source field becomes two engine-specific outputs
 - [MCP servers](https://github.com/patrickking67/godmode/blob/main/docs/mcp-servers.md): endpoints, launch commands, upstream repositories and the last live verification
 - [AGENTS.md](https://github.com/patrickking67/godmode/blob/main/AGENTS.md): repository layout, build and test commands, conventions for contributors and coding agents
