@@ -1,16 +1,16 @@
 ---
-title: Godmode — Design Spec
+title: Godmode - Design Spec
 status: draft
 date: 2026-05-27
 owner: Patrick King
 version: 0.1.0
 ---
 
-# Godmode — Design Spec
+# Godmode - Design Spec
 
 ## Summary
 
-Godmode is an open-source plugin that takes the best ideas from across the Claude Code and Codex plugin ecosystem — brainstorming, plan-driven development, subagent orchestration, persistent memory, disciplined verification, and token economics — and **fuses them into one coherent, opinionated super-plugin**. It ships as a **dual-engine plugin** (`.claude-plugin/` + `.codex-plugin/`) built from one source, runs a local **Hono server** that holds a hybrid SQLite memory + telemetry store, exposes a **React/Vite/Tailwind/shadcn** SPA at `http://127.0.0.1:51847` (Dashboard, Memory, Plans, Cost), and bundles ten curated no-auth MCP servers pre-wired in both engines.
+Godmode is an open-source plugin that takes the best ideas from across the Claude Code and Codex plugin ecosystem - brainstorming, plan-driven development, subagent orchestration, persistent memory, disciplined verification, and token economics - and **fuses them into one coherent, opinionated super-plugin**. It ships as a **dual-engine plugin** (`.claude-plugin/` + `.codex-plugin/`) built from one source, runs a local **Hono server** that holds a hybrid SQLite memory + telemetry store, exposes a **React/Vite/Tailwind/shadcn** SPA at `http://127.0.0.1:51847` (Dashboard, Memory, Plans, Cost), and bundles ten curated no-auth MCP servers pre-wired in both engines.
 
 Godmode is original work: every command, skill, manifest, and MCP wiring is authored in `src/plugin/_sources/` and emitted for both engines. It has **zero runtime dependency** on any other plugin.
 
@@ -32,7 +32,7 @@ License: **Apache-2.0**. Distribution: public GitHub repo at v0.1; Claude Code a
 - Multi-user or networked deployment. Godmode binds 127.0.0.1 only.
 - Gemini CLI / Cursor support at v1 (engine list locked to Claude Code + Codex; revisit later).
 - Cloud-hosted memory or sync. Memory is local SQLite.
-- Replacing Anthropic's billing — Godmode's cost numbers are derived from API-reported token usage, not actual invoices.
+- Replacing Anthropic's billing - Godmode's cost numbers are derived from API-reported token usage, not actual invoices.
 - Hosting credentials for users. MCP servers that need auth (e.g. private API keys) require user-provided env vars; Godmode never embeds keys.
 
 ## Architecture overview
@@ -76,13 +76,13 @@ License: **Apache-2.0**. Distribution: public GitHub repo at v0.1; Claude Code a
 
 Three runtime surfaces, one codebase:
 
-1. **Plugin** — installed into `~/.claude/plugins/godmode/` and `~/.codex/plugins/godmode/` via symlink. Provides slash commands, skills, agents, and hooks.
-2. **Server** — `godmode start` runs a daemonized Hono process on `127.0.0.1:51847`. Ingests hook events, manages SQLite, broadcasts WebSocket events.
-3. **Web** — Vite-built static SPA served by the same server. Talks to the REST + WebSocket API.
+1. **Plugin** - installed into `~/.claude/plugins/godmode/` and `~/.codex/plugins/godmode/` via symlink. Provides slash commands, skills, agents, and hooks.
+2. **Server** - `godmode start` runs a daemonized Hono process on `127.0.0.1:51847`. Ingests hook events, manages SQLite, broadcasts WebSocket events.
+3. **Web** - Vite-built static SPA served by the same server. Talks to the REST + WebSocket API.
 
 ---
 
-## Section 1 — Directory layout + command surface
+## Section 1 - Directory layout + command surface
 
 ### Repository layout
 
@@ -123,15 +123,15 @@ The nine shipped commands use their deific names today; the remaining rows are r
 
 | Command       | What it does                                                                  |
 | ------------- | ----------------------------------------------------------------------------- |
-| `/revelation` | Prime the codebase into memory — reads repo, generates observations, persists |
+| `/revelation` | Prime the codebase into memory - reads repo, generates observations, persists |
 | `/prophecy`   | Brainstorm a feature interactively, save spec                                 |
 | `/gospel`     | Explain a file/function/system; pulls memory for context                      |
 | `/summon`     | List configured subagents; spawn ad-hoc                                       |
 | `/genesis`    | Execute a saved plan via subagent-driven dev; parallel where independent      |
-| `/develop`    | Lightweight build — code an idea without full plan/spec flow                  |
-| `/engineer`   | Heavy build — plan → review → tests → impl → verify → commit                  |
-| `/exorcise`   | Systematic debugging — root cause first                                       |
-| `/optimize`   | Hand code to the optimizer — perf / readability / token-efficiency            |
+| `/develop`    | Lightweight build - code an idea without full plan/spec flow                  |
+| `/engineer`   | Heavy build - plan → review → tests → impl → verify → commit                  |
+| `/exorcise`   | Systematic debugging - root cause first                                       |
+| `/optimize`   | Hand code to the optimizer - perf / readability / token-efficiency            |
 | `/budget`     | Set or check token/cost budget for session/project/day                        |
 | `/tokens`     | Cost breakdown for current session, project, or window                        |
 | `/route`      | Show / override the router's model pick for a task                            |
@@ -144,7 +144,7 @@ The nine shipped commands use their deific names today; the remaining rows are r
 
 ---
 
-## Section 2 — Skills library, hooks, memory schema
+## Section 2 - Skills library, hooks, memory schema
 
 ### Skills library
 
@@ -184,8 +184,8 @@ Codex hooks are emitted from the same source via `scripts/build-plugin.ts` with 
 
 Two SQLite databases with identical schema:
 
-- `~/.godmode/memory.db` — global, cross-project patterns
-- `.godmode/memory.db` — per-repo, local observations
+- `~/.godmode/memory.db` - global, cross-project patterns
+- `.godmode/memory.db` - per-repo, local observations
 
 Both writable; queries can target one or both.
 
@@ -238,7 +238,7 @@ CREATE TABLE plans (
   updated_at  INTEGER NOT NULL
 );
 
--- per-call telemetry — the live dashboard reads this
+-- per-call telemetry - the live dashboard reads this
 CREATE TABLE tool_calls (
   id            INTEGER PRIMARY KEY AUTOINCREMENT,
   session_id    TEXT NOT NULL,
@@ -277,7 +277,7 @@ Triggers keep `observations_fts` in sync on insert/update/delete. Search ranks b
 
 ---
 
-## Section 3 — Token & credit economics
+## Section 3 - Token & credit economics
 
 ### 3.1 Token meter
 
@@ -326,7 +326,7 @@ Godmode structures prompts to maximize Anthropic prompt-cache hits (target >90% 
 Per-scope cost caps in cents (stored in `budgets` table). Gates:
 
 - **80%** of cap: webviewer cost panel turns yellow; `/tokens` shows a warning
-- **100%** of cap: `pre-tool-use` hook returns soft-block — system reminder _"budget exhausted; ask user to extend or close out."_ Hard block on subagent dispatch.
+- **100%** of cap: `pre-tool-use` hook returns soft-block - system reminder _"budget exhausted; ask user to extend or close out."_ Hard block on subagent dispatch.
 - **Override**: `/budget extend 500c` adds $5 to current session cap
 
 ### 3.6 Cost dashboard (webviewer Cost page)
@@ -347,7 +347,7 @@ Before `/implement` fans out N parallel subagents, the orchestrator estimates ex
 
 ---
 
-## Section 4 — Webviewer
+## Section 4 - Webviewer
 
 ### 4.1 Server
 
@@ -419,18 +419,18 @@ Dark by default. shadcn zinc palette + Godmode accent `#FB923C` (amber/orange).
 
 **Dashboard (live).** Header: engine, project, live cost, live tokens, cache-hit%. Activity panel: currently running tool + subagent mini-timelines. Recent tool-calls table (last 50, auto-scrolling). Side: current plan/spec snippet + "step N of M" if implementing.
 
-**Memory.** Sidebar project switcher (global / repo). FTS5 search + filter chips (type, date, tags). Card list (title, type badge, project tag, date, preview). Detail sheet — full markdown, edit-in-place, delete, related observations.
+**Memory.** Sidebar project switcher (global / repo). FTS5 search + filter chips (type, date, tags). Card list (title, type badge, project tag, date, preview). Detail sheet - full markdown, edit-in-place, delete, related observations.
 
-**Plans.** List (title, project, status, last updated). Detail — rendered markdown spec, "rerun" button (re-dispatches via `/implement`), version history dropdown. Diff view — two plans side-by-side with unified-diff highlighting.
+**Plans.** List (title, project, status, last updated). Detail - rendered markdown spec, "rerun" button (re-dispatches via `/implement`), version history dropdown. Diff view - two plans side-by-side with unified-diff highlighting.
 
-**Cost.** Cards (today / week / month + cache%). Donut by model. Stacked bar — spend per day, last 14d. Table — most expensive sessions, drill to detail.
+**Cost.** Cards (today / week / month + cache%). Donut by model. Stacked bar - spend per day, last 14d. Table - most expensive sessions, drill to detail.
 
 ### 4.5 Security
 
 - 127.0.0.1 only
 - Single shared bearer in `~/.godmode/auth.token` (32 random bytes, file mode 0600) required on every API call
 - Frontend reads token from same-origin `/api/_token` (only serves to same-origin GET)
-- Hook ingestion uses the same bearer — plugin install sets `GODMODE_TOKEN` env
+- Hook ingestion uses the same bearer - plugin install sets `GODMODE_TOKEN` env
 - No CORS open
 
 ### 4.6 Process model
@@ -445,7 +445,7 @@ godmode install --autostart → launchd plist (macOS) / systemd user unit (Linux
 
 ---
 
-## Section 5 — Plugin manifests, CLI, testing, vendoring
+## Section 5 - Plugin manifests, CLI, testing, vendoring
 
 ### 5.1 Claude Code manifest
 
@@ -455,7 +455,7 @@ godmode install --autostart → launchd plist (macOS) / systemd user unit (Linux
 {
   "name": "godmode",
   "version": "0.1.0",
-  "description": "Learn, plan, build, and optimize — with persistent memory and a live webviewer.",
+  "description": "Learn, plan, build, and optimize - with persistent memory and a live webviewer.",
   "author": { "name": "Patrick King" },
   "license": "Apache-2.0",
   "skills": "./skills/",
@@ -480,15 +480,15 @@ godmode install --autostart → launchd plist (macOS) / systemd user unit (Linux
   "hooks": "./hooks/codex-hooks.json",
   "interface": {
     "displayName": "Godmode",
-    "shortDescription": "Learn, plan, build, optimize — with memory and a webviewer.",
+    "shortDescription": "Learn, plan, build, optimize - with memory and a webviewer.",
     "longDescription": "Godmode consolidates codebase priming, planning, subagent-driven development, and token economics across Claude Code and Codex.",
     "developerName": "Patrick King",
     "category": "Productivity",
     "capabilities": ["Interactive", "Write"],
     "defaultPrompt": [
-      "/learn — prime this codebase into Godmode memory",
-      "/guide <feature> — brainstorm a spec, then save it",
-      "/engineer <feature> — the full loop: plan, review, build, verify, commit"
+      "/learn - prime this codebase into Godmode memory",
+      "/guide <feature> - brainstorm a spec, then save it",
+      "/engineer <feature> - the full loop: plan, review, build, verify, commit"
     ],
     "brandColor": "#FB923C"
   }
@@ -521,7 +521,7 @@ godmode install --autostart → launchd plist (macOS) / systemd user unit (Linux
 | `godmode install --autostart`        | Add launchd / systemd unit                         |
 | `godmode install --local`            | Wire into current repo's `.claude/` + `.codex/`    |
 | `godmode uninstall`                  | Remove symlinks + autostart                        |
-| `godmode ingest --event <n>`         | Internal — hooks call this                         |
+| `godmode ingest --event <n>`         | Internal - hooks call this                         |
 | `godmode memory search <q>`          | CLI search                                         |
 | `godmode memory add`                 | Pipe markdown to stdin to add an observation       |
 | `godmode tokens`                     | Quick token/cost summary                           |
@@ -537,7 +537,7 @@ godmode install --autostart → launchd plist (macOS) / systemd user unit (Linux
 
 | Layer       | Tool                           | Coverage                                                  |
 | ----------- | ------------------------------ | --------------------------------------------------------- |
-| Unit        | Vitest                         | `core/*` — memory, token-meter, router, optimizer, budget |
+| Unit        | Vitest                         | `core/*` - memory, token-meter, router, optimizer, budget |
 | Integration | Vitest + supertest             | server routes against in-memory SQLite                    |
 | Schema      | ajv                            | both manifests validated against engine schemas           |
 | Hooks       | Vitest + fixture events        | replay payloads, assert DB state                          |
@@ -565,7 +565,7 @@ Emission targets:
 - **Claude Code** → `dist/.claude-plugin/.mcp.json` (referenced from `plugin.json` via `mcpServers`)
 - **Codex** → `[mcp_servers.<name>]` blocks merged into `~/.codex/config.toml` by `godmode install`
 
-User additions via `godmode mcp add` are written to a separate user-config file that is merged at runtime so upgrades never overwrite them. MCP servers that need auth (e.g. private endpoints, API keys) read those credentials from environment variables — Godmode ships no embedded keys, and `godmode doctor` warns when a required env var is unset.
+User additions via `godmode mcp add` are written to a separate user-config file that is merged at runtime so upgrades never overwrite them. MCP servers that need auth (e.g. private endpoints, API keys) read those credentials from environment variables - Godmode ships no embedded keys, and `godmode doctor` warns when a required env var is unset.
 
 Example emitted `.mcp.json`:
 
@@ -583,22 +583,22 @@ Example emitted `.mcp.json`:
 
 ### 5.7 Skill authoring
 
-Skills are authored from scratch in `src/plugin/_sources/skills/<name>/SKILL.md` and emitted to both engines by `scripts/build-plugin.ts` — Claude commands under `plugin/commands/` and Codex skills under `plugin/skills/`. A single body serves both engines, so the command surface never drifts between them.
+Skills are authored from scratch in `src/plugin/_sources/skills/<name>/SKILL.md` and emitted to both engines by `scripts/build-plugin.ts` - Claude commands under `plugin/commands/` and Codex skills under `plugin/skills/`. A single body serves both engines, so the command surface never drifts between them.
 
 Workflow coverage spans the pillars: interactive brainstorming and plan capture (`/guide`, `/plans`), subagent-driven and parallel build (`/implement`, `/agents`), root-cause debugging (`/debug`), pre-commit/PR review and evidence-based verification (`/review`, `/verify`), and attribution-safe commits (`/commit`).
 
 ---
 
-## Section 6 — Distribution & contribution
+## Section 6 - Distribution & contribution
 
 ### 6.1 Release model
 
 Godmode is open source under **Apache-2.0**. Distribution paths:
 
-- **Direct git clone (v0.1+)** — `git clone https://github.com/<owner>/godmode && cd godmode && pnpm install && pnpm build && godmode install`. Best for users tracking `main` or contributing.
-- **Claude Code marketplace (v0.7+)** — `/plugin install godmode` from inside Claude Code. One-line install with automatic updates.
-- **Codex marketplace (v0.7+)** — same install ergonomics on the Codex side, once Codex's plugin marketplace surface is stable.
-- **npm tarball (v1.0+)** — `pnpm dlx godmode install` once binary distribution stabilizes.
+- **Direct git clone (v0.1+)** - `git clone https://github.com/<owner>/godmode && cd godmode && pnpm install && pnpm build && godmode install`. Best for users tracking `main` or contributing.
+- **Claude Code marketplace (v0.7+)** - `/plugin install godmode` from inside Claude Code. One-line install with automatic updates.
+- **Codex marketplace (v0.7+)** - same install ergonomics on the Codex side, once Codex's plugin marketplace surface is stable.
+- **npm tarball (v1.0+)** - `pnpm dlx godmode install` once binary distribution stabilizes.
 
 ### 6.2 Versioning
 
@@ -617,18 +617,18 @@ Godmode is open source under **Apache-2.0**. Distribution paths:
 | v0.7     | Beta on Claude Code + Codex marketplaces                |
 | **v1.0** | Stable API; full test coverage; public launch           |
 
-Roadmap is informational, not contractual — adjusts as the project learns.
+Roadmap is informational, not contractual - adjusts as the project learns.
 
 ### 6.4 Contribution
 
 `CONTRIBUTING.md` at repo root covers:
 
-- **Code style** — Prettier + ESLint configs in repo; PRs auto-format on save.
-- **Commit format** — Conventional Commits encouraged; not enforced for solo contributors.
-- **PR flow** — issue first for new features (5+ files or new pillar); draft PR welcome any time; one approving review required for merge.
-- **Tests required** — Vitest unit + integration tests for any new code in `src/core/` or `src/server/`. UI changes get RTL component tests.
-- **License sign-off** — by submitting a PR, contributors agree their contribution is licensed under Apache-2.0 (no separate CLA at v0.x).
-- **No AI attribution in commits** — contributors are humans; no `Co-Authored-By: Claude` etc.
+- **Code style** - Prettier + ESLint configs in repo; PRs auto-format on save.
+- **Commit format** - Conventional Commits encouraged; not enforced for solo contributors.
+- **PR flow** - issue first for new features (5+ files or new pillar); draft PR welcome any time; one approving review required for merge.
+- **Tests required** - Vitest unit + integration tests for any new code in `src/core/` or `src/server/`. UI changes get RTL component tests.
+- **License sign-off** - by submitting a PR, contributors agree their contribution is licensed under Apache-2.0 (no separate CLA at v0.x).
+- **No AI attribution in commits** - contributors are humans; no `Co-Authored-By: Claude` etc.
 
 `CODEOWNERS` routes PRs by area:
 
@@ -643,7 +643,7 @@ For marketplace listings, both `plugin.json` files carry:
 
 - A 1-line `shortDescription` (≤80 chars)
 - A 3-5 sentence `longDescription`
-- `brandColor` `#FB923C` (amber/orange — fire/godmode accent matching the SPA)
+- `brandColor` `#FB923C` (amber/orange - fire/godmode accent matching the SPA)
 - `defaultPrompt` examples (3 high-value commands)
 - `capabilities` declared: `Interactive`, `Write`, `MCP`
 
@@ -653,10 +653,10 @@ Manifests are validated against the engines' published JSON schemas at build tim
 
 `SECURITY.md` declares:
 
-- **Supported versions** — current minor + previous minor (e.g. v0.6 + v0.5 patched, older versions EOL)
-- **Reporting** — `security@<domain>` private email; public GitHub Security Advisory after fix is available
-- **Scope** — local-server auth bypass, hook-injection RCE, MCP-credential leak, sandbox escape, memory exfil between projects
-- **Out of scope** — physical-access compromise, social engineering, user-misconfigured MCP servers
+- **Supported versions** - current minor + previous minor (e.g. v0.6 + v0.5 patched, older versions EOL)
+- **Reporting** - `security@<domain>` private email; public GitHub Security Advisory after fix is available
+- **Scope** - local-server auth bypass, hook-injection RCE, MCP-credential leak, sandbox escape, memory exfil between projects
+- **Out of scope** - physical-access compromise, social engineering, user-misconfigured MCP servers
 
 ---
 
@@ -678,10 +678,10 @@ Manifests are validated against the engines' published JSON schemas at build tim
 
 ## Glossary
 
-- **Engine** — Claude Code or Codex (the runtime hosting the plugin).
-- **Session** — one Claude Code / Codex session, identified by ULID.
-- **Observation** — atomic memory unit (markdown body + metadata).
-- **Plan / spec** — saved planning artifact, versioned with parent pointers.
-- **Hook** — Claude/Codex lifecycle event that fires user-defined commands.
-- **Cache hit** — Anthropic prompt-cache hit on a given request; tracked per call.
-- **Budget** — per-scope cost cap in cents (`session`, `project`, `day`, `month`).
+- **Engine** - Claude Code or Codex (the runtime hosting the plugin).
+- **Session** - one Claude Code / Codex session, identified by ULID.
+- **Observation** - atomic memory unit (markdown body + metadata).
+- **Plan / spec** - saved planning artifact, versioned with parent pointers.
+- **Hook** - Claude/Codex lifecycle event that fires user-defined commands.
+- **Cache hit** - Anthropic prompt-cache hit on a given request; tracked per call.
+- **Budget** - per-scope cost cap in cents (`session`, `project`, `day`, `month`).
