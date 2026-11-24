@@ -8,7 +8,7 @@ One plugin for Claude Code and Codex: nine coding workflow skills and ten no-aut
 
 [![CI](https://github.com/patrickking67/godmode/actions/workflows/ci.yml/badge.svg)](https://github.com/patrickking67/godmode/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-242%20passing-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-248%20passing-brightgreen.svg)](tests/)
 [![Live site](https://img.shields.io/badge/site-live-7c3aed.svg)](https://patrickking67.github.io/godmode/)
 
 <p align="center">
@@ -141,7 +141,7 @@ Codex ignores the subagents and loads plugin hooks only after you review and tru
 
 | Signal        | What is true today                                                                                     |
 | ------------- | ------------------------------------------------------------------------------------------------------ |
-| Tests         | 242 vitest tests in 9 files: emitters, packaging, hooks, skill lint, catalog parity, site              |
+| Tests         | 248 vitest tests in 10 files: emitters, packaging, hooks, skill lint, catalog parity, site             |
 | Drift check   | CI rebuilds, then `git diff --exit-code`; a test compares `plugin/` to a fresh build byte for byte     |
 | Static checks | TypeScript strict, ESLint, Prettier, all in `pnpm check`                                               |
 | Engine checks | `claude plugin validate --strict` passes on the catalog and the plugin (`pnpm validate:plugin`)        |
@@ -173,7 +173,7 @@ tests/                 vitest suites
 docs/                  architecture.md, usage.md, troubleshooting.md, mcp-servers.md, design notes
 ```
 
-To add a workflow, create `src/plugin/_sources/commands/<name>.md`, run `pnpm build:plugin` and commit the regenerated output with it. Pushing to `main` deploys `site/` to GitHub Pages; the plugin has no deploy step because both engines install the committed `plugin/`.
+To add a workflow, run `pnpm new:workflow <name> "<description>" [pillar]` to scaffold `src/plugin/_sources/commands/<name>.md` (or write it by hand), replace the TODO text, run `pnpm build:plugin` and commit the regenerated output with it. Pushing to `main` deploys `site/` to GitHub Pages; the plugin has no deploy step because both engines install the committed `plugin/`.
 
 More: [usage](docs/usage.md), [troubleshooting](docs/troubleshooting.md), [`AGENTS.md`](AGENTS.md) for the full agent guide, [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CHANGELOG.md`](CHANGELOG.md), [`SECURITY.md`](SECURITY.md), [Privacy](#privacy).
 

@@ -36,6 +36,7 @@
     "build": "tsx scripts/build-plugin.ts",
     "build:plugin": "tsx scripts/build-plugin.ts",
     "test": "vitest run",
+    "new:workflow": "tsx scripts/new-workflow.ts",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

@@ -489,7 +489,7 @@ export function validateManifests(claude: unknown, codex: unknown): void {
 // ---------------------------------------------------------------------------
 
 /** Same rule the manifests use. Names become paths, TOML keys and shell words. */
-const SAFE_NAME = /^[a-z0-9][a-z0-9-]*$/;
+export const SAFE_NAME = /^[a-z0-9][a-z0-9-]*$/;
 
 export interface SourceNames {
   /** Workflows that become `skills/<name>/` (engines both/codex) plus standalone skills. */

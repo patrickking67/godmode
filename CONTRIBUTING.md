@@ -28,7 +28,7 @@ Everything ships from `src/plugin/_sources/`. `plugin/` and `.claude-plugin/mark
 are generated: never edit them by hand. After changing a source, run `pnpm build:plugin`
 and commit the regenerated output in the same commit.
 
-To add a workflow, create `src/plugin/_sources/commands/<name>.md`. The frontmatter needs
+To add a workflow, run `pnpm new:workflow <name> "<description>"` or create `src/plugin/_sources/commands/<name>.md` by hand. The frontmatter needs
 `name` (lowercase kebab-case), `description` (what it does, then "Use when ..."),
 `allowed-tools` (read-only tools and scoped git commands only) and `pillar`. The body
 needs four sections in order: `## When to use`, `## Procedure` with numbered `### 1.`
