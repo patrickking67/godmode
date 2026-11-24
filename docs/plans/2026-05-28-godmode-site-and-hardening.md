@@ -946,7 +946,7 @@ with:
 Replace the publish hedge (around `README.md:83`):
 
 ```markdown
-> The GitHub paths below assume the repo is published at `github.com/patrickking67/godmode`. Until then — or for local development — use the **local clone** variant in each section.
+> The GitHub paths below assume the repo is published at `github.com/patrickking67/godmode`. Until then - or for local development - use the **local clone** variant in each section.
 ```
 
 with:
@@ -976,7 +976,7 @@ Godmode surfaces its full command list as context at the start of every session,
 In `CONTRIBUTING.md`, replace the dead source-path bullet (line 20):
 
 ```markdown
-- **Add a skill** — author it as a `SKILL.md` under `src/plugin/_sources/skills/<pillar>/<name>/`. Build script emits Claude + Codex variants automatically.
+- **Add a skill** - author it as a `SKILL.md` under `src/plugin/_sources/skills/<pillar>/<name>/`. Build script emits Claude + Codex variants automatically.
 ````
 
 with:
@@ -1036,7 +1036,7 @@ In `src/plugin/_sources/manifest.ts`, replace the `description` value:
 
 ```ts
   description:
-    "Learn, plan, build, and optimize — one super-plugin for Claude Code and Codex, with hero workflows and bundled documentation MCPs.",
+    "Learn, plan, build, and optimize - one super-plugin for Claude Code and Codex, with hero workflows and bundled documentation MCPs.",
 ```
 
 with:
@@ -1049,7 +1049,7 @@ with:
 In `package.json`, replace the `description` field:
 
 ```json
-  "description": "Learn, plan, build, and optimize — one super-plugin for agentic coding tools, with persistent memory, token economics, bundled MCPs, and a live local webviewer.",
+  "description": "Learn, plan, build, and optimize - one super-plugin for agentic coding tools, with persistent memory, token economics, bundled MCPs, and a live local webviewer.",
 ```
 
 with:
