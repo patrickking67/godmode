@@ -6,6 +6,8 @@ All notable changes to Godmode will be documented here. Format based on [Keep a 
 
 ### Changed
 
+- Dev tooling upgrades: vitest and @vitest/coverage-v8 5.1, ESLint 10.15, @types/node 26. `eslint-plugin-import` was removed because 2.32 does not support ESLint 10 and crashes when `import/order` reports; that warn-only rule was its only use. TypeScript stays on 6.0 because typescript-eslint does not support 7.0 yet.
+- CI runs on Node 22 and 24. The Pages workflow uses `actions/upload-pages-artifact` v5.
 - The original plan and design spec no longer use em dashes, and the plan opens with a note that its scope (memory, server, dashboard, CLI) was not built.
 - Dev dependency bumps: typescript-eslint 8.73 and Prettier 3.10.
 - All nine workflows rewritten. Each description now says what the workflow does and when to use it, and each body has four fixed sections: When to use, Procedure, Stop conditions, Verify.
