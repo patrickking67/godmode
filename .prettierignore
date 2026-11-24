@@ -7,7 +7,7 @@ coverage
 .worktrees/
 .claude/worktrees/
 
-# Generated plugin tree — formatting is owned by scripts/build-plugin.ts
+# Generated plugin tree - formatting is owned by scripts/build-plugin.ts
 plugin/
 
 # Generated site catalog, written by scripts/build-plugin.ts

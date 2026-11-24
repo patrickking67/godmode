@@ -6,6 +6,8 @@ All notable changes to Godmode will be documented here. Format based on [Keep a 
 
 ### Changed
 
+- The original plan and design spec no longer use em dashes, and the plan opens with a note that its scope (memory, server, dashboard, CLI) was not built.
+- Dev dependency bumps: typescript-eslint 8.73 and Prettier 3.10.
 - All nine workflows rewritten. Each description now says what the workflow does and when to use it, and each body has four fixed sections: When to use, Procedure, Stop conditions, Verify.
 - Skills no longer pre-approve broad tools. `allowed-tools` grants permission in Claude Code rather than restricting it, and the old lists included bare `Bash`, `Edit` and `Write`. Skills now pre-approve `Read`, `Grep`, `Glob` and named git commands only; everything else goes through the user's permission settings.
 - `covenant` is manual-only in both engines (`disable-model-invocation` for Claude Code, `agents/openai.yaml` for Codex). It refuses to commit secrets, a conflicted tree or a failed hook, and adds `Signed-off-by` only where a repository requires sign-off instead of never.
